@@ -207,7 +207,8 @@ export function AdminPage() {
 
     if (!uploadResponse.ok) {
       setState("error");
-      setMessage("获取上传地址失败。");
+      const result = (await uploadResponse.json().catch(() => null)) as { detail?: string; message?: string } | null;
+      setMessage(`获取上传地址失败：${result?.detail || result?.message || "未知错误"}`);
       return;
     }
 
@@ -281,8 +282,9 @@ export function AdminPage() {
     });
 
     if (!response.ok) {
+      const result = (await response.json().catch(() => null)) as { detail?: string; message?: string } | null;
       setState("error");
-      setMessage("保存失败，请确认 Blob 可用、后台密码仍然有效。");
+      setMessage(`保存失败：${result?.detail || result?.message || "请确认 Blob 可用、后台密码仍然有效。"}`);
       return;
     }
 
@@ -295,6 +297,26 @@ export function AdminPage() {
     setProjectJson(sortedSaved.projects[selectedIndex] ? JSON.stringify(sortedSaved.projects[selectedIndex], null, 2) : "");
     setState("saved");
     setMessage("已保存。刷新前台页面就能看到最新内容。");
+  }
+
+  async function checkBlob() {
+    setState("loading");
+    setMessage("正在检测 Blob 是否可写…");
+    const response = await fetch("/api/admin/blob-check");
+    const result = (await response.json().catch(() => null)) as {
+      ok?: boolean;
+      message?: string;
+      detail?: string;
+    } | null;
+
+    if (!response.ok || !result?.ok) {
+      setState("error");
+      setMessage(`Blob 检测失败：${result?.detail || result?.message || "未知错误"}`);
+      return;
+    }
+
+    setState("saved");
+    setMessage(result.message || "Blob 可写入。");
   }
 
   if (!authenticated) {
@@ -326,6 +348,9 @@ export function AdminPage() {
         </div>
         <div className="admin-actions">
           <a href="/" target="_blank">打开前台</a>
+          <button className="secondary" onClick={checkBlob} disabled={state === "saving" || state === "loading"}>
+            检测 Blob
+          </button>
           <button onClick={saveContent} disabled={state === "saving" || state === "loading"}>保存发布</button>
         </div>
       </header>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { getPortfolioStore } from "@/lib/blob-store";
+import { getErrorMessage } from "@/lib/error-message";
 
 function safeFilename(filename: string) {
   const normalized = filename
@@ -16,18 +17,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "未登录" }, { status: 401 });
   }
 
-  const body = (await request.json().catch(() => null)) as { filename?: string; contentType?: string } | null;
-  const filename = safeFilename(body?.filename || "upload");
-  const contentType = body?.contentType || "application/octet-stream";
-  const key = `uploads/${Date.now()}-${crypto.randomUUID()}-${filename}`;
-  const store = getPortfolioStore();
-  const upload = await store.createUploadUrl(key, {
-    expireSeconds: 15 * 60,
-    contentType,
-  });
+  try {
+    const body = (await request.json().catch(() => null)) as { filename?: string; contentType?: string } | null;
+    const filename = safeFilename(body?.filename || "upload");
+    const contentType = body?.contentType || "application/octet-stream";
+    const key = `uploads/${Date.now()}-${crypto.randomUUID()}-${filename}`;
+    const store = getPortfolioStore();
+    const upload = await store.createUploadUrl(key, {
+      expireSeconds: 15 * 60,
+      contentType,
+    });
 
-  return NextResponse.json({
-    ...upload,
-    fileUrl: `/api/media/${key}`,
-  });
+    return NextResponse.json({
+      ...upload,
+      fileUrl: `/api/media/${key}`,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "生成上传地址失败",
+        detail: getErrorMessage(error),
+      },
+      { status: 500 },
+    );
+  }
 }
