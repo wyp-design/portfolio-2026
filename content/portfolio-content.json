@@ -2,12 +2,12 @@
   "site": {
     "name": "王亚鹏Penn.W",
     "shortRole": {
-      "zh": "数字产品设计师",
-      "en": "Digital Product Designer"
+      "zh": "UI/UX/AI设计师",
+      "en": "UI/UX/AI Designer"
     },
     "intro": {
-      "zh": "我把复杂系统变成清晰、有人情味的数字体验。",
-      "en": "I turn complex systems into clear, human digital experiences."
+      "zh": "9年+设计工作经验，擅长AI设计、C端、B端UI与交互设计，熟悉多平台设计规范，独立完成从前期规划到最终交付的全流程设计。精通APP、小程序、H5、数据可视化及B端管理后台设计，拥有丰富的跨行业设计项目经验和开发协作能力。",
+      "en": ""
     },
     "bio": {
       "zh": "专注 UI/UX、产品策略与设计系统。我喜欢在逻辑与感觉之间工作：让界面经得起推敲，也让使用它的人感到轻松。",
@@ -35,7 +35,7 @@
         "en": "Design systems"
       }
     ],
-    "email": "hello@yourname.design",
+    "email": "wyp271533@163.com",
     "social": [
       {
         "label": "LinkedIn",
@@ -306,5 +306,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-24T08:32:15.354Z"
+  "updatedAt": "2026-06-24T08:33:59.922Z"
 }
