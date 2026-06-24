@@ -1,6 +1,6 @@
 # UI/UX Portfolio
 
-原创双语 UI/UX 作品集，使用 Next.js、Three.js、GSAP 和 Sanity 构建。
+原创双语 UI/UX 作品集网站，使用 Next.js、Three.js、GSAP 构建。
 
 ## 本地运行
 
@@ -10,18 +10,36 @@ npm install
 npm run dev
 ```
 
-打开 `http://localhost:3000`。Sanity 配置完成后，后台位于 `/studio`。
+打开 `http://localhost:3000`。
 
-## Sanity
+## 后台管理
 
-1. 在 Sanity 创建项目和 `production` dataset。
-2. 将项目 ID 写入 `.env.local` 的 `NEXT_PUBLIC_SANITY_PROJECT_ID`。
-3. 在 Sanity 项目设置中把本地地址和正式域名加入 CORS Origins。
-4. 进入 `/studio` 创建 `Site settings`、`About` 和作品项目。
+后台地址：`/admin`
 
-未配置 Sanity 时，网站自动使用 `content/demo.ts` 中的示例数据。
+当前后台采用 GitHub 提交作为内容发布方式：
+
+1. 后台保存作品集内容到 `content/portfolio-content.json`
+2. 上传文件保存到 `public/uploads`
+3. GitHub 收到提交后触发 EdgeOne Makers 自动重新部署
+4. 部署完成后前台内容更新
+
+需要配置环境变量：
+
+```env
+ADMIN_PASSWORD=your-admin-password
+GITHUB_TOKEN=your-github-token
+GITHUB_REPO_OWNER=wyp-design
+GITHUB_REPO_NAME=portfolio-2026
+GITHUB_BRANCH=main
+```
+
+GitHub Token 建议使用 Fine-grained personal access token，只授权当前仓库：
+
+- Repository：`wyp-design/portfolio-2026`
+- Contents：Read and write
+- Metadata：Read
 
 ## 发布
 
-将仓库推送到 GitHub，在 Vercel 导入仓库并复制 `.env.example` 中的环境变量。正式域名绑定后，把 `NEXT_PUBLIC_SITE_URL` 改为正式地址。
-
+代码推送到 GitHub 后，EdgeOne Makers 会自动构建部署。  
+如果后台保存了内容，也会自动提交到 GitHub 并触发下一次部署。

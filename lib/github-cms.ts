@@ -20,7 +20,7 @@ function assertGithubToken(token?: string): asserts token is string {
   }
 }
 
-async function githubRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function githubRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
   const { owner, repo, token } = getGithubConfig();
   assertGithubToken(token);
 
@@ -41,6 +41,33 @@ async function githubRequest<T>(path: string, init: RequestInit = {}): Promise<T
   }
 
   return (await response.json()) as T;
+}
+
+export async function checkGithubWriteAccess() {
+  const { owner, repo, branch } = getGithubConfig();
+  const repository = await githubRequest<{
+    full_name: string;
+    permissions?: { push?: boolean; maintain?: boolean; admin?: boolean };
+  }>("");
+
+  const branchInfo = await githubRequest<{ name: string; commit?: { sha?: string } }>(
+    `/branches/${encodeURIComponent(branch)}`,
+  );
+
+  const canWrite =
+    repository.permissions?.push || repository.permissions?.maintain || repository.permissions?.admin;
+
+  if (!canWrite) {
+    throw new Error(
+      `GitHub Token 已连接 ${repository.full_name}，但没有写入权限。请确认 Token 对 ${owner}/${repo} 开启 Contents: Read and write。`,
+    );
+  }
+
+  return {
+    repository: repository.full_name,
+    branch: branchInfo.name,
+    commit: branchInfo.commit?.sha,
+  };
 }
 
 async function getFileSha(filePath: string) {

@@ -1,24 +1,28 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/admin-auth";
+import { getErrorMessage } from "@/lib/error-message";
+import { checkGithubWriteAccess } from "@/lib/github-cms";
 
 export async function GET() {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ message: "未登录" }, { status: 401 });
   }
 
-  if (!process.env.GITHUB_TOKEN) {
+  try {
+    const result = await checkGithubWriteAccess();
+    return NextResponse.json({
+      ok: true,
+      message: `GitHub 已连接：${result.repository} / ${result.branch}`,
+      ...result,
+    });
+  } catch (error) {
     return NextResponse.json(
       {
         ok: false,
-        message: "缺少 GITHUB_TOKEN",
-        detail: "请在 EdgeOne 项目环境变量里添加 GITHUB_TOKEN，然后重新部署。",
+        message: "GitHub 检测失败",
+        detail: getErrorMessage(error),
       },
       { status: 500 },
     );
   }
-
-  return NextResponse.json({
-    ok: true,
-    message: "GitHub Token 已配置，可以保存发布。",
-  });
 }

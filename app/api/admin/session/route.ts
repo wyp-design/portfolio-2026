@@ -6,6 +6,10 @@ import {
   verifyAdminPassword,
 } from "@/lib/admin-auth";
 
+function isSecureRequest(request: Request) {
+  return request.headers.get("x-forwarded-proto") === "https" || new URL(request.url).protocol === "https:";
+}
+
 export async function GET() {
   return NextResponse.json({ authenticated: await isAdminRequest() });
 }
@@ -21,7 +25,7 @@ export async function POST(request: Request) {
   response.cookies.set(adminCookieName, await createAdminSessionValue(), {
     httpOnly: true,
     sameSite: "lax",
-    secure: true,
+    secure: isSecureRequest(request),
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
@@ -33,7 +37,7 @@ export async function DELETE() {
   response.cookies.set(adminCookieName, "", {
     httpOnly: true,
     sameSite: "lax",
-    secure: true,
+    secure: false,
     path: "/",
     maxAge: 0,
   });

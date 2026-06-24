@@ -56,6 +56,22 @@ function sortProjects(projects: Project[]) {
   return [...projects].sort((a, b) => a.order - b.order);
 }
 
+function validateContent(content: PortfolioContent) {
+  if (!content.site.name.trim()) return "请填写姓名 / Logo。";
+  if (!content.site.email.trim()) return "请填写邮箱。";
+  if (!content.projects.length) return "至少需要保留一个项目。";
+
+  const slugs = new Set<string>();
+  for (const project of content.projects) {
+    if (!project.slug.trim()) return "每个项目都需要填写 Slug。";
+    if (slugs.has(project.slug)) return `项目 Slug 重复：${project.slug}`;
+    slugs.add(project.slug);
+    if (!project.title.zh.trim() && !project.title.en.trim()) return `项目 ${project.slug} 需要填写标题。`;
+  }
+
+  return "";
+}
+
 export function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -237,6 +253,13 @@ export function AdminPage() {
   }
 
   async function saveContent() {
+    const validationError = validateContent(content);
+    if (validationError) {
+      setState("error");
+      setMessage(validationError);
+      return;
+    }
+
     setState("saving");
     setMessage("正在保存到 GitHub…");
     const response = await fetch("/api/admin/content", {
