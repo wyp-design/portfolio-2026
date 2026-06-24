@@ -1,6 +1,6 @@
 import { projects as demoProjects, siteCopy } from "@/content/demo";
+import committedContent from "@/content/portfolio-content.json";
 import type { Project, SiteContent } from "@/content/types";
-import { getPortfolioStore, PORTFOLIO_CONTENT_KEY } from "./blob-store";
 
 export type PortfolioContent = {
   site: SiteContent;
@@ -21,7 +21,7 @@ export function normalizePortfolioContent(value: unknown): PortfolioContent {
   if (!isObject(value)) return defaultPortfolioContent;
 
   const maybeSite = isObject(value.site) ? value.site : {};
-  const maybeProjects = Array.isArray(value.projects) ? value.projects : demoProjects;
+  const maybeProjects = Array.isArray(value.projects) && value.projects.length ? value.projects : demoProjects;
 
   return {
     site: {
@@ -46,24 +46,7 @@ export function normalizePortfolioContent(value: unknown): PortfolioContent {
 }
 
 export async function getPortfolioContent(): Promise<PortfolioContent> {
-  try {
-    const store = getPortfolioStore();
-    const content = await store.get(PORTFOLIO_CONTENT_KEY, { type: "json", consistency: "strong" });
-    return normalizePortfolioContent(content);
-  } catch {
-    return defaultPortfolioContent;
-  }
-}
-
-export async function savePortfolioContent(content: PortfolioContent): Promise<PortfolioContent> {
-  const nextContent = normalizePortfolioContent({
-    ...content,
-    updatedAt: new Date().toISOString(),
-  });
-
-  const store = getPortfolioStore();
-  await store.setJSON(PORTFOLIO_CONTENT_KEY, nextContent, { cacheControl: "no-store" });
-  return nextContent;
+  return normalizePortfolioContent(committedContent);
 }
 
 export async function getProjects(): Promise<Project[]> {

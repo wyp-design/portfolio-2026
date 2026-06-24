@@ -52,6 +52,10 @@ function slugify(value: string) {
     .slice(0, 64);
 }
 
+function sortProjects(projects: Project[]) {
+  return [...projects].sort((a, b) => a.order - b.order);
+}
+
 export function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -62,11 +66,7 @@ export function AdminPage() {
   const [message, setMessage] = useState("正在检查登录状态…");
 
   const selectedProject = content.projects[selectedIndex];
-
-  const sortedProjects = useMemo(
-    () => [...content.projects].sort((a, b) => a.order - b.order),
-    [content.projects],
-  );
+  const sortedProjects = useMemo(() => sortProjects(content.projects), [content.projects]);
 
   useEffect(() => {
     fetch("/api/admin/session")
@@ -95,11 +95,9 @@ export function AdminPage() {
       setMessage("读取失败，请重新登录。");
       return;
     }
+
     const nextContent = (await response.json()) as PortfolioContent;
-    const sortedContent = {
-      ...nextContent,
-      projects: [...nextContent.projects].sort((a, b) => a.order - b.order),
-    };
+    const sortedContent = { ...nextContent, projects: sortProjects(nextContent.projects) };
     setContent(sortedContent);
     setSelectedIndex(0);
     setProjectJson(sortedContent.projects[0] ? JSON.stringify(sortedContent.projects[0], null, 2) : "");
@@ -137,17 +135,12 @@ export function AdminPage() {
       ...current,
       projects: current.projects.map((project, projectIndex) => (projectIndex === index ? nextProject : project)),
     }));
-    if (index === selectedIndex) {
-      setProjectJson(JSON.stringify(nextProject, null, 2));
-    }
+    if (index === selectedIndex) setProjectJson(JSON.stringify(nextProject, null, 2));
   }
 
   function addProject() {
     const nextProject = createProject(content.projects.length + 1);
-    setContent((current) => ({
-      ...current,
-      projects: [...current.projects, nextProject],
-    }));
+    setContent((current) => ({ ...current, projects: [...current.projects, nextProject] }));
     setSelectedIndex(content.projects.length);
     setProjectJson(JSON.stringify(nextProject, null, 2));
   }
@@ -155,10 +148,7 @@ export function AdminPage() {
   function removeProject(index: number) {
     if (!confirm("确定要删除这个项目吗？")) return;
     const nextProjects = content.projects.filter((_, projectIndex) => projectIndex !== index);
-    setContent((current) => ({
-      ...current,
-      projects: current.projects.filter((_, projectIndex) => projectIndex !== index),
-    }));
+    setContent((current) => ({ ...current, projects: nextProjects }));
     setSelectedIndex(0);
     setProjectJson(nextProjects[0] ? JSON.stringify(nextProjects[0], null, 2) : "");
   }
@@ -166,20 +156,14 @@ export function AdminPage() {
   function moveProject(index: number, direction: -1 | 1) {
     const nextIndex = index + direction;
     if (nextIndex < 0 || nextIndex >= content.projects.length) return;
-    const movingProject = content.projects[index];
-
-    setContent((current) => {
-      const projects = [...current.projects];
-      const temp = projects[index];
-      projects[index] = projects[nextIndex];
-      projects[nextIndex] = temp;
-      return {
-        ...current,
-        projects: projects.map((project, projectIndex) => ({ ...project, order: projectIndex + 1 })),
-      };
-    });
+    const projects = [...content.projects];
+    const movingProject = projects[index];
+    projects[index] = projects[nextIndex];
+    projects[nextIndex] = movingProject;
+    const orderedProjects = projects.map((project, projectIndex) => ({ ...project, order: projectIndex + 1 }));
+    setContent((current) => ({ ...current, projects: orderedProjects }));
     setSelectedIndex(nextIndex);
-    setProjectJson(JSON.stringify({ ...movingProject, order: nextIndex + 1 }, null, 2));
+    setProjectJson(JSON.stringify(orderedProjects[nextIndex], null, 2));
   }
 
   function applyProjectJson() {
@@ -197,52 +181,43 @@ export function AdminPage() {
   async function uploadFile(file: File) {
     if (!selectedProject) return;
     setState("saving");
-    setMessage(`正在上传 ${file.name}…`);
+    setMessage(`正在上传 ${file.name} 到 GitHub…`);
 
-    const uploadResponse = await fetch("/api/admin/upload-url", {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadResponse = await fetch("/api/admin/upload", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename: file.name, contentType: file.type || "application/octet-stream" }),
+      body: formData,
     });
 
     if (!uploadResponse.ok) {
-      setState("error");
       const result = (await uploadResponse.json().catch(() => null)) as { detail?: string; message?: string } | null;
-      setMessage(`获取上传地址失败：${result?.detail || result?.message || "未知错误"}`);
-      return;
-    }
-
-    const upload = (await uploadResponse.json()) as { url: string; fileUrl: string };
-    const putResponse = await fetch(upload.url, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type || "application/octet-stream" },
-    });
-
-    if (!putResponse.ok) {
       setState("error");
-      setMessage("文件上传失败。");
+      setMessage(`上传失败：${result?.detail || result?.message || "未知错误"}`);
       return;
     }
+
+    const upload = (await uploadResponse.json()) as {
+      fileUrl: string;
+      mimeType?: string;
+      originalFilename?: string;
+    };
+    const filename = upload.originalFilename || file.name;
+    const media = {
+      _type: file.type === "application/pdf" ? ("file" as const) : ("image" as const),
+      url: upload.fileUrl,
+      mimeType: upload.mimeType || file.type,
+      originalFilename: filename,
+      alt: { zh: filename, en: filename },
+    };
 
     const nextProject: Project = {
       ...selectedProject,
       sections: selectedProject.sections.length
         ? selectedProject.sections.map((section, sectionIndex) =>
             sectionIndex === 0
-              ? {
-                  ...section,
-                  media: [
-                    ...(section.media || []),
-                    {
-                      _type: file.type === "application/pdf" ? "file" : "image",
-                      url: upload.fileUrl,
-                      mimeType: file.type,
-                      originalFilename: file.name,
-                      alt: { zh: file.name, en: file.name },
-                    },
-                  ],
-                }
+              ? { ...section, media: [...(section.media || []), media] }
               : section,
           )
         : [
@@ -251,27 +226,19 @@ export function AdminPage() {
               title: { zh: "项目素材", en: "Project media" },
               body: { zh: "后台上传的项目素材。", en: "Uploaded project media." },
               tone: "light",
-              media: [
-                {
-                  _type: file.type === "application/pdf" ? "file" : "image",
-                  url: upload.fileUrl,
-                  mimeType: file.type,
-                  originalFilename: file.name,
-                  alt: { zh: file.name, en: file.name },
-                },
-              ],
+              media: [media],
             },
           ],
     };
 
     updateProject(selectedIndex, nextProject);
     setState("idle");
-    setMessage("文件已上传，并已加入当前项目的第一个内容段落。记得保存发布。");
+    setMessage("文件已提交到 GitHub，并已加入当前项目。点击保存发布后，等待 EdgeOne 重新部署生效。");
   }
 
   async function saveContent() {
     setState("saving");
-    setMessage("正在保存到 EdgeOne Blob…");
+    setMessage("正在保存到 GitHub…");
     const response = await fetch("/api/admin/content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -284,39 +251,32 @@ export function AdminPage() {
     if (!response.ok) {
       const result = (await response.json().catch(() => null)) as { detail?: string; message?: string } | null;
       setState("error");
-      setMessage(`保存失败：${result?.detail || result?.message || "请确认 Blob 可用、后台密码仍然有效。"}`);
+      setMessage(`保存失败：${result?.detail || result?.message || "请确认 GITHUB_TOKEN 已配置。"}`);
       return;
     }
 
-    const saved = (await response.json()) as PortfolioContent;
-    const sortedSaved = {
-      ...saved,
-      projects: [...saved.projects].sort((a, b) => a.order - b.order),
-    };
+    const saved = (await response.json()) as PortfolioContent & { message?: string };
+    const sortedSaved = { ...saved, projects: sortProjects(saved.projects) };
     setContent(sortedSaved);
     setProjectJson(sortedSaved.projects[selectedIndex] ? JSON.stringify(sortedSaved.projects[selectedIndex], null, 2) : "");
     setState("saved");
-    setMessage("已保存。刷新前台页面就能看到最新内容。");
+    setMessage(saved.message || "已提交到 GitHub。等待 EdgeOne 自动重新部署后，前台会更新。");
   }
 
-  async function checkBlob() {
+  async function checkGithub() {
     setState("loading");
-    setMessage("正在检测 Blob 是否可写…");
-    const response = await fetch("/api/admin/blob-check");
-    const result = (await response.json().catch(() => null)) as {
-      ok?: boolean;
-      message?: string;
-      detail?: string;
-    } | null;
+    setMessage("正在检测 GitHub Token…");
+    const response = await fetch("/api/admin/github-check");
+    const result = (await response.json().catch(() => null)) as { ok?: boolean; message?: string; detail?: string } | null;
 
     if (!response.ok || !result?.ok) {
       setState("error");
-      setMessage(`Blob 检测失败：${result?.detail || result?.message || "未知错误"}`);
+      setMessage(`GitHub 检测失败：${result?.detail || result?.message || "未知错误"}`);
       return;
     }
 
     setState("saved");
-    setMessage(result.message || "Blob 可写入。");
+    setMessage(result.message || "GitHub Token 已配置。");
   }
 
   if (!authenticated) {
@@ -348,8 +308,8 @@ export function AdminPage() {
         </div>
         <div className="admin-actions">
           <a href="/" target="_blank">打开前台</a>
-          <button className="secondary" onClick={checkBlob} disabled={state === "saving" || state === "loading"}>
-            检测 Blob
+          <button className="secondary" onClick={checkGithub} disabled={state === "saving" || state === "loading"}>
+            检测 GitHub
           </button>
           <button onClick={saveContent} disabled={state === "saving" || state === "loading"}>保存发布</button>
         </div>
@@ -409,7 +369,10 @@ export function AdminPage() {
               <button
                 className={index === selectedIndex ? "is-selected" : ""}
                 key={project.slug}
-                onClick={() => setSelectedIndex(index)}
+                onClick={() => {
+                  setSelectedIndex(index);
+                  setProjectJson(JSON.stringify(project, null, 2));
+                }}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <strong>{project.title.zh || project.title.en}</strong>
