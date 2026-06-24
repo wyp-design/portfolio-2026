@@ -9,6 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@edgeone/pages-blob": "^0.0.12",
     "@react-three/drei": "latest",
     "@react-three/fiber": "latest",
     "@sanity/orderable-document-list": "latest",
