@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { ProjectPage } from "@/components/project-page";
 import { getProject, getProjects, getSiteContent } from "@/lib/sanity/data";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProject(slug);

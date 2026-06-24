@@ -86,12 +86,6 @@ export function AdminPage() {
       });
   }, []);
 
-  useEffect(() => {
-    if (selectedProject) {
-      setProjectJson(JSON.stringify(selectedProject, null, 2));
-    }
-  }, [selectedProject]);
-
   async function loadContent() {
     setState("loading");
     setMessage("正在读取后台内容…");
@@ -102,11 +96,13 @@ export function AdminPage() {
       return;
     }
     const nextContent = (await response.json()) as PortfolioContent;
-    setContent({
+    const sortedContent = {
       ...nextContent,
       projects: [...nextContent.projects].sort((a, b) => a.order - b.order),
-    });
+    };
+    setContent(sortedContent);
     setSelectedIndex(0);
+    setProjectJson(sortedContent.projects[0] ? JSON.stringify(sortedContent.projects[0], null, 2) : "");
     setState("idle");
     setMessage("内容已加载，可以开始编辑。");
   }
@@ -141,30 +137,39 @@ export function AdminPage() {
       ...current,
       projects: current.projects.map((project, projectIndex) => (projectIndex === index ? nextProject : project)),
     }));
+    if (index === selectedIndex) {
+      setProjectJson(JSON.stringify(nextProject, null, 2));
+    }
   }
 
   function addProject() {
+    const nextProject = createProject(content.projects.length + 1);
     setContent((current) => ({
       ...current,
-      projects: [...current.projects, createProject(current.projects.length + 1)],
+      projects: [...current.projects, nextProject],
     }));
     setSelectedIndex(content.projects.length);
+    setProjectJson(JSON.stringify(nextProject, null, 2));
   }
 
   function removeProject(index: number) {
     if (!confirm("确定要删除这个项目吗？")) return;
+    const nextProjects = content.projects.filter((_, projectIndex) => projectIndex !== index);
     setContent((current) => ({
       ...current,
       projects: current.projects.filter((_, projectIndex) => projectIndex !== index),
     }));
     setSelectedIndex(0);
+    setProjectJson(nextProjects[0] ? JSON.stringify(nextProjects[0], null, 2) : "");
   }
 
   function moveProject(index: number, direction: -1 | 1) {
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= content.projects.length) return;
+    const movingProject = content.projects[index];
+
     setContent((current) => {
       const projects = [...current.projects];
-      const nextIndex = index + direction;
-      if (nextIndex < 0 || nextIndex >= projects.length) return current;
       const temp = projects[index];
       projects[index] = projects[nextIndex];
       projects[nextIndex] = temp;
@@ -173,7 +178,8 @@ export function AdminPage() {
         projects: projects.map((project, projectIndex) => ({ ...project, order: projectIndex + 1 })),
       };
     });
-    setSelectedIndex(Math.max(0, Math.min(content.projects.length - 1, index + direction)));
+    setSelectedIndex(nextIndex);
+    setProjectJson(JSON.stringify({ ...movingProject, order: nextIndex + 1 }, null, 2));
   }
 
   function applyProjectJson() {
@@ -281,10 +287,12 @@ export function AdminPage() {
     }
 
     const saved = (await response.json()) as PortfolioContent;
-    setContent({
+    const sortedSaved = {
       ...saved,
       projects: [...saved.projects].sort((a, b) => a.order - b.order),
-    });
+    };
+    setContent(sortedSaved);
+    setProjectJson(sortedSaved.projects[selectedIndex] ? JSON.stringify(sortedSaved.projects[selectedIndex], null, 2) : "");
     setState("saved");
     setMessage("已保存。刷新前台页面就能看到最新内容。");
   }

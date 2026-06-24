@@ -981,3 +981,242 @@ button {
     display: none;
   }
 }
+
+.admin-shell {
+  min-height: 100svh;
+  background: #f4f1e8;
+  color: #111;
+  padding: clamp(20px, 4vw, 56px);
+  font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.admin-login {
+  display: grid;
+  place-items: center;
+}
+
+.admin-card,
+.admin-panel {
+  border: 1px solid rgba(0, 0, 0, .12);
+  background: rgba(255, 255, 255, .72);
+  box-shadow: 10px 12px 0 rgba(0, 0, 0, .08);
+}
+
+.admin-card {
+  width: min(520px, 100%);
+  padding: 34px;
+}
+
+.admin-card span,
+.admin-topbar span {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+
+.admin-card h1,
+.admin-topbar h1 {
+  margin: 12px 0;
+  font-size: clamp(42px, 6vw, 86px);
+  line-height: .9;
+  letter-spacing: -.06em;
+}
+
+.admin-card p {
+  color: rgba(0, 0, 0, .62);
+  line-height: 1.6;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.admin-actions,
+.admin-panel-heading,
+.admin-panel-heading div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-actions a,
+.admin-actions button,
+.admin-panel button,
+.admin-card button,
+.secondary {
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  padding: 11px 14px;
+  font-weight: 800;
+}
+
+.admin-actions a,
+.secondary {
+  background: #fff;
+  color: #111;
+}
+
+.admin-actions button:disabled,
+.admin-card button:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+
+.admin-message {
+  border: 1px solid rgba(0, 0, 0, .12);
+  background: #fff;
+  padding: 12px 14px;
+  margin: 0 0 22px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.admin-message-error {
+  background: #ffe4df;
+}
+
+.admin-message-saved {
+  background: #e2ffd1;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, .75fr) minmax(260px, .8fr) minmax(360px, 1.45fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.admin-panel {
+  padding: 22px;
+}
+
+.admin-panel h2 {
+  margin: 0 0 18px;
+  font-size: 24px;
+}
+
+.admin-panel-heading {
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.admin-panel-heading h2 {
+  margin: 0;
+}
+
+.admin-panel-heading button,
+.danger {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.danger {
+  background: #ff786b !important;
+  color: #111 !important;
+}
+
+.admin-shell label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: rgba(0, 0, 0, .64);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-shell input,
+.admin-shell textarea {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, .18);
+  background: #fff;
+  color: #111;
+  padding: 11px 12px;
+  font: inherit;
+}
+
+.admin-shell textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.admin-project-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-project-list button {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 2px 10px;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, .12);
+  background: #fff;
+  color: #111;
+  text-align: left;
+}
+
+.admin-project-list button.is-selected {
+  background: #caff6a;
+}
+
+.admin-project-list span {
+  grid-row: span 2;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.admin-project-list small {
+  color: rgba(0, 0, 0, .55);
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 12px;
+}
+
+.admin-form-grid label:nth-last-child(-n+2) {
+  grid-column: span 3;
+}
+
+.admin-upload {
+  border: 1px dashed rgba(0, 0, 0, .35);
+  margin: 8px 0 16px;
+  padding: 16px;
+  background: rgba(202, 255, 106, .28);
+}
+
+.admin-json textarea {
+  min-height: 360px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-topbar,
+  .admin-actions,
+  .admin-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-grid label:nth-last-child(-n+2) {
+    grid-column: auto;
+  }
+}
