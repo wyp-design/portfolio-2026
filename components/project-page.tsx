@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { Project, SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
+import { assetPath } from "@/lib/paths";
 import { SiteHeader } from "./site-header";
 
 export function ProjectPage({
@@ -80,7 +81,7 @@ export function ProjectPage({
                 {section.media.map((media) => {
                   if (media.mimeType === "application/pdf") {
                     return (
-                      <a className="pdf-card" href={media.url} target="_blank" rel="noreferrer" key={media.url}>
+                      <a className="pdf-card" href={assetPath(media.url)} target="_blank" rel="noreferrer" key={media.url}>
                         <span>PDF</span>
                         <strong>{media.originalFilename || (language === "zh" ? "查看案例文档" : "View case document")}</strong>
                         <i>↗</i>
@@ -89,13 +90,13 @@ export function ProjectPage({
                   }
 
                   if (media.mimeType?.startsWith("video/")) {
-                    return <video src={media.url} controls playsInline muted loop key={media.url} />;
+                    return <video src={assetPath(media.url)} controls playsInline muted loop key={media.url} />;
                   }
 
                   return (
                     // Sanity assets may include animated GIFs, so native img preserves playback.
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={media.url} alt={media.alt ? t(media.alt) : t(section.title)} key={media.url} />
+                    <img src={assetPath(media.url)} alt={media.alt ? t(media.alt) : t(section.title)} key={media.url} />
                   );
                 })}
               </div>

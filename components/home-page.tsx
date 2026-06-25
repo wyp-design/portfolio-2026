@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
+import { assetPath } from "@/lib/paths";
 import { HeroScene } from "./hero-scene";
 import { SiteHeader } from "./site-header";
 
@@ -50,7 +51,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
             <section className="hero grid-surface" key={section.id}>
               <SiteHeader name={site.name} />
               <div className="hero-art">
-                <div className="hero-image" />
+                <div className="hero-image" style={{ backgroundImage: `url(${assetPath("/images/hero-atmosphere.png")})` }} />
                 <HeroScene />
               </div>
               <div className="hero-kicker">
@@ -117,7 +118,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <div className="about-photo">
                   {site.aboutPhoto?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={site.aboutPhoto.url} alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name} />
+                    <img src={assetPath(site.aboutPhoto.url)} alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name} />
                   ) : (
                     <span>{language === "zh" ? "后台上传个人照片" : "Upload portrait in admin"}</span>
                   )}
