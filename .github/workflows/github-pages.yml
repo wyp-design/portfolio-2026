@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Prepare static front-end build
         run: rm -rf app/api app/admin app/studio
 
@@ -41,6 +44,9 @@ jobs:
           GITHUB_PAGES: "true"
           GITHUB_PAGES_REPO: "portfolio-2026"
           NEXT_PUBLIC_SITE_URL: "https://wyp-design.github.io/portfolio-2026"
+
+      - name: Keep Next.js static assets
+        run: touch out/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
