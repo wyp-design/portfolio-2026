@@ -96,8 +96,8 @@
       "en": "Across AI, mobile, design systems, and data experiences."
     },
     "bio": {
-      "zh": "专注 UI/UX、产品策略与设计系统。我喜欢在逻辑与感觉之间工作：让界面经得起推敲，也让使用它的人感到轻松。",
-      "en": "I work across UI/UX, product strategy, and design systems—balancing rigorous logic with experiences that feel effortless."
+      "zh": "9 年设计工作经验，擅长 AI 设计、C 端、B 端 UI 与交互设计，熟悉多平台设计规范，能独立完成从前期规划到最终交付的全流程设计。精通 APP、小程序、H5、数据可视化及 B 端管理后台设计，拥有丰富的跨行业设计项目经验和开发协作能力。\n\n1、设计工具：Codex、Nanobanana、ChatGpt、Gemini、Sketch、Figma、Photoshop、Illustrator、Axure RP\n\n2、前端协作：熟悉HTML、CSS，掌握开发沟通流程\n\n3、丰富的C端与B端设计经验，覆盖互联网、移动通信、电商等领域\n\n4、精通跨部门协作与开发对接，具备优秀的执行力与团队合作能力。\n\n5、摄影、剪辑、灯光布置，懂点小红书、抖音、视频号运营",
+      "en": "**Concise & precise English translation:**\n\n---\n\n**Overview**  \n9 years of design experience, specializing in AI-driven design, C-end and B-end UI & interaction design. Proficient in multi-platform design guidelines, capable of independently managing the full design process from initial planning to final delivery. Expert in APP, mini-program, H5, data visualization, and B-end admin dashboard design. Rich cross-industry project experience and strong development collaboration skills.\n\n**1. Design Tools:** Codex, Nanobanana, ChatGPT, Gemini, Sketch, Figma, Photoshop, Illustrator, Axure RP  \n**2. Front-End Collaboration:** Familiar with HTML & CSS; proficient in development communication workflows.  \n**3. Extensive C-end & B-end design experience** across internet, mobile communications, e-commerce, and more.  \n**4. Skilled in cross-functional collaboration and developer handoff**, with strong execution and teamwork abilities.  \n**5. Photography, video editing, lighting setup**, plus a working knowledge of Xiaohongshu, Douyin, and WeChat Channels operations."
     },
     "bioStyle": {
       "fontSize": "medium",
@@ -108,7 +108,7 @@
       "en": "About"
     },
     "aboutHeadline": {
-      "zh": "策略的脑，手艺人的心。",
+      "zh": "王亚鹏 Penn.W",
       "en": "A strategist’s mind. A maker’s heart."
     },
     "education": {
@@ -170,28 +170,20 @@
     "email": "wyp271533@163.com",
     "social": [
       {
-        "label": "LinkedIn",
-        "href": "https://www.linkedin.com"
-      },
-      {
-        "label": "Behance",
-        "href": "https://www.behance.net"
-      },
-      {
-        "label": "GitHub",
-        "href": "https://github.com/wyp-design"
+        "label": "Link",
+        "href": "https://"
       }
     ]
   },
   "projects": [
     {
-      "slug": "atlas-ai",
+      "slug": "ai",
       "title": {
-        "zh": "Atlas AI 工作台",
+        "zh": "AIGC 类",
         "en": "Atlas AI Workspace"
       },
       "summary": {
-        "zh": "让跨职能团队能看懂、控制并复用 AI 工作流。",
+        "zh": "AI 工具、生成式视觉、智能产品体验与自动化设计流程相关项目。",
         "en": "Making AI workflows legible, controllable, and reusable for cross-functional teams."
       },
       "year": "2026",
@@ -210,7 +202,7 @@
         "zh": "样板案例",
         "en": "Sample case"
       },
-      "externalUrl": "",
+      "externalUrl": "AI 工具、生成式视觉、智能产品体验与自动化设计流程相关项目。",
       "metrics": [
         {
           "value": "42%",
@@ -288,7 +280,7 @@
     {
       "slug": "mori-health",
       "title": {
-        "zh": "Mori 健康陪伴",
+        "zh": "跨境电商 类",
         "en": "Mori Health Companion"
       },
       "summary": {
@@ -335,7 +327,7 @@
     {
       "slug": "northstar-system",
       "title": {
-        "zh": "Northstar 设计系统",
+        "zh": "Web 类",
         "en": "Northstar Design System"
       },
       "summary": {
@@ -382,7 +374,7 @@
     {
       "slug": "field-notes",
       "title": {
-        "zh": "Field Notes",
+        "zh": "App 类",
         "en": "Field Notes"
       },
       "summary": {
@@ -429,7 +421,7 @@
     {
       "slug": "signal-dashboard",
       "title": {
-        "zh": "Signal 数据驾驶舱",
+        "zh": "平面视觉综合 类",
         "en": "Signal Data Console"
       },
       "summary": {
@@ -474,5 +466,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-24T00:00:00.000Z"
+  "updatedAt": "2026-06-25T05:56:01.044Z"
 }
