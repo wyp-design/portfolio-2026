@@ -207,7 +207,7 @@
     {
       "slug": "mori-health",
       "title": {
-        "zh": "Mori 健康陪伴",
+        "zh": "跨境电商 类",
         "en": "Mori Health Companion"
       },
       "summary": {
@@ -254,7 +254,7 @@
     {
       "slug": "northstar-system",
       "title": {
-        "zh": "Northstar 设计系统",
+        "zh": "Web 类",
         "en": "Northstar Design System"
       },
       "summary": {
@@ -301,7 +301,7 @@
     {
       "slug": "field-notes",
       "title": {
-        "zh": "Field Notes",
+        "zh": "App 类",
         "en": "Field Notes"
       },
       "summary": {
@@ -348,7 +348,7 @@
     {
       "slug": "signal-dashboard",
       "title": {
-        "zh": "Signal 数据驾驶舱",
+        "zh": "平面视觉综合 类",
         "en": "Signal Data Console"
       },
       "summary": {
@@ -393,5 +393,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T05:39:03.627Z"
+  "updatedAt": "2026-06-25T05:40:25.447Z"
 }
