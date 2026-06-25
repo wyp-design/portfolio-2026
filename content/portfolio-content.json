@@ -53,8 +53,8 @@
       "en": "UI/UX/AI Designer"
     },
     "location": {
-      "zh": "上海 · 面向世界",
-      "en": "Shanghai · Working globally"
+      "zh": "深圳· 面向世界",
+      "en": "Shenzhen · Working globally"
     },
     "heroTitle": {
       "line1": {
@@ -100,7 +100,7 @@
       "en": "**Concise & precise English translation:**\n\n---\n\n**Overview**  \n9 years of design experience, specializing in AI-driven design, C-end and B-end UI & interaction design. Proficient in multi-platform design guidelines, capable of independently managing the full design process from initial planning to final delivery. Expert in APP, mini-program, H5, data visualization, and B-end admin dashboard design. Rich cross-industry project experience and strong development collaboration skills.\n\n**1. Design Tools:** Codex, Nanobanana, ChatGPT, Gemini, Sketch, Figma, Photoshop, Illustrator, Axure RP  \n**2. Front-End Collaboration:** Familiar with HTML & CSS; proficient in development communication workflows.  \n**3. Extensive C-end & B-end design experience** across internet, mobile communications, e-commerce, and more.  \n**4. Skilled in cross-functional collaboration and developer handoff**, with strong execution and teamwork abilities.  \n**5. Photography, video editing, lighting setup**, plus a working knowledge of Xiaohongshu, Douyin, and WeChat Channels operations."
     },
     "bioStyle": {
-      "fontSize": "medium",
+      "fontSize": "small",
       "fontWeight": "regular"
     },
     "aboutLabel": {
@@ -113,16 +113,16 @@
     },
     "education": {
       "school": {
-        "zh": "你的学校",
-        "en": "Your University"
+        "zh": "北京理工大学（非全日制）",
+        "en": "Beijing Institute of Technology (Part-time)"
       },
       "degree": {
-        "zh": "专业 / 学位",
-        "en": "Major / Degree"
+        "zh": "数字媒体/ 工学学位",
+        "en": "Digital Media / B.E."
       },
       "time": {
-        "zh": "年份",
-        "en": "Year"
+        "zh": "2015.9",
+        "en": "2015.9"
       },
       "description": {
         "zh": "这里填写教育背景简介，支持换行。",
@@ -137,20 +137,20 @@
     "experiences": [
       {
         "company": {
-          "zh": "公司名称",
-          "en": "Company name"
+          "zh": "深圳岚创云商科技有限公司（天津科林车业有限公司）",
+          "en": "Shenzhen Lanchuang Cloud Commerce Technology Co., Ltd."
         },
         "position": {
-          "zh": "UI/UX 设计师",
-          "en": "UI/UX Designer"
+          "zh": "UI设计师主管",
+          "en": "UI Design Lead"
         },
         "time": {
           "zh": "2024 — 至今",
           "en": "2024 — Present"
         },
         "description": {
-          "zh": "这里填写工作经历简介，支持换行。\n可以写负责的业务、设计范围、产出结果。",
-          "en": "Write your work experience summary here.\nYou can describe responsibilities, design scope, and outcomes."
+          "zh": "负责“Cyseekin”独立站\\亚马逊的UI设计方案；\n\n负责公司和社媒图、海报，PPT等内容的设计；\n\n负责产品拍摄/设计统筹工作；\n\n负责设计部门和运营部门的协调工作。",
+          "en": "→ Lead UI design for Cyseekin's standalone website and Amazon storefront.\n\n→ Design company and social media graphics, posters, and presentations.\n\n→ Oversee product photography and design coordination.\n\n→ Coordinate between design and operations teams."
         },
         "link": "",
         "style": {
@@ -476,5 +476,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T08:12:02.608Z"
+  "updatedAt": "2026-06-25T09:35:26.758Z"
 }
