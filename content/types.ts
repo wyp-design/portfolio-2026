@@ -6,10 +6,25 @@ export type LocalizedText = {
 export type SiteContent = {
   name: string;
   shortRole: LocalizedText;
+  location: LocalizedText;
+  heroTitle: {
+    line1: LocalizedText;
+    line2: LocalizedText;
+  };
   intro: LocalizedText;
+  heroIndex: string;
+  scrollLabel: LocalizedText;
+  manifestoIntro: LocalizedText;
+  manifestoLine1: LocalizedText;
+  manifestoLine2: LocalizedText;
+  workLabel: LocalizedText;
+  workIntro: LocalizedText;
   bio: LocalizedText;
+  aboutLabel: LocalizedText;
   aboutHeadline: LocalizedText;
   capabilities: LocalizedText[];
+  contactLabel: LocalizedText;
+  contactHeadline: LocalizedText;
   email: string;
   social: Array<{ label: string; href: string }>;
 };
@@ -24,6 +39,7 @@ export type Project = {
   accent: string;
   order: number;
   featured?: boolean;
+  status?: LocalizedText;
   externalUrl?: string;
   metrics?: Array<{ value: string; label: LocalizedText }>;
   sections: Array<{

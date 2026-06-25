@@ -1,17 +1,60 @@
 {
   "site": {
-    "name": "王亚鹏Penn.W",
+    "name": "王亚鹏 Penn.W",
     "shortRole": {
-      "zh": "UI/UX/AI设计师",
+      "zh": "UI/UX/AI 设计师",
       "en": "UI/UX/AI Designer"
     },
+    "location": {
+      "zh": "上海 · 面向世界",
+      "en": "Shanghai · Working globally"
+    },
+    "heroTitle": {
+      "line1": {
+        "zh": "让复杂变清晰",
+        "en": "MAKE COMPLEX"
+      },
+      "line2": {
+        "zh": "让体验有感觉",
+        "en": "FEEL CLEAR"
+      }
+    },
     "intro": {
-      "zh": "9年+设计工作经验，擅长AI设计、C端、B端UI与交互设计，熟悉多平台设计规范，独立完成从前期规划到最终交付的全流程设计。精通APP、小程序、H5、数据可视化及B端管理后台设计，拥有丰富的跨行业设计项目经验和开发协作能力。",
-      "en": "With over 9 years of design experience, I specialize in AI design, consumer-facing (C-end) and business-facing (B-end) UI and interaction design, and am familiar with design guidelines across multiple platforms. I independently manage the entire design process, from initial planning to final delivery. I am proficient in designing apps, mini-programs, H5, data visualization, and B-end management backends, and possess extensive experience in cross-industry design projects as well as strong collaboration skills with development teams.\n\nTranslated with DeepL.com (free version)"
+      "zh": "9 年设计工作经验，擅长 AI 设计、C 端、B 端 UI 与交互设计，熟悉多平台设计规范，能独立完成从前期规划到最终交付的全流程设计。精通 APP、小程序、H5、数据可视化及 B 端管理后台设计，拥有丰富的跨行业设计项目经验和开发协作能力。",
+      "en": "With over 9 years of design experience, I specialize in AI design, consumer-facing and business-facing UI/UX, interaction design, multi-platform design systems, and end-to-end delivery from planning to final handoff."
+    },
+    "heroIndex": "001 / PORTFOLIO / 2026",
+    "scrollLabel": {
+      "zh": "向下探索",
+      "en": "Scroll to explore"
+    },
+    "manifestoIntro": {
+      "zh": "我相信好的设计不是装饰。",
+      "en": "I believe good design is not decoration."
+    },
+    "manifestoLine1": {
+      "zh": "它是对问题的理解，",
+      "en": "IT IS UNDERSTANDING,"
+    },
+    "manifestoLine2": {
+      "zh": "也是对人的尊重。",
+      "en": "AND RESPECT FOR PEOPLE."
+    },
+    "workLabel": {
+      "zh": "精选作品",
+      "en": "Selected work"
+    },
+    "workIntro": {
+      "zh": "横跨 AI、移动产品、设计系统与数据体验。",
+      "en": "Across AI, mobile, design systems, and data experiences."
     },
     "bio": {
       "zh": "专注 UI/UX、产品策略与设计系统。我喜欢在逻辑与感觉之间工作：让界面经得起推敲，也让使用它的人感到轻松。",
       "en": "I work across UI/UX, product strategy, and design systems—balancing rigorous logic with experiences that feel effortless."
+    },
+    "aboutLabel": {
+      "zh": "关于我",
+      "en": "About"
     },
     "aboutHeadline": {
       "zh": "策略的脑，手艺人的心。",
@@ -35,6 +78,14 @@
         "en": "Design systems"
       }
     ],
+    "contactLabel": {
+      "zh": "一起创造",
+      "en": "Let’s create"
+    },
+    "contactHeadline": {
+      "zh": "有意思的东西。",
+      "en": "SOMETHING WITH MEANING."
+    },
     "email": "wyp271533@163.com",
     "social": [
       {
@@ -47,7 +98,7 @@
       },
       {
         "label": "GitHub",
-        "href": "https://github.com"
+        "href": "https://github.com/wyp-design"
       }
     ]
   },
@@ -74,6 +125,11 @@
       "accent": "#9aff58",
       "order": 1,
       "featured": true,
+      "status": {
+        "zh": "样板案例",
+        "en": "Sample case"
+      },
+      "externalUrl": "",
       "metrics": [
         {
           "value": "42%",
@@ -111,7 +167,8 @@
             "zh": "团队需要的不只是一个聊天框，而是一套能理解上下文、审阅步骤并安全复用的工作方式。",
             "en": "Teams needed more than a chat box: they needed a way to understand context, review steps, and reuse successful work safely."
           },
-          "tone": "light"
+          "tone": "light",
+          "media": []
         },
         {
           "eyebrow": {
@@ -126,7 +183,8 @@
             "zh": "我将任务拆成可组合节点，让输入、判断、工具和输出都能被检查、复制与协作。",
             "en": "I decomposed tasks into composable nodes so inputs, decisions, tools, and outputs could be inspected, copied, and shared."
           },
-          "tone": "blue"
+          "tone": "blue",
+          "media": []
         },
         {
           "eyebrow": {
@@ -141,7 +199,8 @@
             "zh": "首轮可用性测试显示，透明的运行状态和历史版本显著降低了误操作与重复劳动。",
             "en": "Early usability testing showed that transparent run states and version history reduced errors and duplicated work."
           },
-          "tone": "dark"
+          "tone": "dark",
+          "media": []
         }
       ]
     },
@@ -166,6 +225,12 @@
       },
       "accent": "#ff786b",
       "order": 2,
+      "featured": true,
+      "status": {
+        "zh": "样板案例",
+        "en": "Sample case"
+      },
+      "externalUrl": "",
       "metrics": [],
       "sections": [
         {
@@ -181,7 +246,8 @@
             "zh": "我们重新设计了目标、记录和反馈语言，让用户关注趋势而不是失败。",
             "en": "We reframed goals, tracking, and feedback around progress rather than failure."
           },
-          "tone": "light"
+          "tone": "light",
+          "media": []
         }
       ]
     },
@@ -206,6 +272,12 @@
       },
       "accent": "#7e7cff",
       "order": 3,
+      "featured": false,
+      "status": {
+        "zh": "样板案例",
+        "en": "Sample case"
+      },
+      "externalUrl": "",
       "metrics": [],
       "sections": [
         {
@@ -221,7 +293,8 @@
             "zh": "通过令牌、组件、贡献规范和质量看板，把一致性变成团队能力。",
             "en": "Tokens, components, contribution rules, and quality dashboards made consistency a team capability."
           },
-          "tone": "dark"
+          "tone": "dark",
+          "media": []
         }
       ]
     },
@@ -246,6 +319,12 @@
       },
       "accent": "#ffda45",
       "order": 4,
+      "featured": false,
+      "status": {
+        "zh": "样板案例",
+        "en": "Sample case"
+      },
+      "externalUrl": "",
       "metrics": [],
       "sections": [
         {
@@ -261,7 +340,8 @@
             "zh": "照片、语音、标签和参与者信息在同一条时间线上汇合。",
             "en": "Photos, audio, tags, and participant context converge on one timeline."
           },
-          "tone": "lime"
+          "tone": "lime",
+          "media": []
         }
       ]
     },
@@ -286,6 +366,12 @@
       },
       "accent": "#5dd8ff",
       "order": 5,
+      "featured": false,
+      "status": {
+        "zh": "样板案例",
+        "en": "Sample case"
+      },
+      "externalUrl": "",
       "metrics": [],
       "sections": [
         {
@@ -301,10 +387,11 @@
             "zh": "围绕异常、影响和建议动作重组信息层级。",
             "en": "The hierarchy was rebuilt around anomalies, impact, and recommended action."
           },
-          "tone": "blue"
+          "tone": "blue",
+          "media": []
         }
       ]
     }
   ],
-  "updatedAt": "2026-06-24T08:41:10.925Z"
+  "updatedAt": "2026-06-24T00:00:00.000Z"
 }

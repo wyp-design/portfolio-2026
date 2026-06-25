@@ -50,33 +50,33 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
         </div>
         <div className="hero-kicker">
           <span>{t(site.shortRole)}</span>
-          <span>{language === "zh" ? "上海 · 面向世界" : "Shanghai · Working globally"}</span>
+          <span>{t(site.location)}</span>
         </div>
         <h1 className="hero-title">
-          <span className="hero-title-line">{language === "zh" ? "让复杂变清晰" : "MAKE COMPLEX"}</span>
-          <span className="hero-title-line outline">{language === "zh" ? "让体验有感觉" : "FEEL CLEAR"}</span>
+          <span className="hero-title-line">{t(site.heroTitle.line1)}</span>
+          <span className="hero-title-line outline">{t(site.heroTitle.line2)}</span>
         </h1>
         <p className="hero-copy">{t(site.intro)}</p>
         <div className="sticker sticker-one">✦</div>
         <div className="sticker sticker-two">UX↗</div>
         <div className="sticker sticker-three">GOOD<br />SYSTEMS</div>
-        <div className="hero-index">001 / PORTFOLIO / 2026</div>
-        <a className="scroll-cue" href="#work">{language === "zh" ? "向下探索" : "Scroll to explore"} ↓</a>
+        <div className="hero-index">{site.heroIndex}</div>
+        <a className="scroll-cue" href="#work">{t(site.scrollLabel)} ↓</a>
       </section>
 
       <section className="manifesto grid-surface reveal">
-        <p>{language === "zh" ? "我相信好的设计不是装饰。" : "I believe good design is not decoration."}</p>
+        <p>{t(site.manifestoIntro)}</p>
         <h2>
-          {language === "zh" ? "它是对问题的理解，" : "IT IS UNDERSTANDING,"}
+          {t(site.manifestoLine1)}
           <br />
-          <span>{language === "zh" ? "也是对人的尊重。" : "AND RESPECT FOR PEOPLE."}</span>
+          <span>{t(site.manifestoLine2)}</span>
         </h2>
       </section>
 
       <section className="work-section" id="work">
         <div className="section-heading reveal">
-          <span>02 — {language === "zh" ? "精选作品" : "Selected work"}</span>
-          <p>{language === "zh" ? "横跨 AI、移动产品、设计系统与数据体验。" : "Across AI, mobile, design systems, and data experiences."}</p>
+          <span>02 — {t(site.workLabel)}</span>
+          <p>{t(site.workIntro)}</p>
         </div>
         <div className="project-list">
           {projects.map((project, index) => (
@@ -95,7 +95,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
       </section>
 
       <section className="about-section grid-surface" id="about">
-        <div className="about-label reveal">03 — {language === "zh" ? "关于我" : "About"}</div>
+        <div className="about-label reveal">03 — {t(site.aboutLabel)}</div>
         <div className="about-copy reveal">
           <h2>{t(site.aboutHeadline)}</h2>
           <p>{t(site.bio)}</p>
@@ -112,8 +112,8 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
 
       <footer className="contact-section" id="contact">
         <div className="contact-top reveal">
-          <span>04 — {language === "zh" ? "一起创造" : "Let’s create"}</span>
-          <h2>{language === "zh" ? "有意思的东西。" : "SOMETHING WITH MEANING."}</h2>
+          <span>04 — {t(site.contactLabel)}</span>
+          <h2>{t(site.contactHeadline)}</h2>
         </div>
         <a className="email-link reveal" href={`mailto:${site.email}`}>{site.email} ↗</a>
         <div className="footer-row">

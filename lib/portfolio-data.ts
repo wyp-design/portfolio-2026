@@ -22,11 +22,16 @@ export function normalizePortfolioContent(value: unknown): PortfolioContent {
 
   const maybeSite = isObject(value.site) ? value.site : {};
   const maybeProjects = Array.isArray(value.projects) && value.projects.length ? value.projects : demoProjects;
+  const maybeHeroTitle = isObject(maybeSite.heroTitle) ? maybeSite.heroTitle : {};
 
   return {
     site: {
       ...siteCopy,
       ...maybeSite,
+      heroTitle: {
+        ...siteCopy.heroTitle,
+        ...maybeHeroTitle,
+      },
       social: Array.isArray(maybeSite.social) && maybeSite.social.length ? maybeSite.social : siteCopy.social,
       capabilities:
         Array.isArray(maybeSite.capabilities) && maybeSite.capabilities.length

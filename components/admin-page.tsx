@@ -1,23 +1,51 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { Project, SiteContent } from "@/content/types";
+import type { LocalizedText, Project, SiteContent } from "@/content/types";
 import type { PortfolioContent } from "@/lib/portfolio-data";
 
 type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
+type ProjectSection = Project["sections"][number];
+type ProjectMedia = NonNullable<ProjectSection["media"]>[number];
+type Tone = NonNullable<ProjectSection["tone"]>;
 
-const emptyLocalized = { zh: "", en: "" };
+const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
 const emptySite: SiteContent = {
   name: "",
   shortRole: emptyLocalized,
+  location: emptyLocalized,
+  heroTitle: {
+    line1: emptyLocalized,
+    line2: emptyLocalized,
+  },
   intro: emptyLocalized,
+  heroIndex: "001 / PORTFOLIO / 2026",
+  scrollLabel: emptyLocalized,
+  manifestoIntro: emptyLocalized,
+  manifestoLine1: emptyLocalized,
+  manifestoLine2: emptyLocalized,
+  workLabel: emptyLocalized,
+  workIntro: emptyLocalized,
   bio: emptyLocalized,
+  aboutLabel: emptyLocalized,
   aboutHeadline: emptyLocalized,
   capabilities: [],
+  contactLabel: emptyLocalized,
+  contactHeadline: emptyLocalized,
   email: "",
   social: [],
 };
+
+function createSection(): ProjectSection {
+  return {
+    eyebrow: { zh: "背景", en: "Context" },
+    title: { zh: "项目标题", en: "Project title" },
+    body: { zh: "这里写项目详情。", en: "Write project details here." },
+    tone: "light",
+    media: [],
+  };
+}
 
 function createProject(order: number): Project {
   return {
@@ -30,16 +58,10 @@ function createProject(order: number): Project {
     accent: "#285cff",
     order,
     featured: false,
+    status: { zh: "样板案例", en: "Sample case" },
+    externalUrl: "",
     metrics: [],
-    sections: [
-      {
-        eyebrow: { zh: "背景", en: "Context" },
-        title: { zh: "项目标题", en: "Project title" },
-        body: { zh: "这里写项目详情。", en: "Write project details here." },
-        tone: "light",
-        media: [],
-      },
-    ],
+    sections: [createSection()],
   };
 }
 
@@ -72,11 +94,16 @@ function validateContent(content: PortfolioContent) {
   return "";
 }
 
+function localizedValue(value: LocalizedText | undefined): LocalizedText {
+  return value || { zh: "", en: "" };
+}
+
 export function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [content, setContent] = useState<PortfolioContent>({ site: emptySite, projects: [] });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [uploadSectionIndex, setUploadSectionIndex] = useState(0);
   const [projectJson, setProjectJson] = useState("");
   const [state, setState] = useState<SaveState>("loading");
   const [message, setMessage] = useState("正在检查登录状态…");
@@ -116,6 +143,7 @@ export function AdminPage() {
     const sortedContent = { ...nextContent, projects: sortProjects(nextContent.projects) };
     setContent(sortedContent);
     setSelectedIndex(0);
+    setUploadSectionIndex(0);
     setProjectJson(sortedContent.projects[0] ? JSON.stringify(sortedContent.projects[0], null, 2) : "");
     setState("idle");
     setMessage("内容已加载，可以开始编辑。");
@@ -146,6 +174,10 @@ export function AdminPage() {
     setContent((current) => ({ ...current, site: { ...current.site, ...nextSite } }));
   }
 
+  function updateSiteLocalized(key: keyof SiteContent, nextValue: LocalizedText) {
+    updateSite({ [key]: nextValue } as Partial<SiteContent>);
+  }
+
   function updateProject(index: number, nextProject: Project) {
     setContent((current) => ({
       ...current,
@@ -154,10 +186,15 @@ export function AdminPage() {
     if (index === selectedIndex) setProjectJson(JSON.stringify(nextProject, null, 2));
   }
 
+  function updateSelectedProject(nextProject: Project) {
+    updateProject(selectedIndex, nextProject);
+  }
+
   function addProject() {
     const nextProject = createProject(content.projects.length + 1);
     setContent((current) => ({ ...current, projects: [...current.projects, nextProject] }));
     setSelectedIndex(content.projects.length);
+    setUploadSectionIndex(0);
     setProjectJson(JSON.stringify(nextProject, null, 2));
   }
 
@@ -166,6 +203,7 @@ export function AdminPage() {
     const nextProjects = content.projects.filter((_, projectIndex) => projectIndex !== index);
     setContent((current) => ({ ...current, projects: nextProjects }));
     setSelectedIndex(0);
+    setUploadSectionIndex(0);
     setProjectJson(nextProjects[0] ? JSON.stringify(nextProjects[0], null, 2) : "");
   }
 
@@ -179,7 +217,61 @@ export function AdminPage() {
     const orderedProjects = projects.map((project, projectIndex) => ({ ...project, order: projectIndex + 1 }));
     setContent((current) => ({ ...current, projects: orderedProjects }));
     setSelectedIndex(nextIndex);
+    setUploadSectionIndex(0);
     setProjectJson(JSON.stringify(orderedProjects[nextIndex], null, 2));
+  }
+
+  function updateMetric(metricIndex: number, nextMetric: NonNullable<Project["metrics"]>[number]) {
+    if (!selectedProject) return;
+    const metrics = [...(selectedProject.metrics || [])];
+    metrics[metricIndex] = nextMetric;
+    updateSelectedProject({ ...selectedProject, metrics });
+  }
+
+  function addMetric() {
+    if (!selectedProject) return;
+    updateSelectedProject({
+      ...selectedProject,
+      metrics: [...(selectedProject.metrics || []), { value: "00", label: { zh: "指标说明", en: "Metric label" } }],
+    });
+  }
+
+  function removeMetric(metricIndex: number) {
+    if (!selectedProject) return;
+    updateSelectedProject({
+      ...selectedProject,
+      metrics: (selectedProject.metrics || []).filter((_, index) => index !== metricIndex),
+    });
+  }
+
+  function updateSection(sectionIndex: number, nextSection: ProjectSection) {
+    if (!selectedProject) return;
+    const sections = [...selectedProject.sections];
+    sections[sectionIndex] = nextSection;
+    updateSelectedProject({ ...selectedProject, sections });
+  }
+
+  function addSection() {
+    if (!selectedProject) return;
+    updateSelectedProject({ ...selectedProject, sections: [...selectedProject.sections, createSection()] });
+    setUploadSectionIndex(selectedProject.sections.length);
+  }
+
+  function removeSection(sectionIndex: number) {
+    if (!selectedProject) return;
+    if (!confirm("确定要删除这个详情段落吗？")) return;
+    const sections = selectedProject.sections.filter((_, index) => index !== sectionIndex);
+    updateSelectedProject({ ...selectedProject, sections });
+    setUploadSectionIndex(0);
+  }
+
+  function removeMedia(sectionIndex: number, mediaIndex: number) {
+    if (!selectedProject) return;
+    const section = selectedProject.sections[sectionIndex];
+    updateSection(sectionIndex, {
+      ...section,
+      media: (section.media || []).filter((_, index) => index !== mediaIndex),
+    });
   }
 
   function applyProjectJson() {
@@ -220,36 +312,24 @@ export function AdminPage() {
       originalFilename?: string;
     };
     const filename = upload.originalFilename || file.name;
-    const media = {
-      _type: file.type === "application/pdf" ? ("file" as const) : ("image" as const),
+    const media: ProjectMedia = {
+      _type: file.type === "application/pdf" ? "file" : "image",
       url: upload.fileUrl,
       mimeType: upload.mimeType || file.type,
       originalFilename: filename,
       alt: { zh: filename, en: filename },
     };
 
-    const nextProject: Project = {
-      ...selectedProject,
-      sections: selectedProject.sections.length
-        ? selectedProject.sections.map((section, sectionIndex) =>
-            sectionIndex === 0
-              ? { ...section, media: [...(section.media || []), media] }
-              : section,
-          )
-        : [
-            {
-              eyebrow: { zh: "素材", en: "Media" },
-              title: { zh: "项目素材", en: "Project media" },
-              body: { zh: "后台上传的项目素材。", en: "Uploaded project media." },
-              tone: "light",
-              media: [media],
-            },
-          ],
+    const sections = selectedProject.sections.length ? [...selectedProject.sections] : [createSection()];
+    const targetIndex = Math.min(uploadSectionIndex, sections.length - 1);
+    sections[targetIndex] = {
+      ...sections[targetIndex],
+      media: [...(sections[targetIndex].media || []), media],
     };
 
-    updateProject(selectedIndex, nextProject);
+    updateSelectedProject({ ...selectedProject, sections });
     setState("idle");
-    setMessage("文件已提交到 GitHub，并已加入当前项目。点击保存发布后，等待 EdgeOne 重新部署生效。");
+    setMessage("文件已提交到 GitHub，并已加入当前项目。等待 EdgeOne 重新部署后，前台会更新。");
   }
 
   async function saveContent() {
@@ -302,6 +382,34 @@ export function AdminPage() {
     setMessage(result.message || "GitHub Token 已配置。");
   }
 
+  function renderLocalized(
+    title: string,
+    value: LocalizedText,
+    onChange: (nextValue: LocalizedText) => void,
+    multiline = false,
+  ) {
+    return (
+      <div className={multiline ? "admin-wide" : undefined}>
+        <label>
+          {title} 中文
+          {multiline ? (
+            <textarea value={value.zh} onChange={(event) => onChange({ ...value, zh: event.target.value })} />
+          ) : (
+            <input value={value.zh} onChange={(event) => onChange({ ...value, zh: event.target.value })} />
+          )}
+        </label>
+        <label>
+          {title} English
+          {multiline ? (
+            <textarea value={value.en} onChange={(event) => onChange({ ...value, en: event.target.value })} />
+          ) : (
+            <input value={value.en} onChange={(event) => onChange({ ...value, en: event.target.value })} />
+          )}
+        </label>
+      </div>
+    );
+  }
+
   if (!authenticated) {
     return (
       <main className="admin-shell admin-login">
@@ -351,34 +459,114 @@ export function AdminPage() {
             邮箱
             <input value={content.site.email} onChange={(event) => updateSite({ email: event.target.value })} />
           </label>
-          <label>
-            中文职业定位
-            <input
-              value={content.site.shortRole.zh}
-              onChange={(event) => updateSite({ shortRole: { ...content.site.shortRole, zh: event.target.value } })}
-            />
-          </label>
-          <label>
-            English role
-            <input
-              value={content.site.shortRole.en}
-              onChange={(event) => updateSite({ shortRole: { ...content.site.shortRole, en: event.target.value } })}
-            />
-          </label>
-          <label>
-            中文首页简介
-            <textarea
-              value={content.site.intro.zh}
-              onChange={(event) => updateSite({ intro: { ...content.site.intro, zh: event.target.value } })}
-            />
-          </label>
-          <label>
-            English intro
-            <textarea
-              value={content.site.intro.en}
-              onChange={(event) => updateSite({ intro: { ...content.site.intro, en: event.target.value } })}
-            />
-          </label>
+          {renderLocalized("职业定位", content.site.shortRole, (value) => updateSiteLocalized("shortRole", value))}
+          {renderLocalized("所在地 / 服务范围", content.site.location, (value) => updateSiteLocalized("location", value))}
+          <div className="admin-subsection">
+            <h3>首页主视觉</h3>
+            {renderLocalized("首页大标题第一行", content.site.heroTitle.line1, (value) =>
+              updateSite({ heroTitle: { ...content.site.heroTitle, line1: value } }),
+            )}
+            {renderLocalized("首页大标题第二行", content.site.heroTitle.line2, (value) =>
+              updateSite({ heroTitle: { ...content.site.heroTitle, line2: value } }),
+            )}
+            {renderLocalized("首页简介", content.site.intro, (value) => updateSiteLocalized("intro", value), true)}
+            <label>
+              首页编号 / 小字
+              <input value={content.site.heroIndex} onChange={(event) => updateSite({ heroIndex: event.target.value })} />
+            </label>
+            {renderLocalized("滚动提示", content.site.scrollLabel, (value) => updateSiteLocalized("scrollLabel", value))}
+          </div>
+
+          <div className="admin-subsection">
+            <h3>宣言区 / 作品区</h3>
+            {renderLocalized("宣言小字", content.site.manifestoIntro, (value) => updateSiteLocalized("manifestoIntro", value))}
+            {renderLocalized("宣言大字第一行", content.site.manifestoLine1, (value) => updateSiteLocalized("manifestoLine1", value))}
+            {renderLocalized("宣言大字第二行", content.site.manifestoLine2, (value) => updateSiteLocalized("manifestoLine2", value))}
+            {renderLocalized("作品区标题", content.site.workLabel, (value) => updateSiteLocalized("workLabel", value))}
+            {renderLocalized("作品区说明", content.site.workIntro, (value) => updateSiteLocalized("workIntro", value), true)}
+          </div>
+
+          <div className="admin-subsection">
+            <h3>关于我 / 联系</h3>
+            {renderLocalized("关于我标签", content.site.aboutLabel, (value) => updateSiteLocalized("aboutLabel", value))}
+            {renderLocalized("关于我大标题", content.site.aboutHeadline, (value) => updateSiteLocalized("aboutHeadline", value))}
+            {renderLocalized("关于我正文", content.site.bio, (value) => updateSiteLocalized("bio", value), true)}
+            {renderLocalized("联系区标签", content.site.contactLabel, (value) => updateSiteLocalized("contactLabel", value))}
+            {renderLocalized("联系区标题", content.site.contactHeadline, (value) => updateSiteLocalized("contactHeadline", value))}
+          </div>
+
+          <div className="admin-subsection">
+            <div className="admin-panel-heading">
+              <h3>能力标签</h3>
+              <button
+                type="button"
+                onClick={() => updateSite({ capabilities: [...content.site.capabilities, { zh: "新能力", en: "New capability" }] })}
+              >
+                新增
+              </button>
+            </div>
+            {content.site.capabilities.map((capability, index) => (
+              <div className="admin-repeat-item" key={`${capability.zh}-${index}`}>
+                {renderLocalized(`能力 ${index + 1}`, capability, (value) => {
+                  const capabilities = [...content.site.capabilities];
+                  capabilities[index] = value;
+                  updateSite({ capabilities });
+                })}
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={() => updateSite({ capabilities: content.site.capabilities.filter((_, itemIndex) => itemIndex !== index) })}
+                >
+                  删除能力
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="admin-subsection">
+            <div className="admin-panel-heading">
+              <h3>社交链接</h3>
+              <button
+                type="button"
+                onClick={() => updateSite({ social: [...content.site.social, { label: "Link", href: "https://" }] })}
+              >
+                新增
+              </button>
+            </div>
+            {content.site.social.map((item, index) => (
+              <div className="admin-repeat-item" key={`${item.label}-${index}`}>
+                <label>
+                  名称
+                  <input
+                    value={item.label}
+                    onChange={(event) => {
+                      const social = [...content.site.social];
+                      social[index] = { ...item, label: event.target.value };
+                      updateSite({ social });
+                    }}
+                  />
+                </label>
+                <label>
+                  链接
+                  <input
+                    value={item.href}
+                    onChange={(event) => {
+                      const social = [...content.site.social];
+                      social[index] = { ...item, href: event.target.value };
+                      updateSite({ social });
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={() => updateSite({ social: content.site.social.filter((_, itemIndex) => itemIndex !== index) })}
+                >
+                  删除链接
+                </button>
+              </div>
+            ))}
+          </div>
         </aside>
 
         <section className="admin-panel admin-projects">
@@ -394,6 +582,7 @@ export function AdminPage() {
                 key={project.slug}
                 onClick={() => {
                   setSelectedIndex(index);
+                  setUploadSectionIndex(0);
                   setProjectJson(JSON.stringify(project, null, 2));
                 }}
               >
@@ -421,14 +610,14 @@ export function AdminPage() {
                 Slug
                 <input
                   value={selectedProject.slug}
-                  onChange={(event) => updateProject(selectedIndex, { ...selectedProject, slug: slugify(event.target.value) })}
+                  onChange={(event) => updateSelectedProject({ ...selectedProject, slug: slugify(event.target.value) })}
                 />
               </label>
               <label>
                 年份
                 <input
                   value={selectedProject.year}
-                  onChange={(event) => updateProject(selectedIndex, { ...selectedProject, year: event.target.value })}
+                  onChange={(event) => updateSelectedProject({ ...selectedProject, year: event.target.value })}
                 />
               </label>
               <label>
@@ -436,62 +625,113 @@ export function AdminPage() {
                 <input
                   type="color"
                   value={selectedProject.accent}
-                  onChange={(event) => updateProject(selectedIndex, { ...selectedProject, accent: event.target.value })}
+                  onChange={(event) => updateSelectedProject({ ...selectedProject, accent: event.target.value })}
                 />
               </label>
               <label>
-                中文标题
+                外部链接（可空）
                 <input
-                  value={selectedProject.title.zh}
-                  onChange={(event) =>
-                    updateProject(selectedIndex, {
-                      ...selectedProject,
-                      title: { ...selectedProject.title, zh: event.target.value },
-                    })
-                  }
+                  value={selectedProject.externalUrl || ""}
+                  onChange={(event) => updateSelectedProject({ ...selectedProject, externalUrl: event.target.value })}
                 />
               </label>
-              <label>
-                English title
+              <label className="admin-checkbox">
                 <input
-                  value={selectedProject.title.en}
-                  onChange={(event) =>
-                    updateProject(selectedIndex, {
-                      ...selectedProject,
-                      title: { ...selectedProject.title, en: event.target.value },
-                    })
-                  }
+                  type="checkbox"
+                  checked={Boolean(selectedProject.featured)}
+                  onChange={(event) => updateSelectedProject({ ...selectedProject, featured: event.target.checked })}
                 />
+                是否精选
               </label>
-              <label>
-                中文摘要
-                <textarea
-                  value={selectedProject.summary.zh}
-                  onChange={(event) =>
-                    updateProject(selectedIndex, {
-                      ...selectedProject,
-                      summary: { ...selectedProject.summary, zh: event.target.value },
-                    })
-                  }
-                />
-              </label>
-              <label>
-                English summary
-                <textarea
-                  value={selectedProject.summary.en}
-                  onChange={(event) =>
-                    updateProject(selectedIndex, {
-                      ...selectedProject,
-                      summary: { ...selectedProject.summary, en: event.target.value },
-                    })
-                  }
-                />
-              </label>
+              {renderLocalized("状态", localizedValue(selectedProject.status), (value) =>
+                updateSelectedProject({ ...selectedProject, status: value }),
+              )}
+              {renderLocalized("项目标题", selectedProject.title, (value) =>
+                updateSelectedProject({ ...selectedProject, title: value }),
+              )}
+              {renderLocalized("项目摘要", selectedProject.summary, (value) =>
+                updateSelectedProject({ ...selectedProject, summary: value }),
+                true,
+              )}
+              {renderLocalized("角色", selectedProject.role, (value) =>
+                updateSelectedProject({ ...selectedProject, role: value }),
+              )}
+              {renderLocalized("分类", selectedProject.category, (value) =>
+                updateSelectedProject({ ...selectedProject, category: value }),
+              )}
+            </div>
+
+            <div className="admin-subsection">
+              <div className="admin-panel-heading">
+                <h3>项目指标</h3>
+                <button type="button" onClick={addMetric}>新增指标</button>
+              </div>
+              {(selectedProject.metrics || []).map((metric, index) => (
+                <div className="admin-repeat-item" key={`${metric.value}-${index}`}>
+                  <label>
+                    指标数值
+                    <input value={metric.value} onChange={(event) => updateMetric(index, { ...metric, value: event.target.value })} />
+                  </label>
+                  {renderLocalized("指标说明", metric.label, (value) => updateMetric(index, { ...metric, label: value }))}
+                  <button type="button" className="danger" onClick={() => removeMetric(index)}>删除指标</button>
+                </div>
+              ))}
+            </div>
+
+            <div className="admin-subsection">
+              <div className="admin-panel-heading">
+                <h3>项目详情段落</h3>
+                <button type="button" onClick={addSection}>新增段落</button>
+              </div>
+              {selectedProject.sections.map((section, sectionIndex) => (
+                <div className="admin-section-card" key={`${section.title.en}-${sectionIndex}`}>
+                  <div className="admin-panel-heading">
+                    <h4>段落 {sectionIndex + 1}</h4>
+                    <button type="button" className="danger" onClick={() => removeSection(sectionIndex)}>删除段落</button>
+                  </div>
+                  <label>
+                    背景色
+                    <select
+                      value={section.tone || "light"}
+                      onChange={(event) => updateSection(sectionIndex, { ...section, tone: event.target.value as Tone })}
+                    >
+                      <option value="light">浅色</option>
+                      <option value="dark">深色</option>
+                      <option value="blue">蓝色</option>
+                      <option value="lime">绿色</option>
+                    </select>
+                  </label>
+                  {renderLocalized("段落眉题", section.eyebrow, (value) => updateSection(sectionIndex, { ...section, eyebrow: value }))}
+                  {renderLocalized("段落标题", section.title, (value) => updateSection(sectionIndex, { ...section, title: value }))}
+                  {renderLocalized("段落正文", section.body, (value) => updateSection(sectionIndex, { ...section, body: value }), true)}
+                  {section.media?.length ? (
+                    <div className="admin-media-list">
+                      {section.media.map((media, mediaIndex) => (
+                        <div key={`${media.url}-${mediaIndex}`}>
+                          <span>{media.mimeType || media._type}</span>
+                          <a href={media.url} target="_blank" rel="noreferrer">{media.originalFilename || media.url}</a>
+                          <button type="button" className="danger" onClick={() => removeMedia(sectionIndex, mediaIndex)}>移除</button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
             </div>
 
             <div className="admin-upload">
               <label>
-                上传 PNG / JPG / GIF / PDF
+                上传到哪个详情段落
+                <select value={uploadSectionIndex} onChange={(event) => setUploadSectionIndex(Number(event.target.value))}>
+                  {selectedProject.sections.map((section, index) => (
+                    <option key={`${section.title.en}-${index}`} value={index}>
+                      段落 {index + 1}：{section.title.zh || section.title.en}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                上传 PNG / JPG / GIF / WEBP / PDF / MP4
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,video/mp4"
@@ -504,11 +744,11 @@ export function AdminPage() {
               </label>
             </div>
 
-            <label className="admin-json">
-              项目完整内容 JSON
+            <details className="admin-json">
+              <summary>高级：项目完整内容 JSON</summary>
               <textarea value={projectJson} onChange={(event) => setProjectJson(event.target.value)} />
-            </label>
-            <button className="secondary" onClick={applyProjectJson}>应用 JSON 到当前项目</button>
+              <button className="secondary" onClick={applyProjectJson}>应用 JSON 到当前项目</button>
+            </details>
           </section>
         ) : null}
       </section>

@@ -44,8 +44,16 @@ export function ProjectPage({
         <div className="case-meta">
           <div><span>{language === "zh" ? "角色" : "Role"}</span><strong>{t(project.role)}</strong></div>
           <div><span>{language === "zh" ? "年份" : "Year"}</span><strong>{project.year}</strong></div>
-          <div><span>{language === "zh" ? "状态" : "Status"}</span><strong>{language === "zh" ? "样板案例" : "Sample case"}</strong></div>
+          <div>
+            <span>{language === "zh" ? "状态" : "Status"}</span>
+            <strong>{project.status ? t(project.status) : language === "zh" ? "样板案例" : "Sample case"}</strong>
+          </div>
         </div>
+        {project.externalUrl ? (
+          <a className="case-external" href={project.externalUrl} target="_blank" rel="noreferrer">
+            {language === "zh" ? "查看外部链接" : "View external link"} ↗
+          </a>
+        ) : null}
       </section>
 
       {project.metrics?.length ? (

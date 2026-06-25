@@ -3,14 +3,30 @@ import type { Project, SiteContent } from "./types";
 export const siteCopy: SiteContent = {
   name: "YOUR.NAME",
   shortRole: { zh: "数字产品设计师", en: "Digital Product Designer" },
+  location: { zh: "上海 · 面向世界", en: "Shanghai · Working globally" },
+  heroTitle: {
+    line1: { zh: "让复杂变清晰", en: "MAKE COMPLEX" },
+    line2: { zh: "让体验有感觉", en: "FEEL CLEAR" },
+  },
   intro: {
     zh: "我把复杂系统变成清晰、有人情味的数字体验。",
     en: "I turn complex systems into clear, human digital experiences.",
+  },
+  heroIndex: "001 / PORTFOLIO / 2026",
+  scrollLabel: { zh: "向下探索", en: "Scroll to explore" },
+  manifestoIntro: { zh: "我相信好的设计不是装饰。", en: "I believe good design is not decoration." },
+  manifestoLine1: { zh: "它是对问题的理解，", en: "IT IS UNDERSTANDING," },
+  manifestoLine2: { zh: "也是对人的尊重。", en: "AND RESPECT FOR PEOPLE." },
+  workLabel: { zh: "精选作品", en: "Selected work" },
+  workIntro: {
+    zh: "横跨 AI、移动产品、设计系统与数据体验。",
+    en: "Across AI, mobile, design systems, and data experiences.",
   },
   bio: {
     zh: "专注 UI/UX、产品策略与设计系统。我喜欢在逻辑与感觉之间工作：让界面经得起推敲，也让使用它的人感到轻松。",
     en: "I work across UI/UX, product strategy, and design systems—balancing rigorous logic with experiences that feel effortless.",
   },
+  aboutLabel: { zh: "关于我", en: "About" },
   aboutHeadline: {
     zh: "策略的脑，手艺人的心。",
     en: "A strategist’s mind. A maker’s heart.",
@@ -21,6 +37,8 @@ export const siteCopy: SiteContent = {
     { zh: "界面与动效", en: "Interface & motion" },
     { zh: "设计系统", en: "Design systems" },
   ],
+  contactLabel: { zh: "一起创造", en: "Let’s create" },
+  contactHeadline: { zh: "有意思的东西。", en: "SOMETHING WITH MEANING." },
   email: "hello@yourname.design",
   social: [
     { label: "LinkedIn", href: "https://www.linkedin.com" },
