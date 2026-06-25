@@ -12,28 +12,28 @@
         "order": 1
       },
       {
+        "id": "about",
+        "label": {
+          "zh": "关于我",
+          "en": "About"
+        },
+        "visible": true,
+        "order": 2
+      },
+      {
         "id": "manifesto",
         "label": {
           "zh": "设计宣言",
           "en": "Manifesto"
         },
         "visible": true,
-        "order": 2
+        "order": 3
       },
       {
         "id": "work",
         "label": {
           "zh": "精选作品",
           "en": "Selected work"
-        },
-        "visible": true,
-        "order": 3
-      },
-      {
-        "id": "about",
-        "label": {
-          "zh": "关于我",
-          "en": "About"
         },
         "visible": true,
         "order": 4
@@ -466,5 +466,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T05:56:01.044Z"
+  "updatedAt": "2026-06-25T07:32:52.250Z"
 }
