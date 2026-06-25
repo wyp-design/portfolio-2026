@@ -89,16 +89,8 @@
     "email": "wyp271533@163.com",
     "social": [
       {
-        "label": "LinkedIn",
-        "href": "https://www.linkedin.com"
-      },
-      {
-        "label": "Behance",
-        "href": "https://www.behance.net"
-      },
-      {
-        "label": "GitHub",
-        "href": "https://github.com/wyp-design"
+        "label": "Link",
+        "href": "https://"
       }
     ]
   },
@@ -393,5 +385,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T05:53:05.036Z"
+  "updatedAt": "2026-06-25T05:56:01.044Z"
 }
