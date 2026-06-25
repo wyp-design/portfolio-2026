@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { LocalizedText, Project, SiteContent } from "@/content/types";
+import type { HomeSection, LocalizedText, Project, RichTextStyle, SiteContent, UploadedMedia } from "@/content/types";
 import type { PortfolioContent } from "@/lib/portfolio-data";
 
 type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
@@ -13,6 +13,7 @@ const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
 const emptySite: SiteContent = {
   name: "",
+  sections: [],
   shortRole: emptyLocalized,
   location: emptyLocalized,
   heroTitle: {
@@ -28,9 +29,18 @@ const emptySite: SiteContent = {
   workLabel: emptyLocalized,
   workIntro: emptyLocalized,
   bio: emptyLocalized,
+  bioStyle: { fontSize: "medium", fontWeight: "regular" },
   aboutLabel: emptyLocalized,
   aboutHeadline: emptyLocalized,
-  capabilities: [],
+  education: {
+    school: emptyLocalized,
+    degree: emptyLocalized,
+    time: emptyLocalized,
+    description: emptyLocalized,
+    link: "",
+    style: { fontSize: "small", fontWeight: "regular" },
+  },
+  experiences: [],
   contactLabel: emptyLocalized,
   contactHeadline: emptyLocalized,
   email: "",
@@ -65,6 +75,17 @@ function createProject(order: number): Project {
   };
 }
 
+function createExperience() {
+  return {
+    company: { zh: "公司名称", en: "Company name" },
+    position: { zh: "职位", en: "Position" },
+    time: { zh: "时间", en: "Time" },
+    description: { zh: "填写工作经历简介。", en: "Write experience summary." },
+    link: "",
+    style: { fontSize: "small", fontWeight: "regular" } as RichTextStyle,
+  };
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -96,6 +117,13 @@ function validateContent(content: PortfolioContent) {
 
 function localizedValue(value: LocalizedText | undefined): LocalizedText {
   return value || { zh: "", en: "" };
+}
+
+function styleValue(value: RichTextStyle | undefined): RichTextStyle {
+  return {
+    fontSize: value?.fontSize || "medium",
+    fontWeight: value?.fontWeight || "regular",
+  };
 }
 
 export function AdminPage() {
@@ -176,6 +204,42 @@ export function AdminPage() {
 
   function updateSiteLocalized(key: keyof SiteContent, nextValue: LocalizedText) {
     updateSite({ [key]: nextValue } as Partial<SiteContent>);
+  }
+
+  function updateHomeSection(sectionIndex: number, nextSection: HomeSection) {
+    const sections = [...content.site.sections];
+    sections[sectionIndex] = nextSection;
+    updateSite({ sections });
+  }
+
+  function moveHomeSection(sectionIndex: number, direction: -1 | 1) {
+    const nextIndex = sectionIndex + direction;
+    if (nextIndex < 0 || nextIndex >= content.site.sections.length) return;
+    const sections = [...content.site.sections];
+    const moving = sections[sectionIndex];
+    sections[sectionIndex] = sections[nextIndex];
+    sections[nextIndex] = moving;
+    updateSite({ sections: sections.map((section, index) => ({ ...section, order: index + 1 })) });
+  }
+
+  function updateEducation(nextEducation: SiteContent["education"]) {
+    updateSite({ education: nextEducation });
+  }
+
+  function updateExperience(index: number, nextExperience: SiteContent["experiences"][number]) {
+    const experiences = [...content.site.experiences];
+    experiences[index] = nextExperience;
+    updateSite({ experiences });
+  }
+
+  function moveExperience(index: number, direction: -1 | 1) {
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= content.site.experiences.length) return;
+    const experiences = [...content.site.experiences];
+    const moving = experiences[index];
+    experiences[index] = experiences[nextIndex];
+    experiences[nextIndex] = moving;
+    updateSite({ experiences });
   }
 
   function updateProject(index: number, nextProject: Project) {
@@ -286,8 +350,7 @@ export function AdminPage() {
     }
   }
 
-  async function uploadFile(file: File) {
-    if (!selectedProject) return;
+  async function uploadToGithub(file: File): Promise<UploadedMedia | null> {
     setState("saving");
     setMessage(`正在上传 ${file.name} 到 GitHub…`);
 
@@ -303,7 +366,7 @@ export function AdminPage() {
       const result = (await uploadResponse.json().catch(() => null)) as { detail?: string; message?: string } | null;
       setState("error");
       setMessage(`上传失败：${result?.detail || result?.message || "未知错误"}`);
-      return;
+      return null;
     }
 
     const upload = (await uploadResponse.json()) as {
@@ -312,13 +375,27 @@ export function AdminPage() {
       originalFilename?: string;
     };
     const filename = upload.originalFilename || file.name;
-    const media: ProjectMedia = {
+    return {
       _type: file.type === "application/pdf" ? "file" : "image",
       url: upload.fileUrl,
       mimeType: upload.mimeType || file.type,
       originalFilename: filename,
       alt: { zh: filename, en: filename },
     };
+  }
+
+  async function uploadAboutPhoto(file: File) {
+    const media = await uploadToGithub(file);
+    if (!media) return;
+    updateSite({ aboutPhoto: media });
+    setState("idle");
+    setMessage("个人照片已上传并加入关于我模块。等待 EdgeOne 重新部署后，前台会更新。");
+  }
+
+  async function uploadFile(file: File) {
+    if (!selectedProject) return;
+    const media = (await uploadToGithub(file)) as ProjectMedia | null;
+    if (!media) return;
 
     const sections = selectedProject.sections.length ? [...selectedProject.sections] : [createSection()];
     const targetIndex = Math.min(uploadSectionIndex, sections.length - 1);
@@ -410,6 +487,35 @@ export function AdminPage() {
     );
   }
 
+  function renderStyleControls(
+    title: string,
+    value: RichTextStyle | undefined,
+    onChange: (nextValue: RichTextStyle) => void,
+  ) {
+    const current = styleValue(value);
+    return (
+      <div className="admin-style-controls">
+        <strong>{title}</strong>
+        <label>
+          字号
+          <select value={current.fontSize} onChange={(event) => onChange({ ...current, fontSize: event.target.value as RichTextStyle["fontSize"] })}>
+            <option value="small">小</option>
+            <option value="medium">中</option>
+            <option value="large">大</option>
+          </select>
+        </label>
+        <label>
+          粗细
+          <select value={current.fontWeight} onChange={(event) => onChange({ ...current, fontWeight: event.target.value as RichTextStyle["fontWeight"] })}>
+            <option value="regular">常规</option>
+            <option value="medium">中粗</option>
+            <option value="bold">加粗</option>
+          </select>
+        </label>
+      </div>
+    );
+  }
+
   if (!authenticated) {
     return (
       <main className="admin-shell admin-login">
@@ -459,6 +565,28 @@ export function AdminPage() {
             邮箱
             <input value={content.site.email} onChange={(event) => updateSite({ email: event.target.value })} />
           </label>
+          <div className="admin-subsection">
+            <h3>首页模块管理</h3>
+            <p className="admin-hint">可显示/隐藏模块，也可以调整上下顺序。隐藏后不会删除内容，随时可恢复。</p>
+            {[...content.site.sections].sort((a, b) => a.order - b.order).map((section) => {
+              const sectionIndex = content.site.sections.findIndex((item) => item.id === section.id);
+              return (
+              <div className="admin-module-row" key={section.id}>
+                <label className="admin-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={section.visible}
+                    onChange={(event) => updateHomeSection(sectionIndex, { ...section, visible: event.target.checked })}
+                  />
+                  显示
+                </label>
+                <strong>{section.label.zh || section.label.en}</strong>
+                <button type="button" onClick={() => moveHomeSection(sectionIndex, -1)}>上移</button>
+                <button type="button" onClick={() => moveHomeSection(sectionIndex, 1)}>下移</button>
+              </div>
+            );
+            })}
+          </div>
           {renderLocalized("职业定位", content.site.shortRole, (value) => updateSiteLocalized("shortRole", value))}
           {renderLocalized("所在地 / 服务范围", content.site.location, (value) => updateSiteLocalized("location", value))}
           <div className="admin-subsection">
@@ -491,34 +619,81 @@ export function AdminPage() {
             {renderLocalized("关于我标签", content.site.aboutLabel, (value) => updateSiteLocalized("aboutLabel", value))}
             {renderLocalized("关于我大标题", content.site.aboutHeadline, (value) => updateSiteLocalized("aboutHeadline", value))}
             {renderLocalized("关于我正文", content.site.bio, (value) => updateSiteLocalized("bio", value), true)}
+            {renderStyleControls("关于我正文字体", content.site.bioStyle, (value) => updateSite({ bioStyle: value }))}
+            <div className="admin-upload">
+              <label>
+                关于我照片（显示在左侧）
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif,image/webp"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) void uploadAboutPhoto(file);
+                    event.currentTarget.value = "";
+                  }}
+                />
+              </label>
+              {content.site.aboutPhoto?.url ? (
+                <div className="admin-photo-preview">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={content.site.aboutPhoto.url} alt={content.site.aboutPhoto.originalFilename || "About photo"} />
+                  <button type="button" className="danger" onClick={() => updateSite({ aboutPhoto: undefined })}>移除照片</button>
+                </div>
+              ) : null}
+            </div>
             {renderLocalized("联系区标签", content.site.contactLabel, (value) => updateSiteLocalized("contactLabel", value))}
             {renderLocalized("联系区标题", content.site.contactHeadline, (value) => updateSiteLocalized("contactHeadline", value))}
           </div>
 
           <div className="admin-subsection">
             <div className="admin-panel-heading">
-              <h3>能力标签</h3>
-              <button
-                type="button"
-                onClick={() => updateSite({ capabilities: [...content.site.capabilities, { zh: "新能力", en: "New capability" }] })}
-              >
-                新增
+              <h3>学校信息</h3>
+            </div>
+            {renderLocalized("学校名称", content.site.education.school, (value) => updateEducation({ ...content.site.education, school: value }))}
+            {renderLocalized("专业 / 学位", content.site.education.degree, (value) => updateEducation({ ...content.site.education, degree: value }))}
+            {renderLocalized("时间", content.site.education.time, (value) => updateEducation({ ...content.site.education, time: value }))}
+            {renderLocalized("学校简介", content.site.education.description, (value) => updateEducation({ ...content.site.education, description: value }), true)}
+            {renderStyleControls("学校简介字体", content.site.education.style, (value) =>
+              updateEducation({ ...content.site.education, style: value }),
+            )}
+            <label>
+              学校链接（可选）
+              <input value={content.site.education.link || ""} onChange={(event) => updateEducation({ ...content.site.education, link: event.target.value })} />
+            </label>
+          </div>
+
+          <div className="admin-subsection">
+            <div className="admin-panel-heading">
+              <h3>工作经历</h3>
+              <button type="button" onClick={() => updateSite({ experiences: [...content.site.experiences, createExperience()] })}>
+                新增经历
               </button>
             </div>
-            {content.site.capabilities.map((capability, index) => (
-              <div className="admin-repeat-item" key={`${capability.zh}-${index}`}>
-                {renderLocalized(`能力 ${index + 1}`, capability, (value) => {
-                  const capabilities = [...content.site.capabilities];
-                  capabilities[index] = value;
-                  updateSite({ capabilities });
-                })}
-                <button
-                  type="button"
-                  className="danger"
-                  onClick={() => updateSite({ capabilities: content.site.capabilities.filter((_, itemIndex) => itemIndex !== index) })}
-                >
-                  删除能力
-                </button>
+            {content.site.experiences.map((experience, index) => (
+              <div className="admin-repeat-item" key={`${experience.company.zh}-${index}`}>
+                <div className="admin-panel-heading">
+                  <h4>经历 {index + 1}</h4>
+                  <div>
+                    <button type="button" onClick={() => moveExperience(index, -1)}>上移</button>
+                    <button type="button" onClick={() => moveExperience(index, 1)}>下移</button>
+                    <button
+                      type="button"
+                      className="danger"
+                      onClick={() => updateSite({ experiences: content.site.experiences.filter((_, itemIndex) => itemIndex !== index) })}
+                    >
+                      删除
+                    </button>
+                  </div>
+                </div>
+                {renderLocalized("公司名称", experience.company, (value) => updateExperience(index, { ...experience, company: value }))}
+                {renderLocalized("职位", experience.position, (value) => updateExperience(index, { ...experience, position: value }))}
+                {renderLocalized("时间", experience.time, (value) => updateExperience(index, { ...experience, time: value }))}
+                {renderLocalized("简介", experience.description, (value) => updateExperience(index, { ...experience, description: value }), true)}
+                {renderStyleControls("简介字体", experience.style, (value) => updateExperience(index, { ...experience, style: value }))}
+                <label>
+                  项目链接（可选）
+                  <input value={experience.link || ""} onChange={(event) => updateExperience(index, { ...experience, link: event.target.value })} />
+                </label>
               </div>
             ))}
           </div>
@@ -704,6 +879,7 @@ export function AdminPage() {
                   {renderLocalized("段落眉题", section.eyebrow, (value) => updateSection(sectionIndex, { ...section, eyebrow: value }))}
                   {renderLocalized("段落标题", section.title, (value) => updateSection(sectionIndex, { ...section, title: value }))}
                   {renderLocalized("段落正文", section.body, (value) => updateSection(sectionIndex, { ...section, body: value }), true)}
+                  {renderStyleControls("段落正文字体", section.bodyStyle, (value) => updateSection(sectionIndex, { ...section, bodyStyle: value }))}
                   {section.media?.length ? (
                     <div className="admin-media-list">
                       {section.media.map((media, mediaIndex) => (

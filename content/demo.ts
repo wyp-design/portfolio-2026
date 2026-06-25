@@ -2,6 +2,13 @@ import type { Project, SiteContent } from "./types";
 
 export const siteCopy: SiteContent = {
   name: "YOUR.NAME",
+  sections: [
+    { id: "hero", label: { zh: "首页主视觉", en: "Hero" }, visible: true, order: 1 },
+    { id: "manifesto", label: { zh: "设计宣言", en: "Manifesto" }, visible: true, order: 2 },
+    { id: "work", label: { zh: "精选作品", en: "Selected work" }, visible: true, order: 3 },
+    { id: "about", label: { zh: "关于我", en: "About" }, visible: true, order: 4 },
+    { id: "contact", label: { zh: "联系我", en: "Contact" }, visible: true, order: 5 },
+  ],
   shortRole: { zh: "数字产品设计师", en: "Digital Product Designer" },
   location: { zh: "上海 · 面向世界", en: "Shanghai · Working globally" },
   heroTitle: {
@@ -26,16 +33,32 @@ export const siteCopy: SiteContent = {
     zh: "专注 UI/UX、产品策略与设计系统。我喜欢在逻辑与感觉之间工作：让界面经得起推敲，也让使用它的人感到轻松。",
     en: "I work across UI/UX, product strategy, and design systems—balancing rigorous logic with experiences that feel effortless.",
   },
+  bioStyle: { fontSize: "medium", fontWeight: "regular" },
   aboutLabel: { zh: "关于我", en: "About" },
   aboutHeadline: {
     zh: "策略的脑，手艺人的心。",
     en: "A strategist’s mind. A maker’s heart.",
   },
-  capabilities: [
-    { zh: "产品策略", en: "Product strategy" },
-    { zh: "体验设计", en: "Experience design" },
-    { zh: "界面与动效", en: "Interface & motion" },
-    { zh: "设计系统", en: "Design systems" },
+  education: {
+    school: { zh: "你的学校", en: "Your University" },
+    degree: { zh: "专业 / 学位", en: "Major / Degree" },
+    time: { zh: "年份", en: "Year" },
+    description: { zh: "这里填写教育背景简介。", en: "Write a short education description here." },
+    link: "",
+    style: { fontSize: "small", fontWeight: "regular" },
+  },
+  experiences: [
+    {
+      company: { zh: "公司名称", en: "Company name" },
+      position: { zh: "UI/UX 设计师", en: "UI/UX Designer" },
+      time: { zh: "2024 — 至今", en: "2024 — Present" },
+      description: {
+        zh: "这里填写你的工作经历简介，支持换行。",
+        en: "Write your work experience summary here. Line breaks are supported.",
+      },
+      link: "",
+      style: { fontSize: "small", fontWeight: "regular" },
+    },
   ],
   contactLabel: { zh: "一起创造", en: "Let’s create" },
   contactHeadline: { zh: "有意思的东西。", en: "SOMETHING WITH MEANING." },

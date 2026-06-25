@@ -15,6 +15,8 @@ gsap.registerPlugin(ScrollTrigger);
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
   const root = useRef<HTMLElement>(null);
   const { language, t } = useLanguage();
+  const sections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
+  const sectionNumber = (id: string) => `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -42,86 +44,136 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
 
   return (
     <main ref={root} id="top">
-      <section className="hero grid-surface">
-        <SiteHeader name={site.name} />
-        <div className="hero-art">
-          <div className="hero-image" />
-          <HeroScene />
-        </div>
-        <div className="hero-kicker">
-          <span>{t(site.shortRole)}</span>
-          <span>{t(site.location)}</span>
-        </div>
-        <h1 className="hero-title">
-          <span className="hero-title-line">{t(site.heroTitle.line1)}</span>
-          <span className="hero-title-line outline">{t(site.heroTitle.line2)}</span>
-        </h1>
-        <p className="hero-copy">{t(site.intro)}</p>
-        <div className="sticker sticker-one">✦</div>
-        <div className="sticker sticker-two">UX↗</div>
-        <div className="sticker sticker-three">GOOD<br />SYSTEMS</div>
-        <div className="hero-index">{site.heroIndex}</div>
-        <a className="scroll-cue" href="#work">{t(site.scrollLabel)} ↓</a>
-      </section>
-
-      <section className="manifesto grid-surface reveal">
-        <p>{t(site.manifestoIntro)}</p>
-        <h2>
-          {t(site.manifestoLine1)}
-          <br />
-          <span>{t(site.manifestoLine2)}</span>
-        </h2>
-      </section>
-
-      <section className="work-section" id="work">
-        <div className="section-heading reveal">
-          <span>02 — {t(site.workLabel)}</span>
-          <p>{t(site.workIntro)}</p>
-        </div>
-        <div className="project-list">
-          {projects.map((project, index) => (
-            <Link className="project-row reveal" href={`/projects/${project.slug}`} key={project.slug}>
-              <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <span className="project-category">{t(project.category)} · {project.year}</span>
-                <h3>{t(project.title)}</h3>
-                <p>{t(project.summary)}</p>
+      {sections.map((section) => {
+        if (section.id === "hero") {
+          return (
+            <section className="hero grid-surface" key={section.id}>
+              <SiteHeader name={site.name} />
+              <div className="hero-art">
+                <div className="hero-image" />
+                <HeroScene />
               </div>
-              <span className="project-orb" style={{ background: project.accent }} />
-              <span className="project-arrow">↗</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+              <div className="hero-kicker">
+                <span>{t(site.shortRole)}</span>
+                <span>{t(site.location)}</span>
+              </div>
+              <h1 className="hero-title">
+                <span className="hero-title-line">{t(site.heroTitle.line1)}</span>
+                <span className="hero-title-line outline">{t(site.heroTitle.line2)}</span>
+              </h1>
+              <p className="hero-copy rich-text rich-size-small rich-weight-regular">{t(site.intro)}</p>
+              <div className="sticker sticker-one">✦</div>
+              <div className="sticker sticker-two">UX↗</div>
+              <div className="sticker sticker-three">GOOD<br />SYSTEMS</div>
+              <div className="hero-index">{site.heroIndex}</div>
+              <a className="scroll-cue" href="#work">{t(site.scrollLabel)} ↓</a>
+            </section>
+          );
+        }
 
-      <section className="about-section grid-surface" id="about">
-        <div className="about-label reveal">03 — {t(site.aboutLabel)}</div>
-        <div className="about-copy reveal">
-          <h2>{t(site.aboutHeadline)}</h2>
-          <p>{t(site.bio)}</p>
-        </div>
-        <div className="capabilities reveal">
-          {site.capabilities.map((capability, index) => (
-            <div key={capability.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <strong>{t(capability)}</strong>
-            </div>
-          ))}
-        </div>
-      </section>
+        if (section.id === "manifesto") {
+          return (
+            <section className="manifesto grid-surface reveal" key={section.id}>
+              <p className="rich-text">{t(site.manifestoIntro)}</p>
+              <h2>
+                {t(site.manifestoLine1)}
+                <br />
+                <span>{t(site.manifestoLine2)}</span>
+              </h2>
+            </section>
+          );
+        }
 
-      <footer className="contact-section" id="contact">
-        <div className="contact-top reveal">
-          <span>04 — {t(site.contactLabel)}</span>
-          <h2>{t(site.contactHeadline)}</h2>
-        </div>
-        <a className="email-link reveal" href={`mailto:${site.email}`}>{site.email} ↗</a>
-        <div className="footer-row">
-          <span>© 2026 {site.name}</span>
-          <div>{site.social.map((item) => <a href={item.href} key={item.label}>{item.label}</a>)}</div>
-          <a href="#top">{language === "zh" ? "回到顶部" : "Back to top"} ↑</a>
-        </div>
-      </footer>
+        if (section.id === "work") {
+          return (
+            <section className="work-section" id="work" key={section.id}>
+              <div className="section-heading reveal">
+                <span>{sectionNumber("work")} {t(site.workLabel)}</span>
+                <p className="rich-text">{t(site.workIntro)}</p>
+              </div>
+              <div className="project-list">
+                {projects.map((project, index) => (
+                  <Link className="project-row reveal" href={`/projects/${project.slug}`} key={project.slug}>
+                    <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <span className="project-category">{t(project.category)} · {project.year}</span>
+                      <h3>{t(project.title)}</h3>
+                      <p className="rich-text">{t(project.summary)}</p>
+                    </div>
+                    <span className="project-orb" style={{ background: project.accent }} />
+                    <span className="project-arrow">↗</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        }
+
+        if (section.id === "about") {
+          return (
+            <section className="about-section grid-surface" id="about" key={section.id}>
+              <div className="about-side reveal">
+                <div className="about-label">{sectionNumber("about")} {t(site.aboutLabel)}</div>
+                <div className="about-photo">
+                  {site.aboutPhoto?.url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={site.aboutPhoto.url} alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name} />
+                  ) : (
+                    <span>{language === "zh" ? "后台上传个人照片" : "Upload portrait in admin"}</span>
+                  )}
+                </div>
+              </div>
+              <div className="about-copy reveal">
+                <h2>{t(site.aboutHeadline)}</h2>
+                <p className={`rich-text rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
+                  {t(site.bio)}
+                </p>
+                <div className="about-info">
+                  <article>
+                    <span>EDU</span>
+                    <h3>{t(site.education.school)}</h3>
+                    <strong>{t(site.education.degree)} · {t(site.education.time)}</strong>
+                    <p className={`rich-text rich-size-${site.education.style?.fontSize || "small"} rich-weight-${site.education.style?.fontWeight || "regular"}`}>
+                      {t(site.education.description)}
+                    </p>
+                    {site.education.link ? <a href={site.education.link} target="_blank" rel="noreferrer">Link ↗</a> : null}
+                  </article>
+                  {site.experiences.map((experience, index) => (
+                    <article key={`${experience.company.en}-${index}`}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <h3>{t(experience.company)}</h3>
+                      <strong>{t(experience.position)} · {t(experience.time)}</strong>
+                      <p className={`rich-text rich-size-${experience.style?.fontSize || "small"} rich-weight-${experience.style?.fontWeight || "regular"}`}>
+                        {t(experience.description)}
+                      </p>
+                      {experience.link ? <a href={experience.link} target="_blank" rel="noreferrer">Project ↗</a> : null}
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (section.id === "contact") {
+          return (
+            <footer className="contact-section" id="contact" key={section.id}>
+              <div className="contact-top reveal">
+                <span>{sectionNumber("contact")} {t(site.contactLabel)}</span>
+                <h2>{t(site.contactHeadline)}</h2>
+              </div>
+              <a className="email-link reveal" href={`mailto:${site.email}`}>{site.email} ↗</a>
+              <div className="footer-row">
+                <span>© 2026 {site.name}</span>
+                <div>{site.social.map((item) => <a href={item.href} key={item.label}>{item.label}</a>)}</div>
+                <a href="#top">{language === "zh" ? "回到顶部" : "Back to top"} ↑</a>
+              </div>
+            </footer>
+          );
+        }
+
+        return null;
+      })}
     </main>
   );
 }

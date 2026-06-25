@@ -72,7 +72,9 @@ export function ProjectPage({
           <article className={`case-section tone-${section.tone || "light"}`} key={`${section.title.en}-${index}`}>
             <span>{String(index + 1).padStart(2, "0")} / {t(section.eyebrow)}</span>
             <h2>{t(section.title)}</h2>
-            <p>{t(section.body)}</p>
+            <p className={`rich-text rich-size-${section.bodyStyle?.fontSize || "medium"} rich-weight-${section.bodyStyle?.fontWeight || "regular"}`}>
+              {t(section.body)}
+            </p>
             {section.media?.length ? (
               <div className="case-media">
                 {section.media.map((media) => {

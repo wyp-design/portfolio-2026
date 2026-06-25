@@ -1,6 +1,6 @@
 import { projects as demoProjects, siteCopy } from "@/content/demo";
 import committedContent from "@/content/portfolio-content.json";
-import type { Project, SiteContent } from "@/content/types";
+import type { HomeSection, HomeSectionId, Project, SiteContent } from "@/content/types";
 
 export type PortfolioContent = {
   site: SiteContent;
@@ -17,6 +17,32 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
+function normalizeSections(value: unknown): HomeSection[] {
+  const existing = Array.isArray(value) ? value.filter(isObject) : [];
+  const knownIds = new Set<HomeSectionId>();
+  const fromContent = existing
+    .filter((section) => typeof section.id === "string")
+    .map((section, index) => {
+      const fallback = siteCopy.sections.find((item) => item.id === section.id);
+      if (!fallback) return null;
+      knownIds.add(fallback.id);
+      return {
+        ...fallback,
+        ...section,
+        label: isObject(section.label) ? { ...fallback.label, ...section.label } : fallback.label,
+        visible: typeof section.visible === "boolean" ? section.visible : fallback.visible,
+        order: typeof section.order === "number" ? section.order : index + 1,
+      } as HomeSection;
+    })
+    .filter((section): section is HomeSection => Boolean(section));
+
+  const missing = siteCopy.sections
+    .filter((section) => !knownIds.has(section.id))
+    .map((section, index) => ({ ...section, order: fromContent.length + index + 1 }));
+
+  return [...fromContent, ...missing].sort((a, b) => a.order - b.order);
+}
+
 export function normalizePortfolioContent(value: unknown): PortfolioContent {
   if (!isObject(value)) return defaultPortfolioContent;
 
@@ -28,15 +54,17 @@ export function normalizePortfolioContent(value: unknown): PortfolioContent {
     site: {
       ...siteCopy,
       ...maybeSite,
+      sections: normalizeSections(maybeSite.sections),
       heroTitle: {
         ...siteCopy.heroTitle,
         ...maybeHeroTitle,
       },
       social: Array.isArray(maybeSite.social) && maybeSite.social.length ? maybeSite.social : siteCopy.social,
-      capabilities:
-        Array.isArray(maybeSite.capabilities) && maybeSite.capabilities.length
-          ? maybeSite.capabilities
-          : siteCopy.capabilities,
+      education: isObject(maybeSite.education) ? { ...siteCopy.education, ...maybeSite.education } : siteCopy.education,
+      experiences:
+        Array.isArray(maybeSite.experiences) && maybeSite.experiences.length
+          ? maybeSite.experiences
+          : siteCopy.experiences,
     },
     projects: maybeProjects
       .filter((project): project is Project => isObject(project) && typeof project.slug === "string")
