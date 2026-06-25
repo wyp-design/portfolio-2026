@@ -20,6 +20,39 @@ function assertGithubToken(token?: string): asserts token is string {
   }
 }
 
+function stripHtml(value: string) {
+  return value
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&mdash;/g, "—")
+    .replace(/&middot;/g, "·")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, "\"")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function getGithubErrorMessage(response: Response) {
+  const text = await response.text().catch(() => "");
+
+  if (!text) return response.statusText;
+
+  try {
+    const data = JSON.parse(text) as { message?: string; errors?: Array<{ message?: string }> };
+    const details = data.errors?.map((item) => item.message).filter(Boolean).join("；");
+    return [data.message, details].filter(Boolean).join("：") || response.statusText;
+  } catch {
+    const readableText = stripHtml(text);
+    if (response.status === 400 && readableText.toLowerCase().includes("bad request")) {
+      return "GitHub 返回 Bad request。常见原因是文件过大、请求体过大，或文件名/Token 权限异常。请先压缩文件后重试。";
+    }
+    return readableText.slice(0, 480) || response.statusText;
+  }
+}
+
 export async function githubRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
   const { owner, repo, token } = getGithubConfig();
   assertGithubToken(token);
@@ -36,8 +69,7 @@ export async function githubRequest<T>(path: string, init: RequestInit = {}): Pr
   });
 
   if (!response.ok) {
-    const text = await response.text().catch(() => "");
-    throw new Error(`GitHub API ${response.status}: ${text || response.statusText}`);
+    throw new Error(`GitHub API ${response.status}: ${await getGithubErrorMessage(response)}`);
   }
 
   return (await response.json()) as T;

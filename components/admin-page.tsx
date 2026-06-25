@@ -8,6 +8,28 @@ type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
 type ProjectSection = Project["sections"][number];
 type ProjectMedia = NonNullable<ProjectSection["media"]>[number];
 type Tone = NonNullable<ProjectSection["tone"]>;
+type UploadTarget = "about" | "project";
+type UploadState = {
+  active: boolean;
+  fileName: string;
+  percent: number;
+  phase: string;
+  target?: UploadTarget;
+  error?: string;
+  success?: string;
+};
+type UploadResponse = {
+  fileUrl?: string;
+  mimeType?: string;
+  originalFilename?: string;
+  detail?: string;
+  message?: string;
+};
+
+const MAX_ABOUT_PHOTO_BYTES = 8 * 1024 * 1024;
+const MAX_PROJECT_UPLOAD_BYTES = 20 * 1024 * 1024;
+const ABOUT_PHOTO_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
+const PROJECT_UPLOAD_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf", "video/mp4"]);
 
 const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
@@ -126,6 +148,38 @@ function styleValue(value: RichTextStyle | undefined): RichTextStyle {
   };
 }
 
+function formatBytes(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.ceil(bytes / 1024))}KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
+}
+
+function validateUploadFile(file: File, target: UploadTarget) {
+  const allowedTypes = target === "about" ? ABOUT_PHOTO_TYPES : PROJECT_UPLOAD_TYPES;
+  const maxBytes = target === "about" ? MAX_ABOUT_PHOTO_BYTES : MAX_PROJECT_UPLOAD_BYTES;
+  const readableTypes = target === "about" ? "PNG / JPG / GIF / WEBP" : "PNG / JPG / GIF / WEBP / PDF / MP4";
+
+  if (!allowedTypes.has(file.type)) {
+    return `文件格式不支持。请上传 ${readableTypes}${file.type ? `，当前文件类型是 ${file.type}` : ""}。`;
+  }
+
+  if (file.size > maxBytes) {
+    return `文件太大：${formatBytes(file.size)}。当前${target === "about" ? "照片" : "作品素材"}单个文件限制为 ${formatBytes(maxBytes)}，请压缩后再上传。`;
+  }
+
+  return "";
+}
+
+function buildUploadedMedia(file: File, upload: { fileUrl: string; mimeType?: string; originalFilename?: string }): UploadedMedia {
+  const filename = upload.originalFilename || file.name;
+  return {
+    _type: file.type === "application/pdf" ? "file" : "image",
+    url: upload.fileUrl,
+    mimeType: upload.mimeType || file.type,
+    originalFilename: filename,
+    alt: { zh: filename, en: filename },
+  };
+}
+
 export function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -135,6 +189,12 @@ export function AdminPage() {
   const [projectJson, setProjectJson] = useState("");
   const [state, setState] = useState<SaveState>("loading");
   const [message, setMessage] = useState("正在检查登录状态…");
+  const [uploadState, setUploadState] = useState<UploadState>({
+    active: false,
+    fileName: "",
+    percent: 0,
+    phase: "",
+  });
 
   const selectedProject = content.projects[selectedIndex];
   const sortedProjects = useMemo(() => sortProjects(content.projects), [content.projects]);
@@ -350,51 +410,135 @@ export function AdminPage() {
     }
   }
 
-  async function uploadToGithub(file: File): Promise<UploadedMedia | null> {
+  async function uploadToGithub(file: File, target: UploadTarget): Promise<UploadedMedia | null> {
+    const validationError = validateUploadFile(file, target);
+    if (validationError) {
+      setState("error");
+      setMessage(validationError);
+      setUploadState({
+        active: false,
+        fileName: file.name,
+        percent: 0,
+        phase: "上传未开始",
+        target,
+        error: validationError,
+      });
+      return null;
+    }
+
     setState("saving");
-    setMessage(`正在上传 ${file.name} 到 GitHub…`);
+    setMessage(`正在上传 ${file.name}…`);
+    setUploadState({
+      active: true,
+      fileName: file.name,
+      percent: 2,
+      phase: "正在准备文件…",
+      target,
+    });
 
     const formData = new FormData();
     formData.append("file", file);
 
-    const uploadResponse = await fetch("/api/admin/upload", {
-      method: "POST",
-      body: formData,
+    return new Promise((resolve) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/admin/upload");
+      xhr.timeout = 180000;
+
+      xhr.upload.onprogress = (event) => {
+        if (!event.lengthComputable) {
+          setUploadState((current) => ({ ...current, percent: Math.max(current.percent, 35), phase: "正在上传到服务器…" }));
+          return;
+        }
+
+        const uploadPercent = Math.min(78, Math.max(5, Math.round((event.loaded / event.total) * 78)));
+        setUploadState((current) => ({
+          ...current,
+          percent: uploadPercent,
+          phase: uploadPercent >= 78 ? "正在提交到 GitHub…" : "正在上传到服务器…",
+        }));
+      };
+
+      xhr.onload = () => {
+        let result: UploadResponse | null = null;
+        try {
+          result = JSON.parse(xhr.responseText || "null") as UploadResponse | null;
+        } catch {
+          result = null;
+        }
+
+        if (xhr.status < 200 || xhr.status >= 300 || !result?.fileUrl) {
+          const errorMessage = result?.detail || result?.message || `上传失败，服务器返回 ${xhr.status || "未知状态"}。`;
+          setState("error");
+          setMessage(`上传失败：${errorMessage}`);
+          setUploadState({
+            active: false,
+            fileName: file.name,
+            percent: 0,
+            phase: "上传失败",
+            target,
+            error: errorMessage,
+          });
+          resolve(null);
+          return;
+        }
+
+        setUploadState({
+          active: false,
+          fileName: file.name,
+          percent: 100,
+          phase: "上传完成，已加入当前表单",
+          target,
+          success: "上传成功。请继续点击“保存发布”，把这个素材写入网站内容。",
+        });
+        resolve(buildUploadedMedia(file, result as { fileUrl: string; mimeType?: string; originalFilename?: string }));
+      };
+
+      xhr.onerror = () => {
+        const errorMessage = "网络中断，上传没有完成。请重新选择文件再试。";
+        setState("error");
+        setMessage(`上传失败：${errorMessage}`);
+        setUploadState({
+          active: false,
+          fileName: file.name,
+          percent: 0,
+          phase: "上传失败",
+          target,
+          error: errorMessage,
+        });
+        resolve(null);
+      };
+
+      xhr.ontimeout = () => {
+        const errorMessage = "上传超时。文件可能太大，建议压缩后再上传。";
+        setState("error");
+        setMessage(`上传失败：${errorMessage}`);
+        setUploadState({
+          active: false,
+          fileName: file.name,
+          percent: 0,
+          phase: "上传超时",
+          target,
+          error: errorMessage,
+        });
+        resolve(null);
+      };
+
+      setUploadState((current) => ({ ...current, percent: 5, phase: "正在上传到服务器…" }));
+      xhr.send(formData);
     });
-
-    if (!uploadResponse.ok) {
-      const result = (await uploadResponse.json().catch(() => null)) as { detail?: string; message?: string } | null;
-      setState("error");
-      setMessage(`上传失败：${result?.detail || result?.message || "未知错误"}`);
-      return null;
-    }
-
-    const upload = (await uploadResponse.json()) as {
-      fileUrl: string;
-      mimeType?: string;
-      originalFilename?: string;
-    };
-    const filename = upload.originalFilename || file.name;
-    return {
-      _type: file.type === "application/pdf" ? "file" : "image",
-      url: upload.fileUrl,
-      mimeType: upload.mimeType || file.type,
-      originalFilename: filename,
-      alt: { zh: filename, en: filename },
-    };
   }
 
   async function uploadAboutPhoto(file: File) {
-    const media = await uploadToGithub(file);
+    const media = await uploadToGithub(file, "about");
     if (!media) return;
     updateSite({ aboutPhoto: media });
     setState("idle");
-    setMessage("个人照片已上传并加入关于我模块。等待 EdgeOne 重新部署后，前台会更新。");
+    setMessage("个人照片已上传并加入关于我模块。请点击“保存发布”，前台才会正式更新。");
   }
 
   async function uploadFile(file: File) {
     if (!selectedProject) return;
-    const media = (await uploadToGithub(file)) as ProjectMedia | null;
+    const media = (await uploadToGithub(file, "project")) as ProjectMedia | null;
     if (!media) return;
 
     const sections = selectedProject.sections.length ? [...selectedProject.sections] : [createSection()];
@@ -406,7 +550,7 @@ export function AdminPage() {
 
     updateSelectedProject({ ...selectedProject, sections });
     setState("idle");
-    setMessage("文件已提交到 GitHub，并已加入当前项目。等待 EdgeOne 重新部署后，前台会更新。");
+    setMessage("文件已上传并加入当前项目。请点击“保存发布”，前台才会正式更新。");
   }
 
   async function saveContent() {
@@ -553,6 +697,18 @@ export function AdminPage() {
       </header>
 
       <p className={`admin-message admin-message-${state}`}>{message}</p>
+      {uploadState.fileName ? (
+        <div className={`admin-upload-status ${uploadState.error ? "is-error" : ""} ${uploadState.success ? "is-success" : ""}`}>
+          <div className="admin-upload-status-row">
+            <strong>{uploadState.fileName}</strong>
+            <span>{uploadState.percent}%</span>
+          </div>
+          <div className="admin-progress" aria-label="上传进度">
+            <span style={{ width: `${uploadState.percent}%` }} />
+          </div>
+          <p>{uploadState.error || uploadState.success || uploadState.phase}</p>
+        </div>
+      ) : null}
 
       <section className="admin-grid">
         <aside className="admin-panel">
@@ -622,10 +778,11 @@ export function AdminPage() {
             {renderStyleControls("关于我正文字体", content.site.bioStyle, (value) => updateSite({ bioStyle: value }))}
             <div className="admin-upload">
               <label>
-                关于我照片（显示在左侧）
+                关于我照片（显示在左侧，PNG/JPG/GIF/WEBP，≤ {formatBytes(MAX_ABOUT_PHOTO_BYTES)}）
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/gif,image/webp"
+                  disabled={uploadState.active}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file) void uploadAboutPhoto(file);
@@ -907,10 +1064,11 @@ export function AdminPage() {
                 </select>
               </label>
               <label>
-                上传 PNG / JPG / GIF / WEBP / PDF / MP4
+                上传 PNG / JPG / GIF / WEBP / PDF / MP4（单个文件 ≤ {formatBytes(MAX_PROJECT_UPLOAD_BYTES)}）
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,video/mp4"
+                  disabled={uploadState.active}
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (file) void uploadFile(file);

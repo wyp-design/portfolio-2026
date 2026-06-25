@@ -1186,6 +1186,60 @@ button {
   background: #e2ffd1;
 }
 
+.admin-upload-status {
+  border: 1px solid rgba(0, 0, 0, .18);
+  background: #fff;
+  margin: -8px 0 22px;
+  padding: 14px;
+  box-shadow: 6px 7px 0 rgba(0, 0, 0, .06);
+}
+
+.admin-upload-status.is-error {
+  background: #ffe4df;
+}
+
+.admin-upload-status.is-success {
+  background: #e2ffd1;
+}
+
+.admin-upload-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.admin-upload-status-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-upload-status p {
+  margin: 9px 0 0;
+  color: rgba(0, 0, 0, .68);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.admin-progress {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, .24);
+  background: rgba(0, 0, 0, .06);
+  margin-top: 10px;
+}
+
+.admin-progress span {
+  display: block;
+  height: 100%;
+  background: #111;
+  transition: width .2s ease;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: minmax(260px, .75fr) minmax(260px, .8fr) minmax(360px, 1.45fr);
