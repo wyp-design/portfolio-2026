@@ -173,7 +173,17 @@
         "label": "Link",
         "href": "https://"
       }
-    ]
+    ],
+    "aboutPhoto": {
+      "_type": "image",
+      "url": "/uploads/1782375107172-b6cb7e7a-6c36-4630-8d96-a35569949b61-Mask-group.jpg",
+      "mimeType": "image/jpeg",
+      "originalFilename": "Mask group.jpg",
+      "alt": {
+        "zh": "Mask group.jpg",
+        "en": "Mask group.jpg"
+      }
+    }
   },
   "projects": [
     {
@@ -466,5 +476,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T07:32:52.250Z"
+  "updatedAt": "2026-06-25T08:12:02.608Z"
 }
