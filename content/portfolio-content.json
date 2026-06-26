@@ -112,7 +112,7 @@
       "en": "A strategist’s mind. A maker’s heart."
     },
     "aboutHeadlineStyle": {
-      "fontSize": "large",
+      "fontSize": "medium",
       "fontWeight": "bold"
     },
     "education": {
@@ -623,5 +623,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T03:34:37.116Z"
+  "updatedAt": "2026-06-26T03:35:12.384Z"
 }
