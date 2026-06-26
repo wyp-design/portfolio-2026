@@ -1,59 +1,77 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float } from "@react-three/drei";
-import { useRef } from "react";
-import type { Mesh } from "three";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
-function GlassForms() {
-  const knot = useRef<Mesh>(null);
-
-  useFrame((state, delta) => {
-    if (!knot.current) return;
-    knot.current.rotation.x += delta * 0.08;
-    knot.current.rotation.y += delta * 0.13;
-    knot.current.position.x = Math.sin(state.clock.elapsedTime * 0.25) * 0.18;
-  });
-
-  return (
-    <>
-      <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.6}>
-        <mesh ref={knot} scale={1.3} position={[0.2, 0.25, -0.7]} rotation={[0.5, 0.15, -0.4]}>
-          <torusKnotGeometry args={[1.3, 0.34, 180, 24, 2, 3]} />
-          <meshStandardMaterial
-            color="#72b6ff"
-            transparent
-            opacity={0.42}
-            roughness={0.24}
-            metalness={0.08}
-          />
-        </mesh>
-      </Float>
-      <Float speed={1.8} rotationIntensity={0.6} floatIntensity={0.9}>
-        <mesh position={[2.6, -1.4, 0.4]} rotation={[0.2, 0.4, 0.2]}>
-          <icosahedronGeometry args={[0.58, 1]} />
-          <meshStandardMaterial color="#285cff" roughness={0.18} metalness={0.05} />
-        </mesh>
-      </Float>
-      <Float speed={1.4} rotationIntensity={0.4} floatIntensity={0.75}>
-        <mesh position={[-2.8, 1.6, -0.4]} rotation={[0.5, 0.1, 0.2]}>
-          <torusGeometry args={[0.58, 0.16, 18, 64]} />
-          <meshStandardMaterial color="#ffda45" roughness={0.35} />
-        </mesh>
-      </Float>
-    </>
-  );
-}
+const letters = ["H", "E", "L", "L", "O"];
 
 export function HeroScene() {
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        ".hello-letter",
+        { yPercent: 14, rotateX: -28, rotateY: 18, opacity: 0 },
+        {
+          yPercent: 0,
+          rotateX: 0,
+          rotateY: 0,
+          opacity: 1,
+          duration: 1.05,
+          ease: "power3.out",
+          stagger: 0.08,
+        },
+      );
+
+      gsap.to(".hello-letter", {
+        y: "random(-18, 18)",
+        rotateY: "random(-10, 10)",
+        rotateX: "random(-6, 8)",
+        duration: 3.4,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        stagger: 0.18,
+      });
+
+      gsap.to(".hello-shadow", {
+        x: 16,
+        y: 18,
+        duration: 4.2,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      });
+
+      gsap.to(".hello-orbit", {
+        rotate: 360,
+        duration: 18,
+        ease: "none",
+        repeat: -1,
+      });
+    }, root);
+
+    return () => context.revert();
+  }, []);
+
   return (
-    <div className="hero-scene" aria-hidden="true">
-      <Canvas camera={{ position: [0, 0, 6.8], fov: 42 }} dpr={[1, 1.6]}>
-        <ambientLight intensity={1.8} />
-        <directionalLight position={[4, 5, 6]} intensity={3.2} color="#fff8de" />
-        <GlassForms />
-        <Environment preset="city" />
-      </Canvas>
+    <div className="hero-scene hero-hello-scene" ref={root} aria-hidden="true">
+      <div className="hello-orbit" />
+      <div className="hello-word">
+        <span className="hello-shadow">HELLO</span>
+        {letters.map((letter, index) => (
+          <span className="hello-letter" data-letter={letter} key={`${letter}-${index}`}>
+            {letter}
+          </span>
+        ))}
+      </div>
+      <span className="hello-pill hello-pill-one">UI</span>
+      <span className="hello-pill hello-pill-two">UX</span>
+      <span className="hello-pill hello-pill-three">AI</span>
     </div>
   );
 }

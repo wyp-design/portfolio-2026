@@ -27,6 +27,7 @@ export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
       >
         <span />
         <span />
+        <span />
       </button>
       <nav className={open ? "nav-links is-open" : "nav-links"}>
         <Link href="/#work" onClick={() => setOpen(false)}>

@@ -11,11 +11,12 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #111111;
+  --bg: #07162f;
   --ink: #f8f6ec;
   --muted: rgba(248, 246, 236, 0.62);
   --line: rgba(248, 246, 236, 0.16);
-  --blue: #203b4d;
+  --blue: #071f46;
+  --lime: #9dff45;
 }
 
 * {
@@ -111,6 +112,13 @@ button {
   background-color: var(--blue);
 }
 
+:root[data-theme="dark"] .hero {
+  background:
+    radial-gradient(circle at 72% 18%, rgba(40, 92, 255, .34), transparent 30%),
+    radial-gradient(circle at 28% 70%, rgba(22, 183, 255, .18), transparent 32%),
+    #061735;
+}
+
 .hero-art {
   position: absolute;
   inset: 0;
@@ -126,9 +134,129 @@ button {
 
 .hero-scene {
   position: absolute;
-  inset: 8% 0 0;
-  opacity: .8;
+  inset: 0;
+  opacity: .92;
   pointer-events: none;
+}
+
+.hero-hello-scene {
+  display: grid;
+  place-items: center;
+  perspective: 1200px;
+}
+
+.hello-word {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  transform-style: preserve-3d;
+  gap: clamp(2px, .9vw, 18px);
+  filter: drop-shadow(0 38px 45px rgba(0, 0, 0, .18));
+}
+
+.hello-letter {
+  position: relative;
+  display: block;
+  color: #fff8e8;
+  font-size: clamp(96px, 19vw, 360px);
+  font-weight: 950;
+  line-height: .76;
+  letter-spacing: -.12em;
+  text-transform: uppercase;
+  transform-style: preserve-3d;
+  -webkit-text-stroke: 2px rgba(17, 17, 17, .62);
+  text-shadow:
+    1px 1px 0 #111,
+    2px 2px 0 #111,
+    3px 3px 0 #111,
+    4px 4px 0 #111,
+    5px 5px 0 #111,
+    14px 18px 0 rgba(40, 92, 255, .2);
+}
+
+.hello-letter::after {
+  content: attr(data-letter);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, .55);
+  transform: translate3d(10px, 14px, -36px);
+  opacity: .5;
+}
+
+.hello-shadow {
+  position: absolute;
+  inset: auto auto -18% 1.5%;
+  z-index: -1;
+  color: rgba(17, 17, 17, .12);
+  font-size: clamp(96px, 19vw, 360px);
+  font-weight: 950;
+  line-height: .76;
+  letter-spacing: -.12em;
+  transform: translateZ(-90px) skewX(-8deg);
+  filter: blur(1px);
+}
+
+.hello-orbit {
+  position: absolute;
+  width: min(52vw, 760px);
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, .42);
+  border-left-color: rgba(255, 218, 69, .76);
+  border-radius: 50%;
+  transform: rotate(-18deg) scaleY(.44);
+}
+
+.hello-pill {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #caff6a;
+  color: #111;
+  box-shadow: 4px 5px 0 #111;
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+}
+
+.hello-pill-one {
+  top: 25%;
+  left: 24%;
+  width: 62px;
+  height: 42px;
+  transform: rotate(-14deg);
+}
+
+.hello-pill-two {
+  right: 22%;
+  bottom: 27%;
+  width: 70px;
+  height: 46px;
+  background: #ff786b;
+  transform: rotate(12deg);
+}
+
+.hello-pill-three {
+  right: 34%;
+  top: 27%;
+  width: 54px;
+  height: 54px;
+  background: #ffda45;
+  transform: rotate(8deg);
+}
+
+:root[data-theme="dark"] .hello-letter {
+  color: #eaf4ff;
+  -webkit-text-stroke-color: rgba(143, 205, 255, .62);
+  text-shadow:
+    1px 1px 0 #020915,
+    2px 2px 0 #020915,
+    3px 3px 0 #020915,
+    4px 4px 0 #020915,
+    5px 5px 0 #020915,
+    14px 18px 0 rgba(120, 192, 255, .16);
 }
 
 .hero-kicker {
@@ -457,6 +585,23 @@ button {
   letter-spacing: -0.04em;
 }
 
+.experience-trigger {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font-size: clamp(24px, 3vw, 42px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.experience-trigger:hover {
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}
+
 .about-info strong {
   font-size: 15px;
 }
@@ -469,6 +614,89 @@ button {
 
 .about-info a {
   justify-self: start;
+  border-bottom: 1px solid currentColor;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.experience-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: var(--pad);
+}
+
+.experience-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, .48);
+  cursor: zoom-out;
+}
+
+.experience-modal-backdrop span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.experience-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(920px, 100%);
+  max-height: min(760px, 86svh);
+  overflow: auto;
+  border: 2px solid #111;
+  background: #f7f4ea;
+  color: #111;
+  box-shadow: 16px 18px 0 rgba(0, 0, 0, .24);
+  padding: clamp(24px, 4vw, 54px);
+}
+
+.experience-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.experience-modal-kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.experience-modal-card h2 {
+  margin: 18px 52px 18px 0;
+  font-size: clamp(38px, 5.8vw, 82px);
+  line-height: .95;
+  letter-spacing: -.055em;
+}
+
+.experience-modal-card strong {
+  display: block;
+  margin-bottom: 28px;
+}
+
+.experience-modal-card p {
+  max-width: 760px;
+  margin: 0;
+  line-height: 1.65;
+}
+
+.experience-modal-card a {
+  display: inline-block;
+  margin-top: 34px;
   border-bottom: 1px solid currentColor;
   font-family: var(--font-mono), monospace;
   font-size: 12px;
@@ -811,14 +1039,21 @@ button {
     padding: 24px;
   }
 
+  .wordmark,
+  .menu-toggle {
+    position: relative;
+    z-index: 42;
+  }
+
   .menu-toggle {
     display: flex;
-    width: 28px;
+    width: 32px;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
     border: 0;
     background: transparent;
     padding: 4px 0;
+    cursor: pointer;
   }
 
   .menu-toggle span {
@@ -830,7 +1065,7 @@ button {
   .nav-links {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 35;
     flex-direction: column;
     justify-content: center;
     gap: 24px;
@@ -869,7 +1104,36 @@ button {
   }
 
   .hero-scene {
-    inset: 12% -55% 0;
+    inset: 110px -18% 120px;
+  }
+
+  .hello-word {
+    gap: 2px;
+  }
+
+  .hello-letter,
+  .hello-shadow {
+    font-size: clamp(68px, 22vw, 110px);
+    letter-spacing: -.14em;
+  }
+
+  .hello-orbit {
+    width: 86vw;
+  }
+
+  .hello-pill-one {
+    top: 22%;
+    left: 15%;
+  }
+
+  .hello-pill-two {
+    right: 13%;
+    bottom: 30%;
+  }
+
+  .hello-pill-three {
+    right: 22%;
+    top: 28%;
   }
 
   .hero-title {

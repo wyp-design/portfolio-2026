@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/content/types";
@@ -16,8 +16,11 @@ gsap.registerPlugin(ScrollTrigger);
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
   const root = useRef<HTMLElement>(null);
   const { language, t } = useLanguage();
+  const [activeExperienceIndex, setActiveExperienceIndex] = useState<number | null>(null);
   const sections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
   const sectionNumber = (id: string) => `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
+  const activeExperience =
+    activeExperienceIndex === null ? null : site.experiences[activeExperienceIndex] || null;
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -42,6 +45,19 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
     }, root);
     return () => context.revert();
   }, []);
+
+  useEffect(() => {
+    if (activeExperienceIndex === null) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveExperienceIndex(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeExperienceIndex]);
 
   return (
     <main ref={root} id="top">
@@ -142,12 +158,10 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                   {site.experiences.map((experience, index) => (
                     <article key={`${experience.company.en}-${index}`}>
                       <span>{String(index + 1).padStart(2, "0")}</span>
-                      <h3>{t(experience.company)}</h3>
+                      <button className="experience-trigger" type="button" onClick={() => setActiveExperienceIndex(index)}>
+                        {t(experience.company)}
+                      </button>
                       <strong>{t(experience.position)} · {t(experience.time)}</strong>
-                      <p className={`rich-text rich-size-${experience.style?.fontSize || "small"} rich-weight-${experience.style?.fontWeight || "regular"}`}>
-                        {t(experience.description)}
-                      </p>
-                      {experience.link ? <a href={experience.link} target="_blank" rel="noreferrer">Project ↗</a> : null}
                     </article>
                   ))}
                 </div>
@@ -175,6 +189,32 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
 
         return null;
       })}
+
+      {activeExperience ? (
+        <div className="experience-modal" role="dialog" aria-modal="true" aria-labelledby="experience-modal-title">
+          <button className="experience-modal-backdrop" type="button" onClick={() => setActiveExperienceIndex(null)}>
+            <span>Close</span>
+          </button>
+          <div className="experience-modal-card">
+            <button className="experience-modal-close" type="button" onClick={() => setActiveExperienceIndex(null)}>
+              ×
+            </button>
+            <span className="experience-modal-kicker">
+              {activeExperienceIndex !== null ? String(activeExperienceIndex + 1).padStart(2, "0") : "01"} / EXPERIENCE
+            </span>
+            <h2 id="experience-modal-title">{t(activeExperience.company)}</h2>
+            <strong>{t(activeExperience.position)} · {t(activeExperience.time)}</strong>
+            <p className={`rich-text rich-size-${activeExperience.style?.fontSize || "medium"} rich-weight-${activeExperience.style?.fontWeight || "regular"}`}>
+              {t(activeExperience.description)}
+            </p>
+            {activeExperience.link ? (
+              <a href={activeExperience.link} target="_blank" rel="noreferrer">
+                {language === "zh" ? "查看项目链接" : "View project"} ↗
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
