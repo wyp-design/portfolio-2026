@@ -134,145 +134,17 @@ button {
 
 .hero-scene {
   position: absolute;
-  inset: 0;
-  opacity: .92;
+  inset: 8% 0 0;
   pointer-events: none;
 }
 
-.hero-hello-scene {
-  display: grid;
-  place-items: center;
-  perspective: 1200px;
+.hero-shape-scene {
+  opacity: .8;
 }
 
-.hello-word {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  transform-style: preserve-3d;
-  gap: clamp(0px, .35vw, 10px);
-  transform: rotate(-4deg) skewX(-5deg);
-  filter: drop-shadow(0 48px 48px rgba(0, 0, 0, .24));
-}
-
-.hello-letter {
-  position: relative;
-  display: block;
-  color: #fffaf0;
-  font-size: clamp(112px, 22vw, 420px);
-  font-weight: 950;
-  line-height: .7;
-  letter-spacing: -.16em;
-  text-transform: uppercase;
-  transform-style: preserve-3d;
-  -webkit-text-stroke: clamp(1px, .16vw, 3px) rgba(17, 17, 17, .74);
-  text-shadow:
-    1px 1px 0 #111,
-    2px 2px 0 #111,
-    3px 3px 0 #111,
-    4px 4px 0 #111,
-    5px 5px 0 #111,
-    6px 6px 0 #111,
-    7px 7px 0 #111,
-    8px 8px 0 #111,
-    9px 9px 0 #111,
-    10px 10px 0 #111,
-    18px 24px 0 rgba(40, 92, 255, .24);
-}
-
-.hello-letter::after {
-  content: attr(data-letter);
+.hero-shape-canvas {
   position: absolute;
   inset: 0;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, .72);
-  transform: translate3d(16px, 20px, -48px);
-  opacity: .62;
-}
-
-.hello-letter::before {
-  content: attr(data-letter);
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  color: #caff6a;
-  -webkit-text-stroke: 2px #111;
-  transform: translate3d(18px, 22px, -62px);
-  opacity: .86;
-}
-
-.hello-shadow {
-  position: absolute;
-  inset: auto auto -24% 2.4%;
-  z-index: -1;
-  color: rgba(17, 17, 17, .16);
-  font-size: clamp(112px, 22vw, 420px);
-  font-weight: 950;
-  line-height: .7;
-  letter-spacing: -.16em;
-  transform: translateZ(-90px) skewX(-8deg);
-  filter: blur(1px);
-}
-
-.hello-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(2px);
-  opacity: .52;
-}
-
-.hello-glow-one {
-  top: 12%;
-  right: 14%;
-  width: 24vw;
-  height: 24vw;
-  background: radial-gradient(circle, rgba(255, 218, 69, .42), transparent 62%);
-}
-
-.hello-glow-two {
-  left: 10%;
-  bottom: 13%;
-  width: 22vw;
-  height: 22vw;
-  background: radial-gradient(circle, rgba(40, 92, 255, .32), transparent 64%);
-}
-
-.hello-orbit {
-  position: absolute;
-  width: min(62vw, 920px);
-  aspect-ratio: 1;
-  border: 2px solid rgba(255, 255, 255, .36);
-  border-left-color: rgba(255, 218, 69, .86);
-  border-bottom-color: rgba(202, 255, 106, .72);
-  border-radius: 50%;
-  transform: rotate(-18deg) scaleY(.44);
-}
-
-.hello-slab {
-  position: absolute;
-  z-index: 1;
-  border: 2px solid #111;
-  background: rgba(255, 255, 255, .2);
-  box-shadow: 8px 10px 0 rgba(17, 17, 17, .18);
-}
-
-.hello-slab-one {
-  width: min(26vw, 390px);
-  height: min(12vw, 160px);
-  left: 14%;
-  top: 30%;
-  background: rgba(255, 120, 107, .34);
-  transform: rotate(-12deg);
-}
-
-.hello-slab-two {
-  width: min(18vw, 280px);
-  height: min(18vw, 280px);
-  right: 15%;
-  bottom: 20%;
-  border-radius: 28%;
-  background: rgba(199, 231, 248, .36);
-  transform: rotate(18deg);
 }
 
 .hello-pill {
@@ -313,29 +185,6 @@ button {
   height: 54px;
   background: #ffda45;
   transform: rotate(8deg);
-}
-
-:root[data-theme="dark"] .hello-letter {
-  color: #eaf4ff;
-  -webkit-text-stroke-color: rgba(143, 205, 255, .62);
-  text-shadow:
-    1px 1px 0 #020915,
-    2px 2px 0 #020915,
-    3px 3px 0 #020915,
-    4px 4px 0 #020915,
-    5px 5px 0 #020915,
-    14px 18px 0 rgba(120, 192, 255, .16);
-}
-
-:root[data-theme="dark"] .hello-letter::before {
-  color: #285cff;
-  -webkit-text-stroke-color: #9fcfff;
-}
-
-:root[data-theme="dark"] .hello-slab {
-  border-color: rgba(202, 232, 255, .62);
-  background: rgba(22, 45, 92, .54);
-  box-shadow: 8px 10px 0 rgba(0, 0, 0, .28);
 }
 
 .hero-kicker {
@@ -1420,22 +1269,7 @@ button {
   }
 
   .hero-scene {
-    inset: 110px -18% 120px;
-  }
-
-  .hello-word {
-    gap: 2px;
-    transform: rotate(-6deg) skewX(-4deg) translateY(-18px);
-  }
-
-  .hello-letter,
-  .hello-shadow {
-    font-size: clamp(64px, 24vw, 118px);
-    letter-spacing: -.17em;
-  }
-
-  .hello-orbit {
-    width: 86vw;
+    inset: 12% -55% 0;
   }
 
   .hello-pill-one {
@@ -1451,20 +1285,6 @@ button {
   .hello-pill-three {
     right: 22%;
     top: 28%;
-  }
-
-  .hello-slab-one {
-    width: 58vw;
-    height: 22vw;
-    left: 4%;
-    top: 34%;
-  }
-
-  .hello-slab-two {
-    width: 38vw;
-    height: 38vw;
-    right: 2%;
-    bottom: 25%;
   }
 
   .hero-title {
