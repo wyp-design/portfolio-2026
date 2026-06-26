@@ -138,8 +138,8 @@
         "fontWeight": "regular"
       },
       "titleStyle": {
-        "fontSize": "medium",
-        "fontWeight": "bold"
+        "fontSize": "small",
+        "fontWeight": "medium"
       }
     },
     "education2": {
@@ -165,8 +165,8 @@
         "fontWeight": "regular"
       },
       "titleStyle": {
-        "fontSize": "medium",
-        "fontWeight": "bold"
+        "fontSize": "small",
+        "fontWeight": "medium"
       }
     },
     "experiences": [
@@ -623,5 +623,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T03:36:17.816Z"
+  "updatedAt": "2026-06-26T03:45:42.823Z"
 }
