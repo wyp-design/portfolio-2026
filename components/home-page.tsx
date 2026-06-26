@@ -202,7 +202,12 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
             <span className="experience-modal-kicker">
               {activeExperienceIndex !== null ? String(activeExperienceIndex + 1).padStart(2, "0") : "01"} / EXPERIENCE
             </span>
-            <h2 id="experience-modal-title">{t(activeExperience.company)}</h2>
+            <h2
+              id="experience-modal-title"
+              className={`rich-size-${activeExperience.modalTitleStyle?.fontSize || "medium"} rich-weight-${activeExperience.modalTitleStyle?.fontWeight || "bold"}`}
+            >
+              {t(activeExperience.company)}
+            </h2>
             <strong>{t(activeExperience.position)} · {t(activeExperience.time)}</strong>
             <p className={`rich-text rich-size-${activeExperience.style?.fontSize || "medium"} rich-weight-${activeExperience.style?.fontWeight || "regular"}`}>
               {t(activeExperience.description)}

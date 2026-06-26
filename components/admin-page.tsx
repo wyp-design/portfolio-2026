@@ -105,6 +105,7 @@ function createExperience() {
     description: { zh: "填写工作经历简介。", en: "Write experience summary." },
     link: "",
     style: { fontSize: "small", fontWeight: "regular" } as RichTextStyle,
+    modalTitleStyle: { fontSize: "medium", fontWeight: "bold" } as RichTextStyle,
   };
 }
 
@@ -846,6 +847,9 @@ export function AdminPage() {
                 {renderLocalized("职位", experience.position, (value) => updateExperience(index, { ...experience, position: value }))}
                 {renderLocalized("时间", experience.time, (value) => updateExperience(index, { ...experience, time: value }))}
                 {renderLocalized("简介", experience.description, (value) => updateExperience(index, { ...experience, description: value }), true)}
+                {renderStyleControls("弹框公司名字体", experience.modalTitleStyle, (value) =>
+                  updateExperience(index, { ...experience, modalTitleStyle: value }),
+                )}
                 {renderStyleControls("简介字体", experience.style, (value) => updateExperience(index, { ...experience, style: value }))}
                 <label>
                   项目链接（可选）

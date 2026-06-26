@@ -58,6 +58,7 @@ export const siteCopy: SiteContent = {
       },
       link: "",
       style: { fontSize: "small", fontWeight: "regular" },
+      modalTitleStyle: { fontSize: "medium", fontWeight: "bold" },
     },
   ],
   contactLabel: { zh: "一起创造", en: "Let’s create" },

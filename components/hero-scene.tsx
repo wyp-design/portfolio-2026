@@ -15,23 +15,24 @@ export function HeroScene() {
     const context = gsap.context(() => {
       gsap.fromTo(
         ".hello-letter",
-        { yPercent: 14, rotateX: -28, rotateY: 18, opacity: 0 },
+        { yPercent: 24, rotateX: -34, rotateY: 24, opacity: 0, scale: 0.92 },
         {
           yPercent: 0,
           rotateX: 0,
-          rotateY: 0,
+          rotateY: -8,
           opacity: 1,
-          duration: 1.05,
-          ease: "power3.out",
-          stagger: 0.08,
+          scale: 1,
+          duration: 1.2,
+          ease: "expo.out",
+          stagger: 0.07,
         },
       );
 
       gsap.to(".hello-letter", {
-        y: "random(-18, 18)",
-        rotateY: "random(-10, 10)",
-        rotateX: "random(-6, 8)",
-        duration: 3.4,
+        y: "random(-12, 16)",
+        rotateY: "random(-14, 8)",
+        rotateX: "random(-5, 7)",
+        duration: 3.8,
         ease: "sine.inOut",
         repeat: -1,
         yoyo: true,
@@ -39,12 +40,23 @@ export function HeroScene() {
       });
 
       gsap.to(".hello-shadow", {
-        x: 16,
-        y: 18,
-        duration: 4.2,
+        x: 22,
+        y: 24,
+        duration: 4.6,
         ease: "sine.inOut",
         repeat: -1,
         yoyo: true,
+      });
+
+      gsap.to(".hello-slab", {
+        x: "random(-18, 20)",
+        y: "random(-12, 16)",
+        rotate: "random(-8, 8)",
+        duration: 5.2,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        stagger: 0.24,
       });
 
       gsap.to(".hello-orbit", {
@@ -60,7 +72,11 @@ export function HeroScene() {
 
   return (
     <div className="hero-scene hero-hello-scene" ref={root} aria-hidden="true">
+      <div className="hello-glow hello-glow-one" />
+      <div className="hello-glow hello-glow-two" />
       <div className="hello-orbit" />
+      <div className="hello-slab hello-slab-one" />
+      <div className="hello-slab hello-slab-two" />
       <div className="hello-word">
         <span className="hello-shadow">HELLO</span>
         {letters.map((letter, index) => (

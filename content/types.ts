@@ -62,6 +62,7 @@ export type SiteContent = {
     description: LocalizedText;
     link?: string;
     style?: RichTextStyle;
+    modalTitleStyle?: RichTextStyle;
   }>;
   contactLabel: LocalizedText;
   contactHeadline: LocalizedText;
