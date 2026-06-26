@@ -425,7 +425,8 @@
               "caption": {
                 "zh": "Following the standards of an internet brand-operations visual designer, create a vertical 3D recruitment poster with the theme \"JOIN US · Team Recruitment · WE NEED YOU · Find Your Glow · INNOVATE COLLABORATE GROW\". Off-white background, a centered stack of purple, pink and yellow 3D geometric shapes mixed with smiley balloons, a JOIN US ID badge hanging in the middle, listing 4 open roles — Creative Planning, Visual Design, Content Operations, Community Operations. Overall young, enthusiastic, designer-toy 3D clay style.",
                 "en": ""
-              }
+              },
+              "textPosition": "left"
             },
             {
               "_type": "image",
@@ -673,5 +674,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T08:26:50.283Z"
+  "updatedAt": "2026-06-26T08:27:16.592Z"
 }
