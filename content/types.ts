@@ -8,6 +8,16 @@ export type RichTextStyle = {
   fontWeight?: "regular" | "medium" | "bold";
 };
 
+export type EducationItem = {
+  school: LocalizedText;
+  degree: LocalizedText;
+  time: LocalizedText;
+  description: LocalizedText;
+  link?: string;
+  style?: RichTextStyle;
+  titleStyle?: RichTextStyle;
+};
+
 export type UploadedMedia = {
   _type: "image" | "file";
   url: string;
@@ -46,15 +56,10 @@ export type SiteContent = {
   bioStyle?: RichTextStyle;
   aboutLabel: LocalizedText;
   aboutHeadline: LocalizedText;
+  aboutHeadlineStyle?: RichTextStyle;
   aboutPhoto?: UploadedMedia;
-  education: {
-    school: LocalizedText;
-    degree: LocalizedText;
-    time: LocalizedText;
-    description: LocalizedText;
-    link?: string;
-    style?: RichTextStyle;
-  };
+  education: EducationItem;
+  education2?: EducationItem;
   experiences: Array<{
     company: LocalizedText;
     position: LocalizedText;
@@ -62,6 +67,7 @@ export type SiteContent = {
     description: LocalizedText;
     link?: string;
     style?: RichTextStyle;
+    titleStyle?: RichTextStyle;
     modalTitleStyle?: RichTextStyle;
   }>;
   contactLabel: LocalizedText;

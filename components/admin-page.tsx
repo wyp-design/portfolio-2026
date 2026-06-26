@@ -54,6 +54,7 @@ const emptySite: SiteContent = {
   bioStyle: { fontSize: "medium", fontWeight: "regular" },
   aboutLabel: emptyLocalized,
   aboutHeadline: emptyLocalized,
+  aboutHeadlineStyle: { fontSize: "large", fontWeight: "bold" },
   education: {
     school: emptyLocalized,
     degree: emptyLocalized,
@@ -61,6 +62,16 @@ const emptySite: SiteContent = {
     description: emptyLocalized,
     link: "",
     style: { fontSize: "small", fontWeight: "regular" },
+    titleStyle: { fontSize: "large", fontWeight: "bold" },
+  },
+  education2: {
+    school: emptyLocalized,
+    degree: emptyLocalized,
+    time: emptyLocalized,
+    description: emptyLocalized,
+    link: "",
+    style: { fontSize: "small", fontWeight: "regular" },
+    titleStyle: { fontSize: "medium", fontWeight: "bold" },
   },
   experiences: [],
   contactLabel: emptyLocalized,
@@ -105,6 +116,7 @@ function createExperience() {
     description: { zh: "填写工作经历简介。", en: "Write experience summary." },
     link: "",
     style: { fontSize: "small", fontWeight: "regular" } as RichTextStyle,
+    titleStyle: { fontSize: "medium", fontWeight: "bold" } as RichTextStyle,
     modalTitleStyle: { fontSize: "medium", fontWeight: "bold" } as RichTextStyle,
   };
 }
@@ -285,6 +297,10 @@ export function AdminPage() {
 
   function updateEducation(nextEducation: SiteContent["education"]) {
     updateSite({ education: nextEducation });
+  }
+
+  function updateEducation2(nextEducation: SiteContent["education2"]) {
+    updateSite({ education2: nextEducation });
   }
 
   function updateExperience(index: number, nextExperience: SiteContent["experiences"][number]) {
@@ -775,6 +791,7 @@ export function AdminPage() {
             <h3>关于我 / 联系</h3>
             {renderLocalized("关于我标签", content.site.aboutLabel, (value) => updateSiteLocalized("aboutLabel", value))}
             {renderLocalized("关于我大标题", content.site.aboutHeadline, (value) => updateSiteLocalized("aboutHeadline", value))}
+            {renderStyleControls("关于我大标题字体", content.site.aboutHeadlineStyle, (value) => updateSite({ aboutHeadlineStyle: value }))}
             {renderLocalized("关于我正文", content.site.bio, (value) => updateSiteLocalized("bio", value), true)}
             {renderStyleControls("关于我正文字体", content.site.bioStyle, (value) => updateSite({ bioStyle: value }))}
             <div className="admin-upload">
@@ -807,16 +824,36 @@ export function AdminPage() {
             <div className="admin-panel-heading">
               <h3>学校信息</h3>
             </div>
+            <h4>第一学历</h4>
             {renderLocalized("学校名称", content.site.education.school, (value) => updateEducation({ ...content.site.education, school: value }))}
+            {renderStyleControls("第一学历学校名字体", content.site.education.titleStyle, (value) =>
+              updateEducation({ ...content.site.education, titleStyle: value }),
+            )}
             {renderLocalized("专业 / 学位", content.site.education.degree, (value) => updateEducation({ ...content.site.education, degree: value }))}
             {renderLocalized("时间", content.site.education.time, (value) => updateEducation({ ...content.site.education, time: value }))}
-            {renderLocalized("学校简介", content.site.education.description, (value) => updateEducation({ ...content.site.education, description: value }), true)}
-            {renderStyleControls("学校简介字体", content.site.education.style, (value) =>
-              updateEducation({ ...content.site.education, style: value }),
-            )}
             <label>
               学校链接（可选）
               <input value={content.site.education.link || ""} onChange={(event) => updateEducation({ ...content.site.education, link: event.target.value })} />
+            </label>
+            <h4>第二学历</h4>
+            {renderLocalized("学校名称", content.site.education2?.school || emptyLocalized, (value) =>
+              updateEducation2({ ...(content.site.education2 || emptySite.education2!), school: value }),
+            )}
+            {renderStyleControls("第二学历学校名字体", content.site.education2?.titleStyle, (value) =>
+              updateEducation2({ ...(content.site.education2 || emptySite.education2!), titleStyle: value }),
+            )}
+            {renderLocalized("专业 / 学位", content.site.education2?.degree || emptyLocalized, (value) =>
+              updateEducation2({ ...(content.site.education2 || emptySite.education2!), degree: value }),
+            )}
+            {renderLocalized("时间", content.site.education2?.time || emptyLocalized, (value) =>
+              updateEducation2({ ...(content.site.education2 || emptySite.education2!), time: value }),
+            )}
+            <label>
+              学校链接（可选）
+              <input
+                value={content.site.education2?.link || ""}
+                onChange={(event) => updateEducation2({ ...(content.site.education2 || emptySite.education2!), link: event.target.value })}
+              />
             </label>
           </div>
 
@@ -844,6 +881,9 @@ export function AdminPage() {
                   </div>
                 </div>
                 {renderLocalized("公司名称", experience.company, (value) => updateExperience(index, { ...experience, company: value }))}
+                {renderStyleControls("公司列表名字体", experience.titleStyle, (value) =>
+                  updateExperience(index, { ...experience, titleStyle: value }),
+                )}
                 {renderLocalized("职位", experience.position, (value) => updateExperience(index, { ...experience, position: value }))}
                 {renderLocalized("时间", experience.time, (value) => updateExperience(index, { ...experience, time: value }))}
                 {renderLocalized("简介", experience.description, (value) => updateExperience(index, { ...experience, description: value }), true)}

@@ -3,8 +3,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-const letters = ["H", "E", "L", "L", "O"];
-
 export function HeroScene() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -14,49 +12,54 @@ export function HeroScene() {
 
     const context = gsap.context(() => {
       gsap.fromTo(
-        ".hello-letter",
-        { yPercent: 24, rotateX: -34, rotateY: 24, opacity: 0, scale: 0.92 },
+        ".hello-script",
+        { yPercent: 20, rotateX: -26, rotateY: 12, opacity: 0, scale: 0.92 },
         {
           yPercent: 0,
           rotateX: 0,
-          rotateY: -8,
+          rotateY: -4,
           opacity: 1,
           scale: 1,
-          duration: 1.2,
+          duration: 1.15,
           ease: "expo.out",
-          stagger: 0.07,
         },
       );
 
-      gsap.to(".hello-letter", {
-        y: "random(-12, 16)",
-        rotateY: "random(-14, 8)",
-        rotateX: "random(-5, 7)",
-        duration: 3.8,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        stagger: 0.18,
-      });
-
-      gsap.to(".hello-shadow", {
-        x: 22,
-        y: 24,
-        duration: 4.6,
+      gsap.to(".hello-script", {
+        y: "random(-10, 14)",
+        rotateY: "random(-5, 5)",
+        rotateX: "random(-2, 4)",
+        duration: 4.2,
         ease: "sine.inOut",
         repeat: -1,
         yoyo: true,
       });
 
-      gsap.to(".hello-slab", {
-        x: "random(-18, 20)",
-        y: "random(-12, 16)",
-        rotate: "random(-8, 8)",
-        duration: 5.2,
+      gsap.to(".hello-orb", {
+        x: "random(-18, 18)",
+        y: "random(-14, 16)",
+        rotate: "random(-14, 14)",
+        duration: 4.8,
         ease: "sine.inOut",
         repeat: -1,
         yoyo: true,
-        stagger: 0.24,
+        stagger: 0.2,
+      });
+
+      gsap.to(".hello-stamp", {
+        rotate: "+=360",
+        duration: 24,
+        ease: "none",
+        repeat: -1,
+      });
+
+      gsap.to(".hello-grain", {
+        xPercent: -4,
+        yPercent: 3,
+        duration: 6,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
       });
 
       gsap.to(".hello-orbit", {
@@ -75,15 +78,12 @@ export function HeroScene() {
       <div className="hello-glow hello-glow-one" />
       <div className="hello-glow hello-glow-two" />
       <div className="hello-orbit" />
-      <div className="hello-slab hello-slab-one" />
-      <div className="hello-slab hello-slab-two" />
+      <div className="hello-grain" />
+      <div className="hello-stamp">SYSTEM<br />MEMORY</div>
+      <div className="hello-orb hello-orb-one" />
+      <div className="hello-orb hello-orb-two" />
       <div className="hello-word">
-        <span className="hello-shadow">HELLO</span>
-        {letters.map((letter, index) => (
-          <span className="hello-letter" data-letter={letter} key={`${letter}-${index}`}>
-            {letter}
-          </span>
-        ))}
+        <span className="hello-script">hello</span>
       </div>
       <span className="hello-pill hello-pill-one">UI</span>
       <span className="hello-pill hello-pill-two">UX</span>

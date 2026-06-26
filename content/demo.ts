@@ -39,6 +39,7 @@ export const siteCopy: SiteContent = {
     zh: "策略的脑，手艺人的心。",
     en: "A strategist’s mind. A maker’s heart.",
   },
+  aboutHeadlineStyle: { fontSize: "large", fontWeight: "bold" },
   education: {
     school: { zh: "你的学校", en: "Your University" },
     degree: { zh: "专业 / 学位", en: "Major / Degree" },
@@ -46,6 +47,16 @@ export const siteCopy: SiteContent = {
     description: { zh: "这里填写教育背景简介。", en: "Write a short education description here." },
     link: "",
     style: { fontSize: "small", fontWeight: "regular" },
+    titleStyle: { fontSize: "large", fontWeight: "bold" },
+  },
+  education2: {
+    school: { zh: "", en: "" },
+    degree: { zh: "", en: "" },
+    time: { zh: "", en: "" },
+    description: { zh: "", en: "" },
+    link: "",
+    style: { fontSize: "small", fontWeight: "regular" },
+    titleStyle: { fontSize: "medium", fontWeight: "bold" },
   },
   experiences: [
     {
@@ -58,6 +69,7 @@ export const siteCopy: SiteContent = {
       },
       link: "",
       style: { fontSize: "small", fontWeight: "regular" },
+      titleStyle: { fontSize: "medium", fontWeight: "bold" },
       modalTitleStyle: { fontSize: "medium", fontWeight: "bold" },
     },
   ],

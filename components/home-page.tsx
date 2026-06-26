@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { Project } from "@/content/types";
+import type { EducationItem, Project } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { assetPath } from "@/lib/paths";
@@ -21,6 +21,10 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
   const sectionNumber = (id: string) => `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
   const activeExperience =
     activeExperienceIndex === null ? null : site.experiences[activeExperienceIndex] || null;
+  const educationItems = [site.education, site.education2].filter((education): education is EducationItem => {
+    if (!education) return false;
+    return Boolean(t(education.school).trim() || t(education.degree).trim() || t(education.time).trim());
+  });
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -141,24 +145,33 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 </div>
               </div>
               <div className="about-copy reveal">
-                <h2>{t(site.aboutHeadline)}</h2>
+                <h2 className={`rich-size-${site.aboutHeadlineStyle?.fontSize || "large"} rich-weight-${site.aboutHeadlineStyle?.fontWeight || "bold"}`}>
+                  {t(site.aboutHeadline)}
+                </h2>
                 <p className={`rich-text rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
                   {t(site.bio)}
                 </p>
                 <div className="about-info">
-                  <article>
-                    <span>EDU</span>
-                    <h3>{t(site.education.school)}</h3>
-                    <strong>{t(site.education.degree)} · {t(site.education.time)}</strong>
-                    <p className={`rich-text rich-size-${site.education.style?.fontSize || "small"} rich-weight-${site.education.style?.fontWeight || "regular"}`}>
-                      {t(site.education.description)}
-                    </p>
-                    {site.education.link ? <a href={site.education.link} target="_blank" rel="noreferrer">Link ↗</a> : null}
-                  </article>
+                  <div className="education-list">
+                    {educationItems.map((education, index) => (
+                      <article className="education-card" key={`${education.school.en}-${index}`}>
+                        <span>{index === 0 ? "EDU" : "EDU 02"}</span>
+                        <h3 className={`rich-size-${education.titleStyle?.fontSize || (index === 0 ? "large" : "medium")} rich-weight-${education.titleStyle?.fontWeight || "bold"}`}>
+                          {t(education.school)}
+                        </h3>
+                        <strong>{t(education.degree)} · {t(education.time)}</strong>
+                        {education.link ? <a href={education.link} target="_blank" rel="noreferrer">Link ↗</a> : null}
+                      </article>
+                    ))}
+                  </div>
                   {site.experiences.map((experience, index) => (
                     <article key={`${experience.company.en}-${index}`}>
                       <span>{String(index + 1).padStart(2, "0")}</span>
-                      <button className="experience-trigger" type="button" onClick={() => setActiveExperienceIndex(index)}>
+                      <button
+                        className={`experience-trigger rich-size-${experience.titleStyle?.fontSize || "medium"} rich-weight-${experience.titleStyle?.fontWeight || "bold"}`}
+                        type="button"
+                        onClick={() => setActiveExperienceIndex(index)}
+                      >
                         {t(experience.company)}
                       </button>
                       <strong>{t(experience.position)} · {t(experience.time)}</strong>

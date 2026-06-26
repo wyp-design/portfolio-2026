@@ -111,6 +111,10 @@
       "zh": "王亚鹏 Penn.W",
       "en": "A strategist’s mind. A maker’s heart."
     },
+    "aboutHeadlineStyle": {
+      "fontSize": "large",
+      "fontWeight": "bold"
+    },
     "education": {
       "school": {
         "zh": "北京理工大学（非全日制）",
@@ -132,6 +136,37 @@
       "style": {
         "fontSize": "small",
         "fontWeight": "regular"
+      },
+      "titleStyle": {
+        "fontSize": "large",
+        "fontWeight": "bold"
+      }
+    },
+    "education2": {
+      "school": {
+        "zh": "",
+        "en": ""
+      },
+      "degree": {
+        "zh": "",
+        "en": ""
+      },
+      "time": {
+        "zh": "",
+        "en": ""
+      },
+      "description": {
+        "zh": "",
+        "en": ""
+      },
+      "link": "",
+      "style": {
+        "fontSize": "small",
+        "fontWeight": "regular"
+      },
+      "titleStyle": {
+        "fontSize": "medium",
+        "fontWeight": "bold"
       }
     },
     "experiences": [
