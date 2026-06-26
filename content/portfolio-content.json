@@ -345,8 +345,8 @@
       },
       "year": "2026",
       "role": {
-        "zh": "产品设计 / 研究",
-        "en": "Product Design / Research"
+        "zh": "UI设计师",
+        "en": "UI Designer"
       },
       "category": {
         "zh": "AI 产品",
@@ -398,7 +398,38 @@
             "en": "Teams needed more than a chat box: they needed a way to understand context, review steps, and reuse successful work safely."
           },
           "tone": "light",
-          "media": []
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1782453724019-9e9189e6-0563-4845-827d-81deb266c10a-image.png",
+              "mimeType": "image/png",
+              "originalFilename": "image.png",
+              "alt": {
+                "zh": "image.png",
+                "en": "image.png"
+              }
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782453734897-747b0af4-85dc-4321-ba33-e1cc189c9a9f-image-1.png",
+              "mimeType": "image/png",
+              "originalFilename": "image (1).png",
+              "alt": {
+                "zh": "image (1).png",
+                "en": "image (1).png"
+              }
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782453743445-30e042d9-ba7c-4bee-8a39-f1581034e0b4-image-2.png",
+              "mimeType": "image/png",
+              "originalFilename": "image (2).png",
+              "alt": {
+                "zh": "image (2).png",
+                "en": "image (2).png"
+              }
+            }
+          ]
         },
         {
           "eyebrow": {
@@ -623,5 +654,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T03:45:42.823Z"
+  "updatedAt": "2026-06-26T06:02:30.861Z"
 }
