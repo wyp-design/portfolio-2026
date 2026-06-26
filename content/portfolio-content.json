@@ -121,7 +121,7 @@
         "en": "Jiyuan Vocational & Technical College"
       },
       "degree": {
-        "zh": "多媒体与广告设计",
+        "zh": "多媒体与广告设计/大专",
         "en": "Multimedia and Visual Communications Design"
       },
       "time": {
@@ -148,7 +148,7 @@
         "en": "Beijing Institute of Technology (Part-time)"
       },
       "degree": {
-        "zh": "数字媒体/ 工学学位",
+        "zh": "数字媒体/ 本科",
         "en": "Digital Media / B.E."
       },
       "time": {
@@ -623,5 +623,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T03:35:12.384Z"
+  "updatedAt": "2026-06-26T03:36:17.816Z"
 }
