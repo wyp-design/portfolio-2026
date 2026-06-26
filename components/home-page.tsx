@@ -25,6 +25,13 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
     if (!education) return false;
     return Boolean(t(education.school).trim() || t(education.degree).trim() || t(education.time).trim());
   });
+  const bioBlocks = t(site.bio)
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+  const firstPointIndex = bioBlocks.findIndex((block) => /^\s*(\d+[、.．]|[*-]*\s*\*\*\d+[、.．])/.test(block));
+  const bioIntro = firstPointIndex >= 0 ? bioBlocks.slice(0, firstPointIndex).join("\n\n") : t(site.bio);
+  const bioPoints = firstPointIndex >= 0 ? bioBlocks.slice(firstPointIndex) : [];
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -148,9 +155,16 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <h2 className={`rich-size-${site.aboutHeadlineStyle?.fontSize || "large"} rich-weight-${site.aboutHeadlineStyle?.fontWeight || "bold"}`}>
                   {t(site.aboutHeadline)}
                 </h2>
-                <p className={`rich-text rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
-                  {t(site.bio)}
-                </p>
+                <div className={`about-bio rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
+                  <p className="about-bio-intro rich-text">{bioIntro}</p>
+                  {bioPoints.length ? (
+                    <div className="about-bio-points">
+                      {bioPoints.map((point, index) => (
+                        <p className="rich-text" key={`${point}-${index}`}>{point}</p>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
                 <div className="about-info">
                   <div className="education-list">
                     {educationItems.map((education, index) => (
