@@ -117,12 +117,12 @@
     },
     "education": {
       "school": {
-        "zh": "北京理工大学（非全日制）",
-        "en": "Beijing Institute of Technology (Part-time)"
+        "zh": "济源职业技术学院",
+        "en": "Jiyuan Vocational & Technical College"
       },
       "degree": {
-        "zh": "数字媒体/ 工学学位",
-        "en": "Digital Media / B.E."
+        "zh": "多媒体与广告设计",
+        "en": "Multimedia and Visual Communications Design"
       },
       "time": {
         "zh": "2015.9",
@@ -138,22 +138,22 @@
         "fontWeight": "regular"
       },
       "titleStyle": {
-        "fontSize": "large",
+        "fontSize": "medium",
         "fontWeight": "bold"
       }
     },
     "education2": {
       "school": {
-        "zh": "",
-        "en": ""
+        "zh": "北京理工大学（非全日制）",
+        "en": "Beijing Institute of Technology (Part-time)"
       },
       "degree": {
-        "zh": "",
-        "en": ""
+        "zh": "数字媒体/ 工学学位",
+        "en": "Digital Media / B.E."
       },
       "time": {
-        "zh": "",
-        "en": ""
+        "zh": "2021.9",
+        "en": "2021.9"
       },
       "description": {
         "zh": "",
@@ -191,6 +191,10 @@
         "style": {
           "fontSize": "small",
           "fontWeight": "regular"
+        },
+        "titleStyle": {
+          "fontSize": "small",
+          "fontWeight": "medium"
         }
       },
       {
@@ -214,6 +218,10 @@
         "style": {
           "fontSize": "small",
           "fontWeight": "regular"
+        },
+        "titleStyle": {
+          "fontSize": "small",
+          "fontWeight": "medium"
         }
       },
       {
@@ -237,6 +245,10 @@
         "style": {
           "fontSize": "small",
           "fontWeight": "regular"
+        },
+        "titleStyle": {
+          "fontSize": "small",
+          "fontWeight": "medium"
         }
       },
       {
@@ -260,6 +272,10 @@
         "style": {
           "fontSize": "small",
           "fontWeight": "regular"
+        },
+        "titleStyle": {
+          "fontSize": "small",
+          "fontWeight": "medium"
         }
       },
       {
@@ -283,6 +299,10 @@
         "style": {
           "fontSize": "small",
           "fontWeight": "regular"
+        },
+        "titleStyle": {
+          "fontSize": "small",
+          "fontWeight": "medium"
         }
       }
     ],
@@ -603,5 +623,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T09:51:13.052Z"
+  "updatedAt": "2026-06-26T03:34:37.116Z"
 }
