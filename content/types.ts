@@ -8,6 +8,8 @@ export type RichTextStyle = {
   fontWeight?: "regular" | "medium" | "bold";
 };
 
+export type TextAlign = "left" | "center" | "right";
+
 export type EducationItem = {
   school: LocalizedText;
   degree: LocalizedText;
@@ -24,6 +26,9 @@ export type UploadedMedia = {
   mimeType?: string;
   originalFilename?: string;
   alt?: LocalizedText;
+  caption?: LocalizedText;
+  layout?: "auto" | "portrait-grid" | "landscape-split" | "full";
+  textPosition?: "left" | "right";
 };
 
 export type HomeSectionId = "hero" | "manifesto" | "work" | "about" | "contact";
@@ -93,7 +98,13 @@ export type Project = {
     eyebrow: LocalizedText;
     title: LocalizedText;
     body: LocalizedText;
+    titleStyle?: RichTextStyle;
+    titleAlign?: TextAlign;
     bodyStyle?: RichTextStyle;
+    bodyAlign?: TextAlign;
+    tableAlign?: TextAlign;
+    mediaLayout?: "auto" | "portrait-grid" | "landscape-split" | "full";
+    splitPattern?: "image-left" | "image-right" | "abab";
     tone?: "light" | "dark" | "blue" | "lime";
     media?: UploadedMedia[];
   }>;

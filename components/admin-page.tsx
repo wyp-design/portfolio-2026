@@ -8,6 +8,7 @@ type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
 type ProjectSection = Project["sections"][number];
 type ProjectMedia = NonNullable<ProjectSection["media"]>[number];
 type Tone = NonNullable<ProjectSection["tone"]>;
+type Align = "left" | "center" | "right";
 type UploadTarget = "about" | "project";
 type UploadState = {
   active: boolean;
@@ -85,6 +86,13 @@ function createSection(): ProjectSection {
     eyebrow: { zh: "背景", en: "Context" },
     title: { zh: "项目标题", en: "Project title" },
     body: { zh: "这里写项目详情。", en: "Write project details here." },
+    titleStyle: { fontSize: "large", fontWeight: "bold" },
+    titleAlign: "left",
+    bodyStyle: { fontSize: "medium", fontWeight: "regular" },
+    bodyAlign: "left",
+    tableAlign: "left",
+    mediaLayout: "auto",
+    splitPattern: "abab",
     tone: "light",
     media: [],
   };
@@ -101,7 +109,6 @@ function createProject(order: number): Project {
     accent: "#285cff",
     order,
     featured: false,
-    status: { zh: "样板案例", en: "Sample case" },
     externalUrl: "",
     metrics: [],
     sections: [createSection()],
@@ -190,6 +197,9 @@ function buildUploadedMedia(file: File, upload: { fileUrl: string; mimeType?: st
     mimeType: upload.mimeType || file.type,
     originalFilename: filename,
     alt: { zh: filename, en: filename },
+    caption: { zh: "", en: "" },
+    layout: "auto",
+    textPosition: "right",
   };
 }
 
@@ -413,6 +423,14 @@ export function AdminPage() {
       ...section,
       media: (section.media || []).filter((_, index) => index !== mediaIndex),
     });
+  }
+
+  function updateMedia(sectionIndex: number, mediaIndex: number, nextMedia: ProjectMedia) {
+    if (!selectedProject) return;
+    const section = selectedProject.sections[sectionIndex];
+    const media = [...(section.media || [])];
+    media[mediaIndex] = nextMedia;
+    updateSection(sectionIndex, { ...section, media });
   }
 
   function applyProjectJson() {
@@ -674,6 +692,19 @@ export function AdminPage() {
           </select>
         </label>
       </div>
+    );
+  }
+
+  function renderAlignControls(title: string, value: Align | undefined, onChange: (nextValue: Align) => void) {
+    return (
+      <label>
+        {title}
+        <select value={value || "left"} onChange={(event) => onChange(event.target.value as Align)}>
+          <option value="left">左对齐</option>
+          <option value="center">居中</option>
+          <option value="right">右对齐</option>
+        </select>
+      </label>
     );
   }
 
@@ -964,7 +995,7 @@ export function AdminPage() {
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <strong>{project.title.zh || project.title.en}</strong>
-                <small>{project.year} · {project.slug}</small>
+                <small>{[project.year, project.slug].filter(Boolean).join(" · ") || "未填写辅助信息"}</small>
               </button>
             ))}
           </div>
@@ -983,17 +1014,19 @@ export function AdminPage() {
 
             <div className="admin-form-grid">
               <label>
-                Slug
+                页面地址 Slug（内部链接用，不是外部链接）
                 <input
                   value={selectedProject.slug}
                   onChange={(event) => updateSelectedProject({ ...selectedProject, slug: slugify(event.target.value) })}
+                  placeholder="例如 ai-project"
                 />
               </label>
               <label>
-                年份
+                年份（选填）
                 <input
                   value={selectedProject.year}
                   onChange={(event) => updateSelectedProject({ ...selectedProject, year: event.target.value })}
+                  placeholder="例如 2026，可留空"
                 />
               </label>
               <label>
@@ -1019,9 +1052,6 @@ export function AdminPage() {
                 />
                 是否精选
               </label>
-              {renderLocalized("状态", localizedValue(selectedProject.status), (value) =>
-                updateSelectedProject({ ...selectedProject, status: value }),
-              )}
               {renderLocalized("项目标题", selectedProject.title, (value) =>
                 updateSelectedProject({ ...selectedProject, title: value }),
               )}
@@ -1079,14 +1109,67 @@ export function AdminPage() {
                   </label>
                   {renderLocalized("段落眉题", section.eyebrow, (value) => updateSection(sectionIndex, { ...section, eyebrow: value }))}
                   {renderLocalized("段落标题", section.title, (value) => updateSection(sectionIndex, { ...section, title: value }))}
+                  {renderStyleControls("段落标题字体", section.titleStyle, (value) => updateSection(sectionIndex, { ...section, titleStyle: value }))}
+                  {renderAlignControls("段落标题对齐", section.titleAlign, (value) => updateSection(sectionIndex, { ...section, titleAlign: value }))}
                   {renderLocalized("段落正文", section.body, (value) => updateSection(sectionIndex, { ...section, body: value }), true)}
                   {renderStyleControls("段落正文字体", section.bodyStyle, (value) => updateSection(sectionIndex, { ...section, bodyStyle: value }))}
+                  {renderAlignControls("段落正文对齐", section.bodyAlign, (value) => updateSection(sectionIndex, { ...section, bodyAlign: value }))}
+                  {renderAlignControls("表格内容对齐", section.tableAlign, (value) => updateSection(sectionIndex, { ...section, tableAlign: value }))}
+                  <label>
+                    媒体展示方式
+                    <select
+                      value={section.mediaLayout || "auto"}
+                      onChange={(event) => updateSection(sectionIndex, { ...section, mediaLayout: event.target.value as ProjectSection["mediaLayout"] })}
+                    >
+                      <option value="auto">自动判断</option>
+                      <option value="portrait-grid">竖版图：一排 4 个，可点击放大</option>
+                      <option value="landscape-split">横版图：图文左右布局</option>
+                      <option value="full">通栏大图 / PDF 预览</option>
+                    </select>
+                  </label>
+                  <label>
+                    横版图文排版
+                    <select
+                      value={section.splitPattern || "abab"}
+                      onChange={(event) => updateSection(sectionIndex, { ...section, splitPattern: event.target.value as ProjectSection["splitPattern"] })}
+                    >
+                      <option value="abab">ABAB 交替</option>
+                      <option value="image-left">图片始终在左</option>
+                      <option value="image-right">图片始终在右</option>
+                    </select>
+                  </label>
                   {section.media?.length ? (
                     <div className="admin-media-list">
                       {section.media.map((media, mediaIndex) => (
                         <div key={`${media.url}-${mediaIndex}`}>
                           <span>{media.mimeType || media._type}</span>
                           <a href={media.url} target="_blank" rel="noreferrer">{media.originalFilename || media.url}</a>
+                          <label>
+                            单个素材展示
+                            <select
+                              value={media.layout || "auto"}
+                              onChange={(event) => updateMedia(sectionIndex, mediaIndex, { ...media, layout: event.target.value as ProjectMedia["layout"] })}
+                            >
+                              <option value="auto">跟随段落设置</option>
+                              <option value="portrait-grid">竖版四宫格</option>
+                              <option value="landscape-split">横版图文</option>
+                              <option value="full">通栏 / PDF</option>
+                            </select>
+                          </label>
+                          <label>
+                            图文位置
+                            <select
+                              value={media.textPosition || "right"}
+                              onChange={(event) => updateMedia(sectionIndex, mediaIndex, { ...media, textPosition: event.target.value as ProjectMedia["textPosition"] })}
+                            >
+                              <option value="right">图片左，文字右</option>
+                              <option value="left">文字左，图片右</option>
+                            </select>
+                          </label>
+                          {renderLocalized("图片 / PDF 说明", localizedValue(media.caption), (value) =>
+                            updateMedia(sectionIndex, mediaIndex, { ...media, caption: value }),
+                            true,
+                          )}
                           <button type="button" className="danger" onClick={() => removeMedia(sectionIndex, mediaIndex)}>移除</button>
                         </div>
                       ))}
