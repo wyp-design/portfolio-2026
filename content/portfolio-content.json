@@ -407,6 +407,10 @@
               "alt": {
                 "zh": "image.png",
                 "en": "image.png"
+              },
+              "caption": {
+                "zh": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Shake Off the Office Vibe — Travel Guide.",
+                "en": ""
               }
             },
             {
@@ -417,6 +421,10 @@
               "alt": {
                 "zh": "image (1).png",
                 "en": "image (1).png"
+              },
+              "caption": {
+                "zh": "Following the standards of an internet brand-operations visual designer, create a vertical 3D recruitment poster with the theme \"JOIN US · Team Recruitment · WE NEED YOU · Find Your Glow · INNOVATE COLLABORATE GROW\". Off-white background, a centered stack of purple, pink and yellow 3D geometric shapes mixed with smiley balloons, a JOIN US ID badge hanging in the middle, listing 4 open roles — Creative Planning, Visual Design, Content Operations, Community Operations. Overall young, enthusiastic, designer-toy 3D clay style.",
+                "en": ""
               }
             },
             {
@@ -427,9 +435,20 @@
               "alt": {
                 "zh": "image (2).png",
                 "en": "image (2).png"
+              },
+              "caption": {
+                "zh": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Urban Nomad Project.",
+                "en": ""
               }
             }
-          ]
+          ],
+          "titleStyle": {
+            "fontSize": "small",
+            "fontWeight": "medium"
+          },
+          "bodyAlign": "center",
+          "tableAlign": "center",
+          "mediaLayout": "landscape-split"
         },
         {
           "eyebrow": {
@@ -654,5 +673,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T06:02:30.861Z"
+  "updatedAt": "2026-06-26T08:26:50.283Z"
 }
