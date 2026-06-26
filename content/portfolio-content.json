@@ -53,8 +53,8 @@
       "en": "UI/UX/AI Designer"
     },
     "location": {
-      "zh": "上海 · 面向世界",
-      "en": "Shanghai · Working globally"
+      "zh": "深圳· 面向世界",
+      "en": "Shenzhen · Working globally"
     },
     "heroTitle": {
       "line1": {
@@ -100,7 +100,7 @@
       "en": "**Concise & precise English translation:**\n\n---\n\n**Overview**  \n9 years of design experience, specializing in AI-driven design, C-end and B-end UI & interaction design. Proficient in multi-platform design guidelines, capable of independently managing the full design process from initial planning to final delivery. Expert in APP, mini-program, H5, data visualization, and B-end admin dashboard design. Rich cross-industry project experience and strong development collaboration skills.\n\n**1. Design Tools:** Codex, Nanobanana, ChatGPT, Gemini, Sketch, Figma, Photoshop, Illustrator, Axure RP  \n**2. Front-End Collaboration:** Familiar with HTML & CSS; proficient in development communication workflows.  \n**3. Extensive C-end & B-end design experience** across internet, mobile communications, e-commerce, and more.  \n**4. Skilled in cross-functional collaboration and developer handoff**, with strong execution and teamwork abilities.  \n**5. Photography, video editing, lighting setup**, plus a working knowledge of Xiaohongshu, Douyin, and WeChat Channels operations."
     },
     "bioStyle": {
-      "fontSize": "medium",
+      "fontSize": "small",
       "fontWeight": "regular"
     },
     "aboutLabel": {
@@ -113,16 +113,16 @@
     },
     "education": {
       "school": {
-        "zh": "你的学校",
-        "en": "Your University"
+        "zh": "北京理工大学（非全日制）",
+        "en": "Beijing Institute of Technology (Part-time)"
       },
       "degree": {
-        "zh": "专业 / 学位",
-        "en": "Major / Degree"
+        "zh": "数字媒体/ 工学学位",
+        "en": "Digital Media / B.E."
       },
       "time": {
-        "zh": "年份",
-        "en": "Year"
+        "zh": "2015.9",
+        "en": "2015.9"
       },
       "description": {
         "zh": "这里填写教育背景简介，支持换行。",
@@ -137,20 +137,112 @@
     "experiences": [
       {
         "company": {
-          "zh": "公司名称",
-          "en": "Company name"
+          "zh": "深圳岚创云商科技有限公司（天津科林车业有限公司）",
+          "en": "Shenzhen Lanchuang Cloud Commerce Technology Co., Ltd."
         },
         "position": {
-          "zh": "UI/UX 设计师",
-          "en": "UI/UX Designer"
+          "zh": "UI设计师主管",
+          "en": "UI Design Lead"
         },
         "time": {
-          "zh": "2024 — 至今",
-          "en": "2024 — Present"
+          "zh": "2025.2 — 至今",
+          "en": "2025.2 — Present"
         },
         "description": {
-          "zh": "这里填写工作经历简介，支持换行。\n可以写负责的业务、设计范围、产出结果。",
-          "en": "Write your work experience summary here.\nYou can describe responsibilities, design scope, and outcomes."
+          "zh": "1、负责“Cyseekin”独立站\\亚马逊的UI设计方案；\n\n2、负责公司和社媒图、海报，PPT等内容的设计；\n\n3、负责产品拍摄/设计统筹工作；\n\n4、负责设计部门和运营部门的协调工作。",
+          "en": "→ Lead UI design for Cyseekin's standalone website and Amazon storefront.\n\n→ Design company and social media graphics, posters, and presentations.\n\n→ Oversee product photography and design coordination.\n\n→ Coordinate between design and operations teams."
+        },
+        "link": "",
+        "style": {
+          "fontSize": "small",
+          "fontWeight": "regular"
+        }
+      },
+      {
+        "company": {
+          "zh": "深圳锐云智能有限公司(珠海安联锐视科技股份有限公司)",
+          "en": "Shenzhen Ruiyun Intelligent Co., Ltd."
+        },
+        "position": {
+          "zh": "UI设计师",
+          "en": "UI Designer"
+        },
+        "time": {
+          "zh": "2024.8—2024.11",
+          "en": "2024.8—2024.11"
+        },
+        "description": {
+          "zh": "1、负责“Napcat”独立站与亚马逊平台UI设计方案；\n\n2、制作社媒图、海报、PPT等设计内容；\n\n3、制定UI组件设计规范及Axure原型组件标准。",
+          "en": "→ Lead UI design for Napcat's standalone website and Amazon platform.\n\n→ Create social media graphics, posters, presentations, and other design assets.\n\n→ Establish UI component design guidelines and Axure prototype component standards."
+        },
+        "link": "",
+        "style": {
+          "fontSize": "small",
+          "fontWeight": "regular"
+        }
+      },
+      {
+        "company": {
+          "zh": "深圳看到科技有限公司",
+          "en": "Shenzhen Kandao Technology Co., Ltd."
+        },
+        "position": {
+          "zh": "UX设计师",
+          "en": "UX Designer"
+        },
+        "time": {
+          "zh": "2024.1—2024.7",
+          "en": "2024.1—2024.7"
+        },
+        "description": {
+          "zh": "1、负责公司官网及“QooCam 3 App”视觉设计\n\n2、完成相机机内UI项目设计\n\n3、设计独立站、亚马逊页面和营销海报",
+          "en": "→ Responsible for visual design of the company website and QooCam 3 App.\n\n→ Completed UI design for in-camera interface projects.\n\n→ Designed standalone website, Amazon pages, and marketing posters."
+        },
+        "link": "",
+        "style": {
+          "fontSize": "small",
+          "fontWeight": "regular"
+        }
+      },
+      {
+        "company": {
+          "zh": "华通科技有限公司（中兴通讯股份有限公司）",
+          "en": "Huatong Technology Co., Ltd. (a subsidiary of ZTE Corporation)"
+        },
+        "position": {
+          "zh": "UX设计师",
+          "en": "UX Designer"
+        },
+        "time": {
+          "zh": "2017.7—2023.12",
+          "en": "2017.7—2023.12"
+        },
+        "description": {
+          "zh": "1、QH Dashboard App：网络看板交互设计与高保真设计\n\n2、RAIS平台 App/后台 Web：网络运维工具的原型与UI设计\n\n3、缅甸 OML Dashboard App：数据看板交互与高保真设计\n\n4、多屏推推 App：投屏软件的原型与高保真设计\n\n5、波鞋街 App：电商平台交互原型与UI设计\n\n6、云&网 Cloud Network Web：资源管理平台网页设计\n\n7、制定移动端与Web端设计规范，优化组件库\n\n8、与研发团队深度合作，确保高效交付并持续优化用户体验\n",
+          "en": "→ QH Dashboard App: interaction design and high‑fidelity design for network dashboards.\n\n→ RAIS platform App / Backend Web: prototyping and UI design for network operations tools.\n\n→ Myanmar OML Dashboard App: interaction and high‑fidelity design for data dashboards.\n\n→ Duoping Tuitui App: prototyping and high‑fidelity design for screen‑casting software.\n\n→ Boxiejie App: interactive prototyping and UI design for an e‑commerce platform.\n\n→ Cloud & Network Web: web design for a resource management platform.\n\n→ Established design guidelines for mobile and web, and optimized component libraries.\n\n→ Collaborated closely with R&D teams to ensure efficient delivery and continuously improve user experience."
+        },
+        "link": "",
+        "style": {
+          "fontSize": "small",
+          "fontWeight": "regular"
+        }
+      },
+      {
+        "company": {
+          "zh": "广州夜界网络科技有限公司",
+          "en": "Guangzhou Yejie Network Technology Co., Ltd."
+        },
+        "position": {
+          "zh": "UI设计师",
+          "en": "UI Designer"
+        },
+        "time": {
+          "zh": "2015.11—2017.6",
+          "en": "2015.11—2017.6"
+        },
+        "description": {
+          "zh": "1、完成“夜界 App”UI设计，提出有效视觉解决方案；\n\n2、负责移动端人机交互界面及创意设计；\n\n3、设计公司微信公众号内容页面及H5活动页面。\n",
+          "en": "Completed UI design for Yejie App and delivered effective visual solutions.\n\nResponsible for mobile human‑computer interaction interfaces and creative design.\n\nDesigned WeChat official account content pages and H5 campaign pages.\n\n"
         },
         "link": "",
         "style": {
@@ -476,5 +568,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-25T08:12:02.608Z"
+  "updatedAt": "2026-06-25T09:51:13.052Z"
 }
