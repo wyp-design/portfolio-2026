@@ -454,7 +454,7 @@
           },
           "bodyAlign": "center",
           "tableAlign": "center",
-          "mediaLayout": "landscape-split"
+          "mediaLayout": "square-gallery"
         },
         {
           "eyebrow": {
@@ -679,5 +679,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-29T08:57:22.053Z"
+  "updatedAt": "2026-06-29T09:03:20.597Z"
 }
