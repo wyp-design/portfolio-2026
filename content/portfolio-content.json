@@ -1,6 +1,8 @@
 {
   "site": {
     "name": "王亚鹏 Penn.W",
+    "heroStyleLight": "original",
+    "heroStyleDark": "cinematic",
     "sections": [
       {
         "id": "hero",

@@ -42,6 +42,8 @@ export type HomeSection = {
 
 export type SiteContent = {
   name: string;
+  heroStyleLight?: "original" | "cinematic";
+  heroStyleDark?: "original" | "cinematic";
   sections: HomeSection[];
   shortRole: LocalizedText;
   location: LocalizedText;

@@ -36,6 +36,8 @@ const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
 const emptySite: SiteContent = {
   name: "",
+  heroStyleLight: "original",
+  heroStyleDark: "cinematic",
   sections: [],
   shortRole: emptyLocalized,
   location: emptyLocalized,
@@ -795,6 +797,29 @@ export function AdminPage() {
           {renderLocalized("所在地 / 服务范围", content.site.location, (value) => updateSiteLocalized("location", value))}
           <div className="admin-subsection">
             <h3>首页主视觉</h3>
+            <div className="admin-form-grid">
+              <label>
+                浅色模式首页样式
+                <select
+                  value={content.site.heroStyleLight || "original"}
+                  onChange={(event) => updateSite({ heroStyleLight: event.target.value as SiteContent["heroStyleLight"] })}
+                >
+                  <option value="original">当前 3D 动态形状（可回退版本）</option>
+                  <option value="cinematic">沉浸视频＋粒子效果</option>
+                </select>
+              </label>
+              <label>
+                深色模式首页样式
+                <select
+                  value={content.site.heroStyleDark || "original"}
+                  onChange={(event) => updateSite({ heroStyleDark: event.target.value as SiteContent["heroStyleDark"] })}
+                >
+                  <option value="original">当前 3D 动态形状（可回退版本）</option>
+                  <option value="cinematic">沉浸视频＋粒子效果</option>
+                </select>
+              </label>
+            </div>
+            <p className="admin-hint">两套样式都保留。访客切换深浅色时，会自动使用这里分别选择的首页效果。</p>
             {renderLocalized("首页大标题第一行", content.site.heroTitle.line1, (value) =>
               updateSite({ heroTitle: { ...content.site.heroTitle, line1: value } }),
             )}
