@@ -1,7 +1,6 @@
 {
   "site": {
     "name": "王亚鹏 Penn.W",
-    "heroStyle": "cinematic",
     "sections": [
       {
         "id": "hero",
@@ -322,6 +321,8 @@
         "href": "https://"
       }
     ],
+    "heroStyleLight": "cinematic",
+    "heroStyleDark": "cinematic",
     "aboutPhoto": {
       "_type": "image",
       "url": "/uploads/1782375107172-b6cb7e7a-6c36-4630-8d96-a35569949b61-Mask-group.jpg",
@@ -453,7 +454,7 @@
           },
           "bodyAlign": "center",
           "tableAlign": "center",
-          "mediaLayout": "square-gallery"
+          "mediaLayout": "landscape-split"
         },
         {
           "eyebrow": {
@@ -678,5 +679,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-06-26T09:05:13.906Z"
+  "updatedAt": "2026-06-29T08:57:22.053Z"
 }
