@@ -1,8 +1,7 @@
 {
   "site": {
     "name": "王亚鹏 Penn.W",
-    "heroStyleLight": "original",
-    "heroStyleDark": "cinematic",
+    "heroStyle": "cinematic",
     "sections": [
       {
         "id": "hero",
@@ -454,7 +453,7 @@
           },
           "bodyAlign": "center",
           "tableAlign": "center",
-          "mediaLayout": "landscape-split"
+          "mediaLayout": "square-gallery"
         },
         {
           "eyebrow": {

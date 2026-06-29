@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { EducationItem, Project, UploadedMedia } from "@/content/types";
+import type { EducationItem, Project } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { assetPath } from "@/lib/paths";
@@ -18,14 +18,11 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
   const root = useRef<HTMLElement>(null);
   const { language, t } = useLanguage();
   const [activeExperienceIndex, setActiveExperienceIndex] = useState<number | null>(null);
-  const [activeProjectIndex, setActiveProjectIndex] = useState<number | null>(null);
-  const [darkTheme, setDarkTheme] = useState(false);
   const sections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
   const sectionNumber = (id: string) => `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
   const activeExperience =
     activeExperienceIndex === null ? null : site.experiences[activeExperienceIndex] || null;
-  const activeProject = activeProjectIndex === null ? null : projects[activeProjectIndex] || null;
-  const heroStyle = darkTheme ? (site.heroStyleDark || "original") : (site.heroStyleLight || "original");
+  const heroStyle = site.heroStyle || "cinematic";
   const educationItems = [site.education, site.education2].filter((education): education is EducationItem => {
     if (!education) return false;
     return Boolean(t(education.school).trim() || t(education.degree).trim() || t(education.time).trim());
@@ -63,11 +60,10 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
   }, []);
 
   useEffect(() => {
-    if (activeExperienceIndex === null && activeProjectIndex === null) return;
+    if (activeExperienceIndex === null) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setActiveExperienceIndex(null);
-        setActiveProjectIndex(null);
       }
     };
     document.body.style.overflow = "hidden";
@@ -76,7 +72,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [activeExperienceIndex, activeProjectIndex]);
+  }, [activeExperienceIndex]);
 
   return (
     <main ref={root} id="top">
@@ -84,7 +80,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
         if (section.id === "hero") {
           return (
             <section className="hero grid-surface" key={section.id}>
-              <SiteHeader name={site.name} onThemeChange={setDarkTheme} />
+              <SiteHeader name={site.name} />
               <div className="hero-art">
                 {heroStyle === "cinematic" ? (
                   <CinematicHero />
@@ -133,18 +129,18 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <span>{sectionNumber("work")} {t(site.workLabel)}</span>
                 <p className="rich-text">{t(site.workIntro)}</p>
               </div>
-              <div className="project-gallery">
+              <div className="project-list">
                 {projects.map((project, index) => (
-                  <button className="project-tile reveal" type="button" onClick={() => setActiveProjectIndex(index)} key={project.slug}>
-                    <ProjectTileMedia project={project} title={t(project.title)} />
-                    <span className="project-tile-shade" />
+                  <Link className="project-row reveal" href={`/projects/${project.slug}`} key={project.slug}>
                     <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
-                    <span className="project-tile-copy">
-                      <small>{[t(project.category), project.year].filter(Boolean).join(" · ")}</small>
-                      <strong>{t(project.title)}</strong>
-                    </span>
-                    <span className="project-arrow">＋</span>
-                  </button>
+                    <div>
+                      <span className="project-category">{[t(project.category), project.year].filter(Boolean).join(" · ")}</span>
+                      <h3>{t(project.title)}</h3>
+                      <p className="rich-text">{t(project.summary)}</p>
+                    </div>
+                    <span className="project-orb" style={{ background: project.accent }} />
+                    <span className="project-arrow">↗</span>
+                  </Link>
                 ))}
               </div>
             </section>
@@ -262,66 +258,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
         </div>
       ) : null}
 
-      {activeProject ? (
-        <div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
-          <button className="project-modal-backdrop" type="button" onClick={() => setActiveProjectIndex(null)} aria-label="关闭项目弹框" />
-          <article className="project-modal-card">
-            <button className="project-modal-close" type="button" onClick={() => setActiveProjectIndex(null)} aria-label="关闭">×</button>
-            <header className="project-modal-copy">
-              <span>{[t(activeProject.category), activeProject.year].filter(Boolean).join(" · ")}</span>
-              <h2 id="project-modal-title">{t(activeProject.title)}</h2>
-              <p className="rich-text">{t(activeProject.summary)}</p>
-              <div className="project-modal-meta">
-                <span>{language === "zh" ? "角色" : "Role"}</span>
-                <strong>{t(activeProject.role)}</strong>
-              </div>
-              <Link href={`/projects/${activeProject.slug}`}>
-                {language === "zh" ? "打开完整项目页" : "Open full project"} ↗
-              </Link>
-            </header>
-            <div className="project-modal-media">
-              {activeProject.sections.map((projectSection, sectionIndex) => (
-                <section key={`${activeProject.slug}-${sectionIndex}`}>
-                  <div className="project-modal-section-copy">
-                    <span>{t(projectSection.eyebrow)}</span>
-                    <h3>{t(projectSection.title)}</h3>
-                    <p className="rich-text">{t(projectSection.body)}</p>
-                  </div>
-                  {projectSection.media?.map((media, mediaIndex) => (
-                    <ProjectModalMedia media={media} title={t(activeProject.title)} key={`${media.url}-${mediaIndex}`} />
-                  ))}
-                </section>
-              ))}
-            </div>
-          </article>
-        </div>
-      ) : null}
     </main>
   );
-}
-
-function firstProjectMedia(project: Project) {
-  return project.sections.flatMap((section) => section.media || [])[0];
-}
-
-function isVideoMime(mimeType?: string) {
-  return Boolean(mimeType?.startsWith("video/"));
-}
-
-function ProjectTileMedia({ project, title }: { project: Project; title: string }) {
-  const media = firstProjectMedia(project);
-  if (!media) return <span className="project-tile-fallback" style={{ background: project.accent }}>{title}</span>;
-  if (media.mimeType === "application/pdf") return <span className="project-tile-fallback project-tile-pdf">PDF<br />{media.originalFilename}</span>;
-  if (isVideoMime(media.mimeType)) return <video src={assetPath(media.url)} muted playsInline loop autoPlay />;
-  return <img src={assetPath(media.url)} alt={media.alt ? media.alt.zh || media.alt.en : title} />;
-}
-
-function ProjectModalMedia({ media, title }: { media: UploadedMedia; title: string }) {
-  if (media.mimeType === "application/pdf") {
-    return <iframe className="project-modal-pdf" src={assetPath(media.url)} title={media.originalFilename || title} />;
-  }
-  if (isVideoMime(media.mimeType)) {
-    return <video className="project-modal-visual" src={assetPath(media.url)} controls playsInline />;
-  }
-  return <img className="project-modal-visual" src={assetPath(media.url)} alt={media.alt?.zh || media.alt?.en || title} />;
 }

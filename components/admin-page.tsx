@@ -36,8 +36,7 @@ const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
 const emptySite: SiteContent = {
   name: "",
-  heroStyleLight: "original",
-  heroStyleDark: "cinematic",
+  heroStyle: "cinematic",
   sections: [],
   shortRole: emptyLocalized,
   location: emptyLocalized,
@@ -93,7 +92,7 @@ function createSection(): ProjectSection {
     bodyStyle: { fontSize: "medium", fontWeight: "regular" },
     bodyAlign: "left",
     tableAlign: "left",
-    mediaLayout: "auto",
+    mediaLayout: "square-gallery",
     splitPattern: "abab",
     tone: "light",
     media: [],
@@ -797,29 +796,17 @@ export function AdminPage() {
           {renderLocalized("所在地 / 服务范围", content.site.location, (value) => updateSiteLocalized("location", value))}
           <div className="admin-subsection">
             <h3>首页主视觉</h3>
-            <div className="admin-form-grid">
-              <label>
-                浅色模式首页样式
-                <select
-                  value={content.site.heroStyleLight || "original"}
-                  onChange={(event) => updateSite({ heroStyleLight: event.target.value as SiteContent["heroStyleLight"] })}
-                >
-                  <option value="original">当前 3D 动态形状（可回退版本）</option>
-                  <option value="cinematic">沉浸视频＋粒子效果</option>
-                </select>
-              </label>
-              <label>
-                深色模式首页样式
-                <select
-                  value={content.site.heroStyleDark || "original"}
-                  onChange={(event) => updateSite({ heroStyleDark: event.target.value as SiteContent["heroStyleDark"] })}
-                >
-                  <option value="original">当前 3D 动态形状（可回退版本）</option>
-                  <option value="cinematic">沉浸视频＋粒子效果</option>
-                </select>
-              </label>
-            </div>
-            <p className="admin-hint">两套样式都保留。访客切换深浅色时，会自动使用这里分别选择的首页效果。</p>
+            <label>
+              首页主视觉主题
+              <select
+                value={content.site.heroStyle || "cinematic"}
+                onChange={(event) => updateSite({ heroStyle: event.target.value as SiteContent["heroStyle"] })}
+              >
+                <option value="cinematic">开花动态效果（当前默认）</option>
+                <option value="original">原来的 3D 动态形状</option>
+              </select>
+            </label>
+            <p className="admin-hint">这个选择同时应用于浅色和深色模式；两套效果都保留，保存发布后即可切换。</p>
             {renderLocalized("首页大标题第一行", content.site.heroTitle.line1, (value) =>
               updateSite({ heroTitle: { ...content.site.heroTitle, line1: value } }),
             )}
@@ -1147,6 +1134,7 @@ export function AdminPage() {
                       onChange={(event) => updateSection(sectionIndex, { ...section, mediaLayout: event.target.value as ProjectSection["mediaLayout"] })}
                     >
                       <option value="auto">自动判断</option>
+                      <option value="square-gallery">作品画廊：一排 4 个正方形，点击弹框</option>
                       <option value="portrait-grid">竖版图：一排 4 个，可点击放大</option>
                       <option value="landscape-split">横版图：图文左右布局</option>
                       <option value="full">通栏大图 / PDF 预览</option>

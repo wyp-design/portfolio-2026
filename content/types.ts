@@ -42,8 +42,7 @@ export type HomeSection = {
 
 export type SiteContent = {
   name: string;
-  heroStyleLight?: "original" | "cinematic";
-  heroStyleDark?: "original" | "cinematic";
+  heroStyle?: "original" | "cinematic";
   sections: HomeSection[];
   shortRole: LocalizedText;
   location: LocalizedText;
@@ -105,7 +104,7 @@ export type Project = {
     bodyStyle?: RichTextStyle;
     bodyAlign?: TextAlign;
     tableAlign?: TextAlign;
-    mediaLayout?: "auto" | "portrait-grid" | "landscape-split" | "full";
+    mediaLayout?: "auto" | "square-gallery" | "portrait-grid" | "landscape-split" | "full";
     splitPattern?: "image-left" | "image-right" | "abab";
     tone?: "light" | "dark" | "blue" | "lime";
     media?: UploadedMedia[];

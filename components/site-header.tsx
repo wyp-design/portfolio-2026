@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n";
 
-export function SiteHeader({ name = "YOUR.NAME", onThemeChange }: { name?: string; onThemeChange?: (dark: boolean) => void }) {
+export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
   const { language, setLanguage } = useLanguage();
   const [dark, setDark] = useState(false);
   const [sound, setSound] = useState(false);
@@ -12,8 +12,7 @@ export function SiteHeader({ name = "YOUR.NAME", onThemeChange }: { name?: strin
 
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
-    onThemeChange?.(dark);
-  }, [dark, onThemeChange]);
+  }, [dark]);
 
   return (
     <header className="site-header">

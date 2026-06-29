@@ -117,6 +117,35 @@ function MediaFigure({
   );
 }
 
+function GalleryMediaCard({
+  media,
+  caption,
+  index,
+  onOpen,
+}: {
+  media: UploadedMedia;
+  caption: string;
+  index: number;
+  onOpen: () => void;
+}) {
+  return (
+    <button className="case-gallery-card" type="button" onClick={onOpen} aria-label={`打开作品 ${index + 1}`}>
+      {isPdf(media) ? (
+        <span className="case-gallery-file">PDF</span>
+      ) : isVideo(media) ? (
+        <video src={assetPath(media.url)} muted playsInline preload="metadata" />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={assetPath(media.url)} alt={caption || media.originalFilename || `Project media ${index + 1}`} />
+      )}
+      <span className="case-gallery-shade" />
+      <span className="case-gallery-index">{String(index + 1).padStart(2, "0")}</span>
+      <span className="case-gallery-plus">＋</span>
+      <strong>{caption || media.originalFilename || "查看作品"}</strong>
+    </button>
+  );
+}
+
 function SectionMedia({
   section,
   t,
@@ -132,6 +161,24 @@ function SectionMedia({
   const pdfs = media.filter(isPdf);
   const visualMedia = media.filter((item) => !isPdf(item));
   const sectionLayout = section.mediaLayout || "auto";
+
+  if (sectionLayout === "square-gallery") {
+    return (
+      <div className="case-media-stack">
+        <div className="case-square-gallery">
+          {media.map((item, index) => (
+            <GalleryMediaCard
+              media={item}
+              caption={item.caption ? t(item.caption) : ""}
+              index={index}
+              onOpen={() => onOpen(item)}
+              key={`${item.url}-${index}`}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="case-media-stack">
@@ -210,6 +257,19 @@ export function ProjectPage({
     return () => context.revert();
   }, [project.slug]);
 
+  useEffect(() => {
+    if (!lightboxMedia) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setLightboxMedia(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [lightboxMedia]);
+
   const categoryLine = [t(project.category), project.year].filter(Boolean).join(" / ");
 
   return (
@@ -286,11 +346,29 @@ export function ProjectPage({
       ) : null}
 
       {lightboxMedia ? (
-        <button className="case-lightbox" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭大图">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={assetPath(lightboxMedia.url)} alt={lightboxMedia.originalFilename || "Project media"} />
-          <span>{language === "zh" ? "点击关闭" : "Click to close"}</span>
-        </button>
+        <div className="case-work-modal" role="dialog" aria-modal="true" aria-label={lightboxMedia.originalFilename || "Project media"}>
+          <button className="case-work-modal-backdrop" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭作品弹框" />
+          <article className="case-work-modal-card">
+            <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭">×</button>
+            <header>
+              <span>{language === "zh" ? "作品说明" : "Project note"}</span>
+              <h2>{lightboxMedia.originalFilename || t(project.title)}</h2>
+              <p className="rich-text">
+                {lightboxMedia.caption ? t(lightboxMedia.caption) : (language === "zh" ? "暂未填写作品说明。" : "No project note yet.")}
+              </p>
+            </header>
+            <div className="case-work-modal-media">
+              {isPdf(lightboxMedia) ? (
+                <iframe src={assetPath(lightboxMedia.url)} title={lightboxMedia.originalFilename || "PDF preview"} />
+              ) : isVideo(lightboxMedia) ? (
+                <video src={assetPath(lightboxMedia.url)} controls playsInline autoPlay />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={assetPath(lightboxMedia.url)} alt={lightboxMedia.originalFilename || "Project media"} />
+              )}
+            </div>
+          </article>
+        </div>
       ) : null}
     </main>
   );
