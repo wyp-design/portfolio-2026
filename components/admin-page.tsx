@@ -197,6 +197,7 @@ function buildUploadedMedia(file: File, upload: { fileUrl: string; mimeType?: st
     url: upload.fileUrl,
     mimeType: upload.mimeType || file.type,
     originalFilename: filename,
+    title: { zh: filename.replace(/\.[^.]+$/, ""), en: filename.replace(/\.[^.]+$/, "") },
     alt: { zh: filename, en: filename },
     caption: { zh: "", en: "" },
     layout: "auto",
@@ -1157,6 +1158,9 @@ export function AdminPage() {
                         <div key={`${media.url}-${mediaIndex}`}>
                           <span>{media.mimeType || media._type}</span>
                           <a href={media.url} target="_blank" rel="noreferrer">{media.originalFilename || media.url}</a>
+                          {renderLocalized("作品标题", localizedValue(media.title), (value) =>
+                            updateMedia(sectionIndex, mediaIndex, { ...media, title: value }),
+                          )}
                           <label>
                             单个素材展示
                             <select
@@ -1179,7 +1183,7 @@ export function AdminPage() {
                               <option value="left">文字左，图片右</option>
                             </select>
                           </label>
-                          {renderLocalized("图片 / PDF 说明", localizedValue(media.caption), (value) =>
+                          {renderLocalized("弹框说明文案", localizedValue(media.caption), (value) =>
                             updateMedia(sectionIndex, mediaIndex, { ...media, caption: value }),
                             true,
                           )}

@@ -1309,6 +1309,7 @@ button {
   display: grid;
   place-items: center;
   padding: 28px;
+  overscroll-behavior: none;
 }
 
 .case-work-modal-backdrop {
@@ -1325,6 +1326,9 @@ button {
   width: min(1320px, 96vw);
   max-height: 92svh;
   overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scrollbar-gutter: stable;
   background: #f5f1e7;
   color: #111;
   box-shadow: 0 30px 100px rgba(0, 0, 0, .42);

@@ -119,11 +119,13 @@ function MediaFigure({
 
 function GalleryMediaCard({
   media,
+  title,
   caption,
   index,
   onOpen,
 }: {
   media: UploadedMedia;
+  title: string;
   caption: string;
   index: number;
   onOpen: () => void;
@@ -136,12 +138,12 @@ function GalleryMediaCard({
         <video src={assetPath(media.url)} muted playsInline preload="metadata" />
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={assetPath(media.url)} alt={caption || media.originalFilename || `Project media ${index + 1}`} />
+        <img src={assetPath(media.url)} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} />
       )}
       <span className="case-gallery-shade" />
       <span className="case-gallery-index">{String(index + 1).padStart(2, "0")}</span>
       <span className="case-gallery-plus">＋</span>
-      <strong>{caption || media.originalFilename || "查看作品"}</strong>
+      <strong>{title || media.originalFilename || "查看作品"}</strong>
     </button>
   );
 }
@@ -169,6 +171,7 @@ function SectionMedia({
           {media.map((item, index) => (
             <GalleryMediaCard
               media={item}
+              title={item.title ? t(item.title) : ""}
               caption={item.caption ? t(item.caption) : ""}
               index={index}
               onOpen={() => onOpen(item)}
@@ -242,6 +245,7 @@ export function ProjectPage({
 }) {
   const { language, t } = useLanguage();
   const root = useRef<HTMLElement>(null);
+  const modalScrollRef = useRef<HTMLElement>(null);
   const [lightboxMedia, setLightboxMedia] = useState<UploadedMedia | null>(null);
 
   useEffect(() => {
@@ -259,14 +263,23 @@ export function ProjectPage({
 
   useEffect(() => {
     if (!lightboxMedia) return;
+    const modal = modalScrollRef.current;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setLightboxMedia(null);
     };
+    const onWheel = (event: WheelEvent) => {
+      if (!modal) return;
+      event.preventDefault();
+      event.stopPropagation();
+      modal.scrollTop += event.deltaY;
+    };
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
+    modal?.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKeyDown);
+      modal?.removeEventListener("wheel", onWheel);
     };
   }, [lightboxMedia]);
 
@@ -348,11 +361,11 @@ export function ProjectPage({
       {lightboxMedia ? (
         <div className="case-work-modal" role="dialog" aria-modal="true" aria-label={lightboxMedia.originalFilename || "Project media"}>
           <button className="case-work-modal-backdrop" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭作品弹框" />
-          <article className="case-work-modal-card">
+          <article className="case-work-modal-card" ref={modalScrollRef}>
             <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭">×</button>
             <header>
               <span>{language === "zh" ? "作品说明" : "Project note"}</span>
-              <h2>{lightboxMedia.originalFilename || t(project.title)}</h2>
+              <h2>{lightboxMedia.title ? t(lightboxMedia.title) : (lightboxMedia.originalFilename || t(project.title))}</h2>
               <p className="rich-text">
                 {lightboxMedia.caption ? t(lightboxMedia.caption) : (language === "zh" ? "暂未填写作品说明。" : "No project note yet.")}
               </p>

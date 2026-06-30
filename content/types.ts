@@ -25,6 +25,7 @@ export type UploadedMedia = {
   url: string;
   mimeType?: string;
   originalFilename?: string;
+  title?: LocalizedText;
   alt?: LocalizedText;
   caption?: LocalizedText;
   layout?: "auto" | "portrait-grid" | "landscape-split" | "full";
