@@ -14,8 +14,22 @@ export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
   }, [dark]);
 
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
-    <header className="site-header">
+    <header className={open ? "site-header menu-open" : "site-header"}>
       <Link className="wordmark" href="/" aria-label="Home">
         {name}
       </Link>
