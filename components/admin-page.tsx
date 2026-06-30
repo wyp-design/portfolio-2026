@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { HomeSection, LocalizedText, Project, RichTextStyle, SiteContent, UploadedMedia } from "@/content/types";
 import type { PortfolioContent } from "@/lib/portfolio-data";
 
@@ -214,6 +214,10 @@ export function AdminPage() {
   const [projectJson, setProjectJson] = useState("");
   const [state, setState] = useState<SaveState>("loading");
   const [message, setMessage] = useState("正在检查登录状态…");
+  const [autoTranslate, setAutoTranslate] = useState(true);
+  const [translationState, setTranslationState] = useState<"idle" | "translating" | "error">("idle");
+  const translationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const translationAbortRef = useRef<AbortController | null>(null);
   const [uploadState, setUploadState] = useState<UploadState>({
     active: false,
     fileName: "",
@@ -241,6 +245,59 @@ export function AdminPage() {
         setMessage("登录状态检查失败，请刷新重试。");
       });
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (translationTimerRef.current) clearTimeout(translationTimerRef.current);
+      translationAbortRef.current?.abort();
+    };
+  }, []);
+
+  function cancelPendingTranslation() {
+    if (translationTimerRef.current) {
+      clearTimeout(translationTimerRef.current);
+      translationTimerRef.current = null;
+    }
+    translationAbortRef.current?.abort();
+    translationAbortRef.current = null;
+    setTranslationState("idle");
+  }
+
+  function scheduleTranslation(source: string, applyTranslation: (translated: string) => void) {
+    cancelPendingTranslation();
+
+    if (!autoTranslate) return;
+    if (!source.trim()) {
+      applyTranslation("");
+      return;
+    }
+
+    translationTimerRef.current = setTimeout(async () => {
+      const controller = new AbortController();
+      translationAbortRef.current = controller;
+      setTranslationState("translating");
+
+      try {
+        const response = await fetch("/api/admin/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: source }),
+          signal: controller.signal,
+        });
+        const result = (await response.json().catch(() => null)) as { translation?: string; message?: string } | null;
+        if (!response.ok || typeof result?.translation !== "string") {
+          throw new Error(result?.message || "翻译服务暂时不可用");
+        }
+        applyTranslation(result.translation);
+        setTranslationState("idle");
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setTranslationState("error");
+      } finally {
+        if (translationAbortRef.current === controller) translationAbortRef.current = null;
+      }
+    }, 700);
+  }
 
   async function loadContent() {
     setState("loading");
@@ -646,22 +703,33 @@ export function AdminPage() {
     onChange: (nextValue: LocalizedText) => void,
     multiline = false,
   ) {
+    const updateChinese = (nextChinese: string) => {
+      const nextValue = { ...value, zh: nextChinese };
+      onChange(nextValue);
+      scheduleTranslation(nextChinese, (translated) => onChange({ ...nextValue, en: translated }));
+    };
+
+    const updateEnglish = (nextEnglish: string) => {
+      cancelPendingTranslation();
+      onChange({ ...value, en: nextEnglish });
+    };
+
     return (
       <div className={multiline ? "admin-wide" : undefined}>
         <label>
           {title} 中文
           {multiline ? (
-            <textarea value={value.zh} onChange={(event) => onChange({ ...value, zh: event.target.value })} />
+            <textarea value={value.zh} onChange={(event) => updateChinese(event.target.value)} />
           ) : (
-            <input value={value.zh} onChange={(event) => onChange({ ...value, zh: event.target.value })} />
+            <input value={value.zh} onChange={(event) => updateChinese(event.target.value)} />
           )}
         </label>
         <label>
           {title} English
           {multiline ? (
-            <textarea value={value.en} onChange={(event) => onChange({ ...value, en: event.target.value })} />
+            <textarea value={value.en} onChange={(event) => updateEnglish(event.target.value)} />
           ) : (
-            <input value={value.en} onChange={(event) => onChange({ ...value, en: event.target.value })} />
+            <input value={value.en} onChange={(event) => updateEnglish(event.target.value)} />
           )}
         </label>
       </div>
@@ -738,6 +806,19 @@ export function AdminPage() {
           <h1>作品集后台</h1>
         </div>
         <div className="admin-actions">
+          <label className="admin-translate-toggle">
+            <input
+              type="checkbox"
+              checked={autoTranslate}
+              onChange={(event) => {
+                setAutoTranslate(event.target.checked);
+                if (!event.target.checked) cancelPendingTranslation();
+              }}
+            />
+            中文自动翻译
+            {translationState === "translating" ? <span>翻译中…</span> : null}
+            {translationState === "error" ? <span className="is-error">翻译失败，可手动填写</span> : null}
+          </label>
           <a href="/" target="_blank">打开前台</a>
           <button className="secondary" onClick={checkGithub} disabled={state === "saving" || state === "loading"}>
             检测 GitHub

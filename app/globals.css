@@ -2545,6 +2545,48 @@ button {
   gap: 10px;
 }
 
+.admin-translate-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, .18);
+  background: rgba(255, 255, 255, .55);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.admin-translate-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.admin-translate-toggle span {
+  color: rgba(0, 0, 0, .56);
+  font-weight: 600;
+}
+
+.admin-translate-toggle span.is-error {
+  color: #b42318;
+}
+
+:root[data-theme="dark"] .admin-translate-toggle {
+  border-color: rgba(248, 246, 236, .2);
+  background: rgba(255, 255, 255, .07);
+  color: #f8f6ec;
+}
+
+:root[data-theme="dark"] .admin-translate-toggle span {
+  color: rgba(248, 246, 236, .65);
+}
+
+:root[data-theme="dark"] .admin-translate-toggle span.is-error {
+  color: #ff9b91;
+}
+
 .admin-actions a,
 .admin-actions button,
 .admin-panel button,
