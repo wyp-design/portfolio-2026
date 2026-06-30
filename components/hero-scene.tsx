@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float } from "@react-three/drei";
+import { Float } from "@react-three/drei";
 import { useRef } from "react";
 import type { Mesh } from "three";
 
@@ -19,7 +19,7 @@ function GlassForms() {
     <>
       <Float speed={1.1} rotationIntensity={0.35} floatIntensity={0.6}>
         <mesh ref={knot} scale={1.3} position={[0.2, 0.25, -0.7]} rotation={[0.5, 0.15, -0.4]}>
-          <torusKnotGeometry args={[1.3, 0.34, 180, 24, 2, 3]} />
+          <torusKnotGeometry args={[1.3, 0.34, 120, 18, 2, 3]} />
           <meshStandardMaterial color="#72b6ff" transparent opacity={0.42} roughness={0.24} metalness={0.08} />
         </mesh>
       </Float>
@@ -43,11 +43,10 @@ export function HeroScene() {
   return (
     <div className="hero-scene hero-shape-scene" aria-hidden="true">
       <div className="hero-shape-canvas">
-        <Canvas camera={{ position: [0, 0, 6.8], fov: 42 }} dpr={[1, 1.6]}>
+        <Canvas camera={{ position: [0, 0, 6.8], fov: 42 }} dpr={[1, 1.25]} gl={{ antialias: false, powerPreference: "high-performance" }}>
           <ambientLight intensity={1.8} />
           <directionalLight position={[4, 5, 6]} intensity={3.2} color="#fff8de" />
           <GlassForms />
-          <Environment preset="city" />
         </Canvas>
       </div>
       <span className="hello-pill hello-pill-one">UI</span>

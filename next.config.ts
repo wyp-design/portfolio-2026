@@ -5,6 +5,7 @@ const githubPagesRepo = process.env.GITHUB_PAGES_REPO || "portfolio-2026";
 const githubPagesBasePath = `/${githubPagesRepo}`;
 
 const nextConfig: NextConfig = {
+  compress: true,
   output: isGithubPages ? "export" : undefined,
   basePath: isGithubPages ? githubPagesBasePath : undefined,
   assetPrefix: isGithubPages ? `${githubPagesBasePath}/` : undefined,
@@ -21,6 +22,24 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: isGithubPages ? githubPagesBasePath : "",
   },
+  ...(isGithubPages ? {} : {
+    async headers() {
+      return [
+        {
+          source: "/uploads/:path*",
+          headers: [
+            { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          ],
+        },
+        {
+          source: "/images/:path*",
+          headers: [
+            { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          ],
+        },
+      ];
+    },
+  }),
 };
 
 export default nextConfig;

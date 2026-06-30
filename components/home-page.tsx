@@ -1,18 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { EducationItem, Project } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { assetPath } from "@/lib/paths";
-import { HeroScene } from "./hero-scene";
 import { CinematicHero } from "./cinematic-hero";
 import { SiteHeader } from "./site-header";
 
-gsap.registerPlugin(ScrollTrigger);
+const HeroScene = dynamic(() => import("./hero-scene").then((module) => module.HeroScene), {
+  ssr: false,
+  loading: () => null,
+});
 
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
   const root = useRef<HTMLElement>(null);
@@ -38,25 +39,31 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) return;
-    const context = gsap.context(() => {
-      gsap.from(".hero-kicker, .hero-title-line, .hero-copy", {
-        y: 40,
-        opacity: 0,
-        duration: 0.9,
-        stagger: 0.08,
-        ease: "power3.out",
+    const scope = root.current;
+    if (!scope) return;
+    const animations: Animation[] = [];
+    scope.querySelectorAll<HTMLElement>(".hero-kicker, .hero-title-line, .hero-copy").forEach((element, index) => {
+      animations.push(element.animate(
+        [{ transform: "translateY(40px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }],
+        { duration: 900, delay: index * 80, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" },
+      ));
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const element = entry.target as HTMLElement;
+        animations.push(element.animate(
+          [{ transform: "translateY(64px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }],
+          { duration: 850, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" },
+        ));
+        observer.unobserve(element);
       });
-      gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
-        gsap.from(element, {
-          y: 64,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: { trigger: element, start: "top 85%" },
-        });
-      });
-    }, root);
-    return () => context.revert();
+    }, { rootMargin: "0px 0px -15% 0px" });
+    scope.querySelectorAll<HTMLElement>(".reveal").forEach((element) => observer.observe(element));
+    return () => {
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+    };
   }, []);
 
   useEffect(() => {
@@ -155,7 +162,12 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <div className="about-photo">
                   {site.aboutPhoto?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={assetPath(site.aboutPhoto.url)} alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name} />
+                    <img
+                      src={assetPath(site.aboutPhoto.url)}
+                      alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
                     <span>{language === "zh" ? "后台上传个人照片" : "Upload portrait in admin"}</span>
                   )}

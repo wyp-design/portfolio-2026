@@ -6,6 +6,12 @@ import { LanguageProvider } from "@/lib/i18n";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    const shouldUseNativeScroll =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
+    if (shouldUseNativeScroll) return;
+
     const lenis = new Lenis({
       duration: 1.1,
       smoothWheel: true,

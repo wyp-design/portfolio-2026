@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 import type { LocalizedText, Project, SiteContent, UploadedMedia } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { assetPath } from "@/lib/paths";
@@ -88,7 +88,7 @@ function MediaFigure({
     return (
       <figure className="case-pdf-viewer">
         <div className="case-pdf-frame">
-          <iframe src={assetPath(media.url)} title={media.originalFilename || "PDF preview"} />
+          <iframe src={assetPath(media.url)} title={media.originalFilename || "PDF preview"} loading="lazy" />
         </div>
         <figcaption>{caption || media.originalFilename}</figcaption>
         <a href={assetPath(media.url)} target="_blank" rel="noreferrer">打开 PDF ↗</a>
@@ -99,7 +99,7 @@ function MediaFigure({
   if (isVideo(media)) {
     return (
       <figure className={`case-media-figure case-media-${imageMode}`}>
-        <video src={assetPath(media.url)} controls playsInline muted loop />
+        <video src={assetPath(media.url)} controls playsInline muted preload="none" />
         {caption ? <figcaption>{caption}</figcaption> : null}
       </figure>
     );
@@ -110,7 +110,7 @@ function MediaFigure({
       <button type="button" className="case-image-button" onClick={onOpen} aria-label="放大查看图片">
         {/* Native img keeps GIF playback and works with GitHub Pages paths. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={assetPath(media.url)} alt={caption || media.originalFilename || "Project media"} />
+        <img src={assetPath(media.url)} alt={caption || media.originalFilename || "Project media"} loading="lazy" decoding="async" />
       </button>
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
@@ -136,9 +136,17 @@ function GalleryMediaCard({
         <span className="case-gallery-file">PDF</span>
       ) : isVideo(media) ? (
         <video src={assetPath(media.url)} muted playsInline preload="metadata" />
-      ) : (
+      ) : media.mimeType === "image/gif" ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={assetPath(media.url)} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} />
+        <img src={assetPath(media.url)} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} loading="lazy" decoding="async" />
+      ) : (
+        <Image
+          src={assetPath(media.url)}
+          alt={title || caption || media.originalFilename || `Project media ${index + 1}`}
+          fill
+          sizes="(max-width: 800px) 50vw, 25vw"
+          quality={72}
+        />
       )}
       <span className="case-gallery-shade" />
       <span className="case-gallery-index">{String(index + 1).padStart(2, "0")}</span>
@@ -249,16 +257,13 @@ export function ProjectPage({
   const [lightboxMedia, setLightboxMedia] = useState<UploadedMedia | null>(null);
 
   useEffect(() => {
-    const context = gsap.context(() => {
-      gsap.from(".case-hero > *:not(.case-color)", {
-        y: 32,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.08,
-        ease: "power3.out",
-      });
-    }, root);
-    return () => context.revert();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const elements = root.current?.querySelectorAll<HTMLElement>(".case-hero > *:not(.case-color)");
+    const animations = Array.from(elements || []).map((element, index) => element.animate(
+      [{ transform: "translateY(32px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }],
+      { duration: 780, delay: index * 70, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" },
+    ));
+    return () => animations.forEach((animation) => animation.cancel());
   }, [project.slug]);
 
   useEffect(() => {
@@ -372,12 +377,12 @@ export function ProjectPage({
             </header>
             <div className="case-work-modal-media">
               {isPdf(lightboxMedia) ? (
-                <iframe src={assetPath(lightboxMedia.url)} title={lightboxMedia.originalFilename || "PDF preview"} />
+                <iframe src={assetPath(lightboxMedia.url)} title={lightboxMedia.originalFilename || "PDF preview"} loading="lazy" />
               ) : isVideo(lightboxMedia) ? (
                 <video src={assetPath(lightboxMedia.url)} controls playsInline autoPlay />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={assetPath(lightboxMedia.url)} alt={lightboxMedia.originalFilename || "Project media"} />
+                <img src={assetPath(lightboxMedia.url)} alt={lightboxMedia.originalFilename || "Project media"} decoding="async" />
               )}
             </div>
           </article>

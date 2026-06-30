@@ -37,6 +37,18 @@ body {
   transition: background 0.35s ease, color 0.35s ease;
 }
 
+@supports (content-visibility: auto) {
+  .manifesto,
+  .work-section,
+  .about-section,
+  .contact-section,
+  .case-section,
+  .next-project {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
