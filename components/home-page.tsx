@@ -9,6 +9,7 @@ import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
 import { CinematicHero } from "./cinematic-hero";
 import { SiteHeader } from "./site-header";
+import { ResilientImage } from "./resilient-image";
 
 const HeroScene = dynamic(() => import("./hero-scene").then((module) => module.HeroScene), {
   ssr: false,
@@ -163,8 +164,8 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <div className="about-photo">
                   {site.aboutPhoto?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={assetPath(site.aboutPhoto.url)}
+                    <ResilientImage
+                      src={site.aboutPhoto.url}
                       alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
                       loading="lazy"
                       decoding="async"

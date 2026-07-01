@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { HomeSection, LocalizedText, Project, RichTextStyle, SiteContent, UploadedMedia } from "@/content/types";
 import type { PortfolioContent } from "@/lib/portfolio-data";
 import { useAssetPath } from "@/lib/use-asset-path";
+import { ResilientImage } from "./resilient-image";
 
 type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
 type ProjectSection = Project["sections"][number];
@@ -780,7 +781,7 @@ export function AdminPage() {
 
     return (
       <a className="admin-media-preview" href={resolveAssetPath(media.url)} target="_blank" rel="noreferrer" title="点击查看原文件">
-        {isImage ? <img src={resolveAssetPath(media.url)} alt={media.originalFilename || media.alt?.zh || "上传图片预览"} loading="lazy" /> : null}
+        {isImage ? <ResilientImage src={media.url} alt={media.originalFilename || media.alt?.zh || "上传图片预览"} loading="lazy" /> : null}
         {isVideo ? <video src={resolveAssetPath(media.url)} muted playsInline preload="metadata" /> : null}
         {isPdf ? <iframe src={`${resolveAssetPath(media.url)}#page=1&view=FitH`} title={`${media.originalFilename || "PDF"} 预览`} loading="lazy" /> : null}
         {!isImage && !isVideo && !isPdf ? <span className="admin-file-placeholder">FILE</span> : null}
@@ -1006,7 +1007,7 @@ export function AdminPage() {
               {content.site.aboutPhoto?.url ? (
                 <div className="admin-photo-preview">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={resolveAssetPath(content.site.aboutPhoto.url)} alt={content.site.aboutPhoto.originalFilename || "About photo"} />
+                  <ResilientImage src={content.site.aboutPhoto.url} alt={content.site.aboutPhoto.originalFilename || "About photo"} />
                   <button type="button" className="danger" onClick={() => updateSite({ aboutPhoto: undefined })}>移除照片</button>
                 </div>
               ) : null}

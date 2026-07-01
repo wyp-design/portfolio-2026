@@ -6,6 +6,7 @@ import type { LocalizedText, Project, SiteContent, UploadedMedia } from "@/conte
 import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
 import { SiteHeader } from "./site-header";
+import { ResilientImage } from "./resilient-image";
 
 type ProjectSection = Project["sections"][number];
 
@@ -108,9 +109,7 @@ function MediaFigure({
   return (
     <figure className={`case-media-figure case-media-${imageMode}`}>
       <button type="button" className="case-image-button" onClick={onOpen} aria-label="放大查看图片">
-        {/* Native img keeps GIF playback and works with GitHub Pages paths. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={assetPath(media.url)} alt={caption || media.originalFilename || "Project media"} loading="lazy" decoding="async" />
+        <ResilientImage src={media.url} alt={caption || media.originalFilename || "Project media"} loading="lazy" decoding="async" />
       </button>
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
@@ -138,13 +137,10 @@ function GalleryMediaCard({
       ) : isVideo(media) ? (
         <video src={assetPath(media.url)} muted playsInline preload="metadata" />
       ) : media.mimeType === "image/gif" ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={assetPath(media.url)} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} loading="lazy" decoding="async" />
+        <ResilientImage src={media.url} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} loading="lazy" decoding="async" />
       ) : (
-        // Native image URLs can carry EdgeOne's temporary preview credentials.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={assetPath(media.url)}
+        <ResilientImage
+          src={media.url}
           alt={title || caption || media.originalFilename || `Project media ${index + 1}`}
           loading="lazy"
           decoding="async"
@@ -384,8 +380,7 @@ export function ProjectPage({
               ) : isVideo(lightboxMedia) ? (
                 <video src={assetPath(lightboxMedia.url)} controls playsInline autoPlay />
               ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={assetPath(lightboxMedia.url)} alt={lightboxMedia.originalFilename || "Project media"} decoding="async" />
+                <ResilientImage src={lightboxMedia.url} alt={lightboxMedia.originalFilename || "Project media"} decoding="async" />
               )}
             </div>
           </article>
