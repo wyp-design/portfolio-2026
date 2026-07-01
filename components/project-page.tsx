@@ -262,6 +262,7 @@ export function ProjectPage({
   const root = useRef<HTMLElement>(null);
   const modalScrollRef = useRef<HTMLElement>(null);
   const [lightboxMedia, setLightboxMedia] = useState<UploadedMedia | null>(null);
+  const [mediaZoom, setMediaZoom] = useState(1);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -275,9 +276,15 @@ export function ProjectPage({
 
   useEffect(() => {
     if (!lightboxMedia) return;
+    setMediaZoom(1);
     const modal = modalScrollRef.current;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setLightboxMedia(null);
+      if (!isPdf(lightboxMedia) && !isVideo(lightboxMedia)) {
+        if (event.key === "+" || event.key === "=") setMediaZoom((current) => Math.min(2.5, current + 0.25));
+        if (event.key === "-") setMediaZoom((current) => Math.max(0.5, current - 0.25));
+        if (event.key === "0") setMediaZoom(1);
+      }
     };
     const onWheel = (event: WheelEvent) => {
       if (!modal) return;
@@ -383,12 +390,28 @@ export function ProjectPage({
               </p>
             </header>
             <div className="case-work-modal-media">
+              {!isPdf(lightboxMedia) && !isVideo(lightboxMedia) ? (
+                <div className="case-work-modal-toolbar" aria-label="图片缩放控制">
+                  <button type="button" onClick={() => setMediaZoom((current) => Math.max(0.5, current - 0.25))} disabled={mediaZoom <= 0.5} aria-label="缩小图片">−</button>
+                  <span>{Math.round(mediaZoom * 100)}%</span>
+                  <button type="button" onClick={() => setMediaZoom((current) => Math.min(2.5, current + 0.25))} disabled={mediaZoom >= 2.5} aria-label="放大图片">＋</button>
+                  <button type="button" className="case-work-modal-fit" onClick={() => setMediaZoom(1)}>{language === "zh" ? "适合宽度" : "Fit width"}</button>
+                  <a href={assetPath(lightboxMedia.url)} target="_blank" rel="noreferrer">{language === "zh" ? "查看原图" : "Original"} ↗</a>
+                </div>
+              ) : null}
               {isPdf(lightboxMedia) ? (
                 <iframe src={assetPath(lightboxMedia.url)} title={lightboxMedia.originalFilename || "PDF preview"} loading="lazy" />
               ) : isVideo(lightboxMedia) ? (
                 <video src={assetPath(lightboxMedia.url)} controls playsInline autoPlay />
               ) : (
-                <ResilientImage src={lightboxMedia.url} alt={lightboxMedia.originalFilename || "Project media"} decoding="async" />
+                <div className="case-work-modal-image-canvas">
+                  <ResilientImage
+                    src={lightboxMedia.url}
+                    alt={lightboxMedia.originalFilename || "Project media"}
+                    decoding="async"
+                    style={{ width: `${mediaZoom * 100}%` }}
+                  />
+                </div>
               )}
             </div>
           </article>
