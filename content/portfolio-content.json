@@ -315,6 +315,7 @@
       "en": "SOMETHING WITH MEANING."
     },
     "email": "wyp271533@163.com",
+    "phone": "18665960765",
     "social": [
       {
         "label": "Link",
@@ -481,7 +482,7 @@
             },
             {
               "_type": "image",
-              "url": "/uploads/1782876866895-60e3ecd5-a3ae-4a92-a213-89cf14a08fd5-image-1.png",
+              "url": "/uploads/1782879643740-d0f20a6e-e142-49e7-b816-c7ff151e398f-image-1.png",
               "mimeType": "image/png",
               "originalFilename": "image (1).png",
               "title": {
@@ -491,6 +492,66 @@
               "alt": {
                 "zh": "image (1).png",
                 "en": "image (1).png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782879660228-70fd4eb9-80b3-4ade-8da9-2f30fbfdd906-image-2.png",
+              "mimeType": "image/png",
+              "originalFilename": "image (2).png",
+              "title": {
+                "zh": "image (2)",
+                "en": "image (2)"
+              },
+              "alt": {
+                "zh": "image (2).png",
+                "en": "image (2).png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782879675614-12d79d0a-8cbf-4c40-a84f-239a4274cc36-image-3.png",
+              "mimeType": "image/png",
+              "originalFilename": "image (3).png",
+              "title": {
+                "zh": "image (3)",
+                "en": "image (3)"
+              },
+              "alt": {
+                "zh": "image (3).png",
+                "en": "image (3).png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782879682086-a0d5aa88-d15b-422a-b4d0-0c83332fed25-image.png",
+              "mimeType": "image/png",
+              "originalFilename": "image.png",
+              "title": {
+                "zh": "image",
+                "en": "image"
+              },
+              "alt": {
+                "zh": "image.png",
+                "en": "image.png"
               },
               "caption": {
                 "zh": "",
@@ -716,5 +777,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-01T03:35:06.311Z"
+  "updatedAt": "2026-07-01T04:21:29.864Z"
 }
