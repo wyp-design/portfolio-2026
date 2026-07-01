@@ -404,7 +404,7 @@
           "media": [
             {
               "_type": "image",
-              "url": "/uploads/1782453724019-9e9189e6-0563-4845-827d-81deb266c10a-image.png",
+              "url": "/uploads/1782889231095-ba4cf754-4c00-49a4-b3b6-b71b1a09b26a-image.png",
               "mimeType": "image/png",
               "originalFilename": "image.png",
               "alt": {
@@ -419,11 +419,12 @@
               "title": {
                 "zh": "旅游指南",
                 "en": "travel guide"
-              }
+              },
+              "thumbnailUrl": "/uploads/thumbnails/1782889235137-f75ca1d3-7a93-4743-84f9-4f9f8b3a3a76-image-thumbnail.jpg"
             },
             {
               "_type": "image",
-              "url": "/uploads/1782453734897-747b0af4-85dc-4321-ba33-e1cc189c9a9f-image-1.png",
+              "url": "/uploads/1782889250481-3fc9b355-50c3-46ac-a8a3-c63b44331939-image-1.png",
               "mimeType": "image/png",
               "originalFilename": "image (1).png",
               "alt": {
@@ -439,11 +440,12 @@
               "title": {
                 "zh": "团队招新",
                 "en": "Team recruitment"
-              }
+              },
+              "thumbnailUrl": "/uploads/thumbnails/1782889253057-28ff1664-43c7-498f-bda6-5c6c4fd710e8-image-1-thumbnail.jpg"
             },
             {
               "_type": "image",
-              "url": "/uploads/1782453743445-30e042d9-ba7c-4bee-8a39-f1581034e0b4-image-2.png",
+              "url": "/uploads/1782889268836-c135c4bf-7e69-4e42-be55-1fdb1670b8ca-image-2.png",
               "mimeType": "image/png",
               "originalFilename": "image (2).png",
               "alt": {
@@ -458,11 +460,12 @@
               "title": {
                 "zh": "城市计划",
                 "en": "city ​​plan"
-              }
+              },
+              "thumbnailUrl": "/uploads/thumbnails/1782889271653-776a467a-657e-4b9a-8956-734017daae12-image-2-thumbnail.jpg"
             },
             {
               "_type": "image",
-              "url": "/uploads/1782869331780-cb63f00f-7bd2-4e68-b7a4-d53863468c0b-image-3.png",
+              "url": "/uploads/1782889282967-6243e3e7-b2fa-4986-8c0c-d7d2c04705a4-image-3.png",
               "mimeType": "image/png",
               "originalFilename": "image (3).png",
               "title": {
@@ -478,7 +481,8 @@
                 "en": "Following the standards of a holiday marketing visual designer, create a vertical 3D poster for May 1st Labor Day with the theme \"5/1 Go Camping · Embrace Nature · Feel the Good · LET'S GO CAMPING\". Off-white minimalist background, yellow-and-pink 3D balloon letters \"5/1\" and green-and-black 3D letters \"Go Camping\". Below: a snow-capped little mountain, a yellow-and-white striped tent, a campfire, smiley flowers and a small stream. Overall fresh and small-town style, 3D clay aesthetic, generous whitespace composition."
               },
               "layout": "auto",
-              "textPosition": "right"
+              "textPosition": "right",
+              "thumbnailUrl": "/uploads/thumbnails/1782889285754-3e9f497d-7803-4fe4-ab8f-63211930b1b1-image-3-thumbnail.jpg"
             },
             {
               "_type": "image",
@@ -777,5 +781,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-01T06:18:28.379Z"
+  "updatedAt": "2026-07-01T07:01:33.323Z"
 }
