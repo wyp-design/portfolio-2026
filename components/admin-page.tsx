@@ -31,6 +31,7 @@ const MAX_ABOUT_PHOTO_BYTES = 8 * 1024 * 1024;
 const MAX_PROJECT_UPLOAD_BYTES = 20 * 1024 * 1024;
 const ABOUT_PHOTO_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 const PROJECT_UPLOAD_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf", "video/mp4"]);
+const DRAFT_STORAGE_KEY = "portfolio-2026-admin-draft";
 
 const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
@@ -310,13 +311,21 @@ export function AdminPage() {
     }
 
     const nextContent = (await response.json()) as PortfolioContent;
-    const sortedContent = { ...nextContent, projects: sortProjects(nextContent.projects) };
+    let restoredDraft: PortfolioContent | null = null;
+    try {
+      const storedDraft = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+      restoredDraft = storedDraft ? (JSON.parse(storedDraft) as PortfolioContent) : null;
+    } catch {
+      window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+    }
+    const sourceContent = restoredDraft || nextContent;
+    const sortedContent = { ...sourceContent, projects: sortProjects(sourceContent.projects) };
     setContent(sortedContent);
     setSelectedIndex(0);
     setUploadSectionIndex(0);
     setProjectJson(sortedContent.projects[0] ? JSON.stringify(sortedContent.projects[0], null, 2) : "");
     setState("idle");
-    setMessage("内容已加载，可以开始编辑。");
+    setMessage(restoredDraft ? "已恢复未发布草稿。确认完成后点击“保存发布”统一上线。" : "内容已加载，可以开始编辑。");
   }
 
   async function login(event: React.FormEvent<HTMLFormElement>) {
@@ -678,7 +687,30 @@ export function AdminPage() {
     setContent(sortedSaved);
     setProjectJson(sortedSaved.projects[selectedIndex] ? JSON.stringify(sortedSaved.projects[selectedIndex], null, 2) : "");
     setState("saved");
+    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
     setMessage(saved.message || "已提交到 GitHub。等待 EdgeOne 自动重新部署后，前台会更新。");
+  }
+
+  function saveDraft() {
+    const validationError = validateContent(content);
+    if (validationError) {
+      setState("error");
+      setMessage(validationError);
+      return;
+    }
+
+    try {
+      const draft = {
+        ...content,
+        projects: content.projects.map((project, index) => ({ ...project, order: index + 1 })),
+      };
+      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+      setState("saved");
+      setMessage("草稿已仅保存在当前浏览器，尚未发布到前台。可继续编辑，完成后再统一发布。");
+    } catch {
+      setState("error");
+      setMessage("草稿保存失败，可能是浏览器存储空间不足。请尝试删除旧缓存后重试。");
+    }
   }
 
   async function checkGithub() {
@@ -733,6 +765,23 @@ export function AdminPage() {
           )}
         </label>
       </div>
+    );
+  }
+
+  function renderMediaPreview(media: ProjectMedia) {
+    const mimeType = media.mimeType || "";
+    const source = media.url.toLowerCase();
+    const isImage = mimeType.startsWith("image/") || /\.(png|jpe?g|gif|webp)(\?|$)/i.test(source);
+    const isVideo = mimeType.startsWith("video/") || /\.(mp4|webm|mov)(\?|$)/i.test(source);
+    const isPdf = mimeType === "application/pdf" || /\.pdf(\?|$)/i.test(source);
+
+    return (
+      <a className="admin-media-preview" href={media.url} target="_blank" rel="noreferrer" title="点击查看原文件">
+        {isImage ? <img src={media.url} alt={media.originalFilename || media.alt?.zh || "上传图片预览"} loading="lazy" /> : null}
+        {isVideo ? <video src={media.url} muted playsInline preload="metadata" /> : null}
+        {isPdf ? <iframe src={`${media.url}#page=1&view=FitH`} title={`${media.originalFilename || "PDF"} 预览`} loading="lazy" /> : null}
+        {!isImage && !isVideo && !isPdf ? <span className="admin-file-placeholder">FILE</span> : null}
+      </a>
     );
   }
 
@@ -823,6 +872,7 @@ export function AdminPage() {
           <button className="secondary" onClick={checkGithub} disabled={state === "saving" || state === "loading"}>
             检测 GitHub
           </button>
+          <button className="secondary" onClick={saveDraft} disabled={state === "saving" || state === "loading"}>仅保存草稿</button>
           <button onClick={saveContent} disabled={state === "saving" || state === "loading"}>保存发布</button>
         </div>
       </header>
@@ -832,7 +882,20 @@ export function AdminPage() {
         <div className={`admin-upload-status ${uploadState.error ? "is-error" : ""} ${uploadState.success ? "is-success" : ""}`}>
           <div className="admin-upload-status-row">
             <strong>{uploadState.fileName}</strong>
-            <span>{uploadState.percent}%</span>
+            <div className="admin-upload-status-actions">
+              <span>{uploadState.percent}%</span>
+              {uploadState.success ? (
+                <button
+                  type="button"
+                  className="admin-upload-dismiss"
+                  aria-label="清除已完成的上传提示"
+                  title="清除上传提示"
+                  onClick={() => setUploadState({ active: false, fileName: "", percent: 0, phase: "" })}
+                >
+                  ×
+                </button>
+              ) : null}
+            </div>
           </div>
           <div className="admin-progress" aria-label="上传进度">
             <span style={{ width: `${uploadState.percent}%` }} />
@@ -1237,6 +1300,7 @@ export function AdminPage() {
                     <div className="admin-media-list">
                       {section.media.map((media, mediaIndex) => (
                         <div key={`${media.url}-${mediaIndex}`}>
+                          {renderMediaPreview(media)}
                           <span>{media.mimeType || media._type}</span>
                           <a href={media.url} target="_blank" rel="noreferrer">{media.originalFilename || media.url}</a>
                           {renderLocalized("作品标题", localizedValue(media.title), (value) =>
