@@ -342,8 +342,8 @@
         "en": "AIGC class"
       },
       "summary": {
-        "zh": "AI 工具、生成式视觉、智能产品体验与自动化设计流程相关项目。",
-        "en": "Making AI workflows legible, controllable, and reusable for cross-functional teams."
+        "zh": "AI 工具、生成式视觉设计流程相关项目。",
+        "en": "Projects related to AI tools and generative visual design processes."
       },
       "year": "2026",
       "role": {
@@ -388,16 +388,16 @@
       "sections": [
         {
           "eyebrow": {
-            "zh": "背景",
-            "en": "Context"
+            "zh": "项目",
+            "en": "project"
           },
           "title": {
-            "zh": "AI 很强，但过程像一个黑盒。",
-            "en": "Powerful AI, opaque process."
+            "zh": "提示词生成项目系列",
+            "en": "Prompt word generation project series"
           },
           "body": {
-            "zh": "团队需要的不只是一个聊天框，而是一套能理解上下文、审阅步骤并安全复用的工作方式。",
-            "en": "Teams needed more than a chat box: they needed a way to understand context, review steps, and reuse successful work safely."
+            "zh": "所用ChatGpt Nanobanana等AI工具生图案例",
+            "en": "Examples of image generation using AI tools such as ChatGpt Nanobanana"
           },
           "tone": "light",
           "media": [
@@ -412,9 +412,13 @@
               },
               "caption": {
                 "zh": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Shake Off the Office Vibe — Travel Guide.",
-                "en": ""
+                "en": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Shake Off the Office Vibe — Travel Guide."
               },
-              "layout": "landscape-split"
+              "layout": "landscape-split",
+              "title": {
+                "zh": "旅游指南",
+                "en": "travel guide"
+              }
             },
             {
               "_type": "image",
@@ -427,10 +431,14 @@
               },
               "caption": {
                 "zh": "Following the standards of an internet brand-operations visual designer, create a vertical 3D recruitment poster with the theme \"JOIN US · Team Recruitment · WE NEED YOU · Find Your Glow · INNOVATE COLLABORATE GROW\". Off-white background, a centered stack of purple, pink and yellow 3D geometric shapes mixed with smiley balloons, a JOIN US ID badge hanging in the middle, listing 4 open roles — Creative Planning, Visual Design, Content Operations, Community Operations. Overall young, enthusiastic, designer-toy 3D clay style.",
-                "en": ""
+                "en": "Following the standards of an internet brand-operations visual designer, create a vertical 3D recruitment poster with the theme \"JOIN US · Team Recruitment · WE NEED YOU · Find Your Glow · INNOVATE COLLABORATE GROW\". Off-white background, a centered stack of purple, pink and yellow 3D geometric shapes mixed with smiley balloons, a JOIN US ID badge hanging in the middle, listing 4 open roles — Creative Planning, Visual Design, Content Operations, Community Operations. Overall young, enthusiastic, designer-toy 3D clay style."
               },
               "textPosition": "left",
-              "layout": "landscape-split"
+              "layout": "landscape-split",
+              "title": {
+                "zh": "团队招新",
+                "en": "Team recruitment"
+              }
             },
             {
               "_type": "image",
@@ -443,9 +451,33 @@
               },
               "caption": {
                 "zh": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Urban Nomad Project.",
-                "en": ""
+                "en": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Urban Nomad Project."
               },
-              "layout": "landscape-split"
+              "layout": "landscape-split",
+              "title": {
+                "zh": "城市计划",
+                "en": "city ​​plan"
+              }
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782869331780-cb63f00f-7bd2-4e68-b7a4-d53863468c0b-image-3.png",
+              "mimeType": "image/png",
+              "originalFilename": "image (3).png",
+              "title": {
+                "zh": "5.1露营",
+                "en": "5.1 Camping"
+              },
+              "alt": {
+                "zh": "image (3).png",
+                "en": "image (3).png"
+              },
+              "caption": {
+                "zh": "Following the standards of a holiday marketing visual designer, create a vertical 3D poster for May 1st Labor Day with the theme \"5/1 Go Camping · Embrace Nature · Feel the Good · LET'S GO CAMPING\". Off-white minimalist background, yellow-and-pink 3D balloon letters \"5/1\" and green-and-black 3D letters \"Go Camping\". Below: a snow-capped little mountain, a yellow-and-white striped tent, a campfire, smiley flowers and a small stream. Overall fresh and small-town style, 3D clay aesthetic, generous whitespace composition.",
+                "en": "Following the standards of a holiday marketing visual designer, create a vertical 3D poster for May 1st Labor Day with the theme \"5/1 Go Camping · Embrace Nature · Feel the Good · LET'S GO CAMPING\". Off-white minimalist background, yellow-and-pink 3D balloon letters \"5/1\" and green-and-black 3D letters \"Go Camping\". Below: a snow-capped little mountain, a yellow-and-white striped tent, a campfire, smiley flowers and a small stream. Overall fresh and small-town style, 3D clay aesthetic, generous whitespace composition."
+              },
+              "layout": "auto",
+              "textPosition": "right"
             }
           ],
           "titleStyle": {
@@ -458,8 +490,8 @@
         },
         {
           "eyebrow": {
-            "zh": "设计方向",
-            "en": "Design direction"
+            "zh": "项目",
+            "en": "project"
           },
           "title": {
             "zh": "把提示词变成可见的系统。",
@@ -470,22 +502,6 @@
             "en": "I decomposed tasks into composable nodes so inputs, decisions, tools, and outputs could be inspected, copied, and shared."
           },
           "tone": "blue",
-          "media": []
-        },
-        {
-          "eyebrow": {
-            "zh": "结果",
-            "en": "Outcome"
-          },
-          "title": {
-            "zh": "更快完成，也更敢于交付。",
-            "en": "Faster work, stronger confidence."
-          },
-          "body": {
-            "zh": "首轮可用性测试显示，透明的运行状态和历史版本显著降低了误操作与重复劳动。",
-            "en": "Early usability testing showed that transparent run states and version history reduced errors and duplicated work."
-          },
-          "tone": "dark",
           "media": []
         }
       ]
@@ -679,5 +695,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-01T01:12:20.567Z"
+  "updatedAt": "2026-07-01T01:29:25.021Z"
 }
