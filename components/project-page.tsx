@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { LocalizedText, Project, SiteContent, UploadedMedia } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
@@ -132,7 +132,12 @@ function GalleryMediaCard({
 }) {
   const assetPath = useAssetPath();
   return (
-    <button className="case-gallery-card" type="button" onClick={onOpen} aria-label={`打开作品 ${index + 1}`}>
+    <button
+      className={`case-gallery-card ${index % 5 === 0 || index % 5 === 3 ? "is-portrait" : "is-landscape"}`}
+      type="button"
+      onClick={onOpen}
+      aria-label={`打开作品 ${index + 1}`}
+    >
       {isPdf(media) ? (
         <span className="case-gallery-file">PDF</span>
       ) : isVideo(media) ? (
@@ -261,8 +266,23 @@ export function ProjectPage({
   const { language, t } = useLanguage();
   const root = useRef<HTMLElement>(null);
   const modalScrollRef = useRef<HTMLElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
   const [lightboxMedia, setLightboxMedia] = useState<UploadedMedia | null>(null);
   const [mediaZoom, setMediaZoom] = useState(1);
+  const projectMedia = useMemo(
+    () => project.sections.flatMap((section) => section.media || []),
+    [project.sections],
+  );
+  const activeMediaIndex = lightboxMedia
+    ? Math.max(0, projectMedia.findIndex((item) => item === lightboxMedia || item.url === lightboxMedia.url))
+    : -1;
+  const navigateMedia = useCallback((direction: -1 | 1) => {
+    if (!lightboxMedia || projectMedia.length < 2) return;
+    const nextIndex = (activeMediaIndex + direction + projectMedia.length) % projectMedia.length;
+    setLightboxMedia(projectMedia[nextIndex]);
+    setMediaZoom(1);
+    requestAnimationFrame(() => modalScrollRef.current?.scrollTo({ top: 0, left: 0 }));
+  }, [activeMediaIndex, lightboxMedia, projectMedia]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -280,6 +300,8 @@ export function ProjectPage({
     const modal = modalScrollRef.current;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setLightboxMedia(null);
+      if (event.key === "ArrowLeft") navigateMedia(-1);
+      if (event.key === "ArrowRight") navigateMedia(1);
       if (!isPdf(lightboxMedia) && !isVideo(lightboxMedia)) {
         if (event.key === "+" || event.key === "=") setMediaZoom((current) => Math.min(2.5, current + 0.25));
         if (event.key === "-") setMediaZoom((current) => Math.max(0.5, current - 0.25));
@@ -300,7 +322,7 @@ export function ProjectPage({
       window.removeEventListener("keydown", onKeyDown);
       modal?.removeEventListener("wheel", onWheel);
     };
-  }, [lightboxMedia]);
+  }, [lightboxMedia, navigateMedia]);
 
   const categoryLine = [t(project.category), project.year].filter(Boolean).join(" / ");
 
@@ -380,15 +402,22 @@ export function ProjectPage({
       {lightboxMedia ? (
         <div className="case-work-modal" role="dialog" aria-modal="true" aria-label={lightboxMedia.originalFilename || "Project media"}>
           <button className="case-work-modal-backdrop" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭作品弹框" />
-          <article className="case-work-modal-card" ref={modalScrollRef}>
+          {projectMedia.length > 1 ? (
+            <button className="case-work-modal-nav is-prev" type="button" onClick={() => navigateMedia(-1)} aria-label="上一个文件">←</button>
+          ) : null}
+          <article
+            className="case-work-modal-card case-work-modal-browser"
+            ref={modalScrollRef}
+            onTouchStart={(event) => { touchStartXRef.current = event.touches[0]?.clientX ?? null; }}
+            onTouchEnd={(event) => {
+              const startX = touchStartXRef.current;
+              const endX = event.changedTouches[0]?.clientX;
+              touchStartXRef.current = null;
+              if (startX == null || endX == null || Math.abs(endX - startX) < 55) return;
+              navigateMedia(endX < startX ? 1 : -1);
+            }}
+          >
             <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭">×</button>
-            <header>
-              <span>{language === "zh" ? "作品说明" : "Project note"}</span>
-              <h2>{lightboxMedia.title ? t(lightboxMedia.title) : (lightboxMedia.originalFilename || t(project.title))}</h2>
-              <p className="rich-text">
-                {lightboxMedia.caption ? t(lightboxMedia.caption) : (language === "zh" ? "暂未填写作品说明。" : "No project note yet.")}
-              </p>
-            </header>
             <div className="case-work-modal-media">
               {!isPdf(lightboxMedia) && !isVideo(lightboxMedia) ? (
                 <div className="case-work-modal-toolbar" aria-label="图片缩放控制">
@@ -415,6 +444,12 @@ export function ProjectPage({
               )}
             </div>
           </article>
+          {projectMedia.length > 1 ? (
+            <>
+              <button className="case-work-modal-nav is-next" type="button" onClick={() => navigateMedia(1)} aria-label="下一个文件">→</button>
+              <span className="case-work-modal-count">{activeMediaIndex + 1} / {projectMedia.length}</span>
+            </>
+          ) : null}
         </div>
       ) : null}
     </main>
