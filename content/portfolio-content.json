@@ -593,27 +593,27 @@
       ]
     },
     {
-      "slug": "mori-health",
+      "slug": "e-commerce",
       "title": {
         "zh": "跨境电商 类",
         "en": "Cross-border e-commerce category"
       },
       "summary": {
-        "zh": "把长期健康管理变成温和、可持续的日常动作。",
-        "en": "Turning long-term health management into gentle daily action."
+        "zh": "独立站（日本、欧洲、美国）、亚马逊平台设计项目",
+        "en": "Independent website (Japan, Europe, the United States), Amazon platform design project"
       },
-      "year": "2025",
+      "year": "2026",
       "role": {
-        "zh": "体验设计",
-        "en": "Experience Design"
+        "zh": "UX设计",
+        "en": "UX design"
       },
       "category": {
-        "zh": "移动应用",
-        "en": "Mobile App"
+        "zh": "网站/移动应用",
+        "en": "Website/Mobile App"
       },
       "accent": "#ff786b",
       "order": 2,
-      "featured": true,
+      "featured": false,
       "status": {
         "zh": "样板案例",
         "en": "Sample case"
@@ -623,19 +623,45 @@
       "sections": [
         {
           "eyebrow": {
-            "zh": "挑战",
-            "en": "Challenge"
+            "zh": "项目",
+            "en": "project"
           },
           "title": {
-            "zh": "健康提醒不该带来压力。",
-            "en": "Health reminders should not create anxiety."
+            "zh": "Napcat独立站项目设计",
+            "en": "Napcat independent station project design"
           },
           "body": {
             "zh": "我们重新设计了目标、记录和反馈语言，让用户关注趋势而不是失败。",
             "en": "We reframed goals, tracking, and feedback around progress rather than failure."
           },
           "tone": "light",
-          "media": []
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1782889991859-892e772a-f8a3-4514-861b-ff9c864da618-1920.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782889994502-46a7a701-107f-4c31-96b9-a25b95fb01a7-1920-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "首页1920.jpg",
+              "title": {
+                "zh": "首页1920",
+                "en": "首页1920"
+              },
+              "alt": {
+                "zh": "首页1920.jpg",
+                "en": "首页1920.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ],
+          "titleAlign": "center",
+          "bodyAlign": "center",
+          "mediaLayout": "square-gallery",
+          "tableAlign": "center"
         }
       ]
     },
@@ -781,5 +807,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-01T07:01:33.323Z"
+  "updatedAt": "2026-07-01T07:13:19.017Z"
 }
