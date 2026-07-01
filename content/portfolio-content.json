@@ -403,78 +403,80 @@
           "media": [
             {
               "_type": "image",
-              "url": "/uploads/1782453724019-9e9189e6-0563-4845-827d-81deb266c10a-image.png",
-              "mimeType": "image/png",
-              "originalFilename": "image.png",
-              "alt": {
-                "zh": "image.png",
-                "en": "image.png"
-              },
-              "caption": {
-                "zh": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Shake Off the Office Vibe — Travel Guide.",
-                "en": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Shake Off the Office Vibe — Travel Guide."
-              },
-              "layout": "landscape-split",
-              "title": {
-                "zh": "旅游指南",
-                "en": "travel guide"
-              }
-            },
-            {
-              "_type": "image",
-              "url": "/uploads/1782453734897-747b0af4-85dc-4321-ba33-e1cc189c9a9f-image-1.png",
+              "url": "/uploads/1782876756015-fbb85d82-7cac-4fbb-945a-8677b53fcae6-image-1.png",
               "mimeType": "image/png",
               "originalFilename": "image (1).png",
+              "title": {
+                "zh": "image (1)",
+                "en": "image (1)"
+              },
               "alt": {
                 "zh": "image (1).png",
                 "en": "image (1).png"
               },
               "caption": {
-                "zh": "Following the standards of an internet brand-operations visual designer, create a vertical 3D recruitment poster with the theme \"JOIN US · Team Recruitment · WE NEED YOU · Find Your Glow · INNOVATE COLLABORATE GROW\". Off-white background, a centered stack of purple, pink and yellow 3D geometric shapes mixed with smiley balloons, a JOIN US ID badge hanging in the middle, listing 4 open roles — Creative Planning, Visual Design, Content Operations, Community Operations. Overall young, enthusiastic, designer-toy 3D clay style.",
-                "en": "Following the standards of an internet brand-operations visual designer, create a vertical 3D recruitment poster with the theme \"JOIN US · Team Recruitment · WE NEED YOU · Find Your Glow · INNOVATE COLLABORATE GROW\". Off-white background, a centered stack of purple, pink and yellow 3D geometric shapes mixed with smiley balloons, a JOIN US ID badge hanging in the middle, listing 4 open roles — Creative Planning, Visual Design, Content Operations, Community Operations. Overall young, enthusiastic, designer-toy 3D clay style."
+                "zh": "",
+                "en": ""
               },
-              "textPosition": "left",
-              "layout": "landscape-split",
-              "title": {
-                "zh": "团队招新",
-                "en": "Team recruitment"
-              }
+              "layout": "auto",
+              "textPosition": "right"
             },
             {
               "_type": "image",
-              "url": "/uploads/1782453743445-30e042d9-ba7c-4bee-8a39-f1581034e0b4-image-2.png",
+              "url": "/uploads/1782876766964-bae7b76f-741f-4585-b47f-d929854b353b-image-2.png",
               "mimeType": "image/png",
               "originalFilename": "image (2).png",
+              "title": {
+                "zh": "image (2)",
+                "en": "image (2)"
+              },
               "alt": {
                 "zh": "image (2).png",
                 "en": "image (2).png"
               },
               "caption": {
-                "zh": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Urban Nomad Project.",
-                "en": "Cutting-edge internet operations visual design master standard, Behance / Dribbble 3D illustration style poster, C4D style, soft-light rendering, high saturation, dopamine palette, abstract art, clean minimalist background, visually fresh, youthful and cheerful, refined and delicate. Theme: Urban Nomad Project."
+                "zh": "",
+                "en": ""
               },
-              "layout": "landscape-split",
-              "title": {
-                "zh": "城市计划",
-                "en": "city ​​plan"
-              }
+              "layout": "auto",
+              "textPosition": "right"
             },
             {
               "_type": "image",
-              "url": "/uploads/1782869331780-cb63f00f-7bd2-4e68-b7a4-d53863468c0b-image-3.png",
+              "url": "/uploads/1782876779457-46522d22-89f9-49cf-8b9d-3ed1906af7d6-image-3.png",
               "mimeType": "image/png",
               "originalFilename": "image (3).png",
               "title": {
-                "zh": "5.1露营",
-                "en": "5.1 Camping"
+                "zh": "image (3)",
+                "en": "image (3)"
               },
               "alt": {
                 "zh": "image (3).png",
                 "en": "image (3).png"
               },
               "caption": {
-                "zh": "Following the standards of a holiday marketing visual designer, create a vertical 3D poster for May 1st Labor Day with the theme \"5/1 Go Camping · Embrace Nature · Feel the Good · LET'S GO CAMPING\". Off-white minimalist background, yellow-and-pink 3D balloon letters \"5/1\" and green-and-black 3D letters \"Go Camping\". Below: a snow-capped little mountain, a yellow-and-white striped tent, a campfire, smiley flowers and a small stream. Overall fresh and small-town style, 3D clay aesthetic, generous whitespace composition.",
-                "en": "Following the standards of a holiday marketing visual designer, create a vertical 3D poster for May 1st Labor Day with the theme \"5/1 Go Camping · Embrace Nature · Feel the Good · LET'S GO CAMPING\". Off-white minimalist background, yellow-and-pink 3D balloon letters \"5/1\" and green-and-black 3D letters \"Go Camping\". Below: a snow-capped little mountain, a yellow-and-white striped tent, a campfire, smiley flowers and a small stream. Overall fresh and small-town style, 3D clay aesthetic, generous whitespace composition."
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782876786838-2ec34524-6680-4292-a417-52b200ed32e9-image.png",
+              "mimeType": "image/png",
+              "originalFilename": "image.png",
+              "title": {
+                "zh": "image",
+                "en": "image"
+              },
+              "alt": {
+                "zh": "image.png",
+                "en": "image.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
               },
               "layout": "auto",
               "textPosition": "right"
@@ -696,5 +698,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-01T01:37:57.002Z"
+  "updatedAt": "2026-07-01T03:33:32.425Z"
 }
