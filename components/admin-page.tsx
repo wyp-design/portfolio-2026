@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { HomeSection, LocalizedText, Project, RichTextStyle, SiteContent, UploadedMedia } from "@/content/types";
 import type { PortfolioContent } from "@/lib/portfolio-data";
+import { useAssetPath } from "@/lib/use-asset-path";
 
 type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
 type ProjectSection = Project["sections"][number];
@@ -80,6 +81,7 @@ const emptySite: SiteContent = {
   contactLabel: emptyLocalized,
   contactHeadline: emptyLocalized,
   email: "",
+  phone: "",
   social: [],
 };
 
@@ -207,6 +209,7 @@ function buildUploadedMedia(file: File, upload: { fileUrl: string; mimeType?: st
 }
 
 export function AdminPage() {
+  const resolveAssetPath = useAssetPath();
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [content, setContent] = useState<PortfolioContent>({ site: emptySite, projects: [] });
@@ -776,10 +779,10 @@ export function AdminPage() {
     const isPdf = mimeType === "application/pdf" || /\.pdf(\?|$)/i.test(source);
 
     return (
-      <a className="admin-media-preview" href={media.url} target="_blank" rel="noreferrer" title="点击查看原文件">
-        {isImage ? <img src={media.url} alt={media.originalFilename || media.alt?.zh || "上传图片预览"} loading="lazy" /> : null}
-        {isVideo ? <video src={media.url} muted playsInline preload="metadata" /> : null}
-        {isPdf ? <iframe src={`${media.url}#page=1&view=FitH`} title={`${media.originalFilename || "PDF"} 预览`} loading="lazy" /> : null}
+      <a className="admin-media-preview" href={resolveAssetPath(media.url)} target="_blank" rel="noreferrer" title="点击查看原文件">
+        {isImage ? <img src={resolveAssetPath(media.url)} alt={media.originalFilename || media.alt?.zh || "上传图片预览"} loading="lazy" /> : null}
+        {isVideo ? <video src={resolveAssetPath(media.url)} muted playsInline preload="metadata" /> : null}
+        {isPdf ? <iframe src={`${resolveAssetPath(media.url)}#page=1&view=FitH`} title={`${media.originalFilename || "PDF"} 预览`} loading="lazy" /> : null}
         {!isImage && !isVideo && !isPdf ? <span className="admin-file-placeholder">FILE</span> : null}
       </a>
     );
@@ -915,6 +918,10 @@ export function AdminPage() {
             邮箱
             <input value={content.site.email} onChange={(event) => updateSite({ email: event.target.value })} />
           </label>
+          <label>
+            手机号（联系模块展示）
+            <input value={content.site.phone || ""} onChange={(event) => updateSite({ phone: event.target.value })} placeholder="例如：138 0000 0000" />
+          </label>
           <div className="admin-subsection">
             <h3>首页模块管理</h3>
             <p className="admin-hint">可显示/隐藏模块，也可以调整上下顺序。隐藏后不会删除内容，随时可恢复。</p>
@@ -999,7 +1006,7 @@ export function AdminPage() {
               {content.site.aboutPhoto?.url ? (
                 <div className="admin-photo-preview">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={content.site.aboutPhoto.url} alt={content.site.aboutPhoto.originalFilename || "About photo"} />
+                  <img src={resolveAssetPath(content.site.aboutPhoto.url)} alt={content.site.aboutPhoto.originalFilename || "About photo"} />
                   <button type="button" className="danger" onClick={() => updateSite({ aboutPhoto: undefined })}>移除照片</button>
                 </div>
               ) : null}
@@ -1302,7 +1309,7 @@ export function AdminPage() {
                         <div key={`${media.url}-${mediaIndex}`}>
                           {renderMediaPreview(media)}
                           <span>{media.mimeType || media._type}</span>
-                          <a href={media.url} target="_blank" rel="noreferrer">{media.originalFilename || media.url}</a>
+                          <a href={resolveAssetPath(media.url)} target="_blank" rel="noreferrer">{media.originalFilename || media.url}</a>
                           {renderLocalized("作品标题", localizedValue(media.title), (value) =>
                             updateMedia(sectionIndex, mediaIndex, { ...media, title: value }),
                           )}

@@ -76,6 +76,7 @@ export const siteCopy: SiteContent = {
   contactLabel: { zh: "一起创造", en: "Let’s create" },
   contactHeadline: { zh: "有意思的东西。", en: "SOMETHING WITH MEANING." },
   email: "hello@yourname.design",
+  phone: "",
   social: [
     { label: "LinkedIn", href: "https://www.linkedin.com" },
     { label: "Behance", href: "https://www.behance.net" },

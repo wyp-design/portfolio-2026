@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { EducationItem, Project } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
-import { assetPath } from "@/lib/paths";
+import { useAssetPath } from "@/lib/use-asset-path";
 import { CinematicHero } from "./cinematic-hero";
 import { SiteHeader } from "./site-header";
 
@@ -16,6 +16,7 @@ const HeroScene = dynamic(() => import("./hero-scene").then((module) => module.H
 });
 
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
+  const assetPath = useAssetPath();
   const root = useRef<HTMLElement>(null);
   const { language, t } = useLanguage();
   const [activeExperienceIndex, setActiveExperienceIndex] = useState<number | null>(null);
@@ -226,7 +227,10 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <span>{sectionNumber("contact")} {t(site.contactLabel)}</span>
                 <h2>{t(site.contactHeadline)}</h2>
               </div>
-              <a className="email-link reveal" href={`mailto:${site.email}`}>{site.email} ↗</a>
+              <div className="contact-links reveal">
+                <a className="email-link" href={`mailto:${site.email}`}>{site.email} ↗</a>
+                {site.phone ? <a className="phone-link" href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone} ↗</a> : null}
+              </div>
               <div className="footer-row">
                 <span>© 2026 {site.name}</span>
                 <div>{site.social.map((item) => <a href={item.href} key={item.label}>{item.label}</a>)}</div>

@@ -930,7 +930,16 @@ button {
   letter-spacing: -0.07em;
 }
 
-.email-link {
+.contact-links {
+  display: flex;
+  align-self: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.email-link,
+.phone-link {
   align-self: flex-start;
   border-bottom: 2px solid currentColor;
   font-family: var(--font-mono), monospace;

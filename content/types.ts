@@ -80,6 +80,7 @@ export type SiteContent = {
   contactLabel: LocalizedText;
   contactHeadline: LocalizedText;
   email: string;
+  phone?: string;
   social: Array<{ label: string; href: string }>;
 };
 

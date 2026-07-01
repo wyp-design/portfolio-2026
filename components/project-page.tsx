@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { LocalizedText, Project, SiteContent, UploadedMedia } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
-import { assetPath } from "@/lib/paths";
+import { useAssetPath } from "@/lib/use-asset-path";
 import { SiteHeader } from "./site-header";
 
 type ProjectSection = Project["sections"][number];
@@ -84,6 +83,7 @@ function MediaFigure({
   imageMode: "grid" | "split" | "full";
   onOpen: () => void;
 }) {
+  const assetPath = useAssetPath();
   if (isPdf(media)) {
     return (
       <figure className="case-pdf-viewer">
@@ -130,6 +130,7 @@ function GalleryMediaCard({
   index: number;
   onOpen: () => void;
 }) {
+  const assetPath = useAssetPath();
   return (
     <button className="case-gallery-card" type="button" onClick={onOpen} aria-label={`打开作品 ${index + 1}`}>
       {isPdf(media) ? (
@@ -140,12 +141,13 @@ function GalleryMediaCard({
         // eslint-disable-next-line @next/next/no-img-element
         <img src={assetPath(media.url)} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} loading="lazy" decoding="async" />
       ) : (
-        <Image
+        // Native image URLs can carry EdgeOne's temporary preview credentials.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
           src={assetPath(media.url)}
           alt={title || caption || media.originalFilename || `Project media ${index + 1}`}
-          fill
-          sizes="(max-width: 800px) 50vw, 25vw"
-          quality={72}
+          loading="lazy"
+          decoding="async"
         />
       )}
       <span className="case-gallery-shade" />
@@ -251,6 +253,7 @@ export function ProjectPage({
   nextProject?: Project;
   site: SiteContent;
 }) {
+  const assetPath = useAssetPath();
   const { language, t } = useLanguage();
   const root = useRef<HTMLElement>(null);
   const modalScrollRef = useRef<HTMLElement>(null);
