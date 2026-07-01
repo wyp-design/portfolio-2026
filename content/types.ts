@@ -23,6 +23,7 @@ export type EducationItem = {
 export type UploadedMedia = {
   _type: "image" | "file";
   url: string;
+  thumbnailUrl?: string;
   mimeType?: string;
   originalFilename?: string;
   title?: LocalizedText;

@@ -8,17 +8,22 @@ const GITHUB_CDN_ORIGIN = "https://cdn.jsdelivr.net/gh/wyp-design/portfolio-2026
 
 type ResilientImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
+  fallbackSrc?: string;
 };
 
-export function ResilientImage({ src, alt, onError, ...props }: ResilientImageProps) {
+export function ResilientImage({ src, fallbackSrc, alt, onError, ...props }: ResilientImageProps) {
   const resolveAssetPath = useAssetPath();
   const candidates = useMemo(() => {
     const sources = [resolveAssetPath(src)];
-    if (src.startsWith("/uploads/")) {
-      sources.push(`${VERCEL_ASSET_ORIGIN}${src}`, `${GITHUB_CDN_ORIGIN}${src}`);
+    const fallback = fallbackSrc || (src.startsWith("/uploads/") ? src : "");
+    if (fallback) {
+      sources.push(resolveAssetPath(fallback));
+      if (fallback.startsWith("/uploads/")) {
+        sources.push(`${VERCEL_ASSET_ORIGIN}${fallback}`, `${GITHUB_CDN_ORIGIN}${fallback}`);
+      }
     }
     return [...new Set(sources)];
-  }, [resolveAssetPath, src]);
+  }, [fallbackSrc, resolveAssetPath, src]);
   const [sourceIndex, setSourceIndex] = useState(0);
 
   useEffect(() => setSourceIndex(0), [src, candidates]);

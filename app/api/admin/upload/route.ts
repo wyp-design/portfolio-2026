@@ -4,6 +4,7 @@ import { getErrorMessage } from "@/lib/error-message";
 import { commitBinaryFile } from "@/lib/github-cms";
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+const MAX_THUMBNAIL_BYTES = 2 * 1024 * 1024;
 const ACCEPTED_TYPES = new Map([
   ["image/png", "PNG"],
   ["image/jpeg", "JPG"],
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file");
+    const thumbnail = formData.get("thumbnail");
 
     if (!(file instanceof File)) {
       return NextResponse.json({ message: "没有收到文件" }, { status: 400 });
@@ -67,8 +69,17 @@ export async function POST(request: Request) {
     const filePath = `public/uploads/${filename}`;
     await commitBinaryFile(filePath, await file.arrayBuffer(), `Upload ${file.name} from admin`);
 
+    let thumbnailUrl: string | undefined;
+    if (thumbnail instanceof File && thumbnail.type === "image/jpeg" && thumbnail.size <= MAX_THUMBNAIL_BYTES) {
+      const thumbnailFilename = `${Date.now()}-${crypto.randomUUID()}-${safeFilename(thumbnail.name)}`;
+      const thumbnailPath = `public/uploads/thumbnails/${thumbnailFilename}`;
+      await commitBinaryFile(thumbnailPath, await thumbnail.arrayBuffer(), `Upload thumbnail for ${file.name}`);
+      thumbnailUrl = `/uploads/thumbnails/${thumbnailFilename}`;
+    }
+
     return NextResponse.json({
       fileUrl: `/uploads/${filename}`,
+      thumbnailUrl,
       originalFilename: file.name,
       mimeType: file.type || "application/octet-stream",
     });

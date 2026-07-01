@@ -7,6 +7,7 @@ import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
 import { SiteHeader } from "./site-header";
 import { ResilientImage } from "./resilient-image";
+import { optimizedAssetPath } from "@/lib/paths";
 
 type ProjectSection = Project["sections"][number];
 
@@ -135,14 +136,21 @@ function GalleryMediaCard({
       {isPdf(media) ? (
         <span className="case-gallery-file">PDF</span>
       ) : isVideo(media) ? (
-        <video src={assetPath(media.url)} muted playsInline preload="metadata" />
+        <video src={assetPath(media.url)} muted playsInline preload="none" />
       ) : media.mimeType === "image/gif" ? (
-        <ResilientImage src={media.url} alt={title || caption || media.originalFilename || `Project media ${index + 1}`} loading="lazy" decoding="async" />
+        <ResilientImage
+          src={optimizedAssetPath(media.thumbnailUrl || media.url, 640, 75)}
+          fallbackSrc={media.thumbnailUrl || media.url}
+          alt={title || caption || media.originalFilename || `Project media ${index + 1}`}
+          loading={index < 2 ? "eager" : "lazy"}
+          decoding="async"
+        />
       ) : (
         <ResilientImage
-          src={media.url}
+          src={optimizedAssetPath(media.thumbnailUrl || media.url, 640, 75)}
+          fallbackSrc={media.thumbnailUrl || media.url}
           alt={title || caption || media.originalFilename || `Project media ${index + 1}`}
-          loading="lazy"
+          loading={index < 2 ? "eager" : "lazy"}
           decoding="async"
         />
       )}

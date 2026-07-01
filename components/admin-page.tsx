@@ -5,6 +5,7 @@ import type { HomeSection, LocalizedText, Project, RichTextStyle, SiteContent, U
 import type { PortfolioContent } from "@/lib/portfolio-data";
 import { useAssetPath } from "@/lib/use-asset-path";
 import { ResilientImage } from "./resilient-image";
+import { optimizedAssetPath } from "@/lib/paths";
 
 type SaveState = "idle" | "loading" | "saving" | "saved" | "error";
 type ProjectSection = Project["sections"][number];
@@ -23,6 +24,7 @@ type UploadState = {
 };
 type UploadResponse = {
   fileUrl?: string;
+  thumbnailUrl?: string;
   mimeType?: string;
   originalFilename?: string;
   detail?: string;
@@ -194,11 +196,12 @@ function validateUploadFile(file: File, target: UploadTarget) {
   return "";
 }
 
-function buildUploadedMedia(file: File, upload: { fileUrl: string; mimeType?: string; originalFilename?: string }): UploadedMedia {
+function buildUploadedMedia(file: File, upload: { fileUrl: string; thumbnailUrl?: string; mimeType?: string; originalFilename?: string }): UploadedMedia {
   const filename = upload.originalFilename || file.name;
   return {
     _type: file.type === "application/pdf" ? "file" : "image",
     url: upload.fileUrl,
+    thumbnailUrl: upload.thumbnailUrl,
     mimeType: upload.mimeType || file.type,
     originalFilename: filename,
     title: { zh: filename.replace(/\.[^.]+$/, ""), en: filename.replace(/\.[^.]+$/, "") },
@@ -207,6 +210,33 @@ function buildUploadedMedia(file: File, upload: { fileUrl: string; mimeType?: st
     layout: "auto",
     textPosition: "right",
   };
+}
+
+async function createUploadThumbnail(file: File) {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") return null;
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxDimension = 720;
+    const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+    context.fillStyle = "#f4f1e8";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
+    if (!blob) return null;
+    return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}-thumbnail.jpg`, { type: "image/jpeg" });
+  } catch {
+    return null;
+  }
 }
 
 export function AdminPage() {
@@ -505,6 +535,24 @@ export function AdminPage() {
     updateSection(sectionIndex, { ...section, media });
   }
 
+  async function replaceMediaFile(sectionIndex: number, mediaIndex: number, file: File) {
+    const currentMedia = selectedProject?.sections[sectionIndex]?.media?.[mediaIndex];
+    if (!currentMedia) return;
+    const replacement = (await uploadToGithub(file, "project")) as ProjectMedia | null;
+    if (!replacement) return;
+
+    updateMedia(sectionIndex, mediaIndex, {
+      ...currentMedia,
+      ...replacement,
+      title: currentMedia.title,
+      caption: currentMedia.caption,
+      layout: currentMedia.layout,
+      textPosition: currentMedia.textPosition,
+    });
+    setState("idle");
+    setMessage("文件已替换，原有标题、说明和排版设置已保留。请保存草稿或保存发布。");
+  }
+
   function applyProjectJson() {
     if (!selectedProject) return;
     try {
@@ -545,6 +593,8 @@ export function AdminPage() {
 
     const formData = new FormData();
     formData.append("file", file);
+    const thumbnail = await createUploadThumbnail(file);
+    if (thumbnail) formData.append("thumbnail", thumbnail);
 
     return new Promise((resolve) => {
       const xhr = new XMLHttpRequest();
@@ -597,7 +647,7 @@ export function AdminPage() {
           target,
           success: "上传成功。请继续点击“保存发布”，把这个素材写入网站内容。",
         });
-        resolve(buildUploadedMedia(file, result as { fileUrl: string; mimeType?: string; originalFilename?: string }));
+        resolve(buildUploadedMedia(file, result as { fileUrl: string; thumbnailUrl?: string; mimeType?: string; originalFilename?: string }));
       };
 
       xhr.onerror = () => {
@@ -781,7 +831,14 @@ export function AdminPage() {
 
     return (
       <a className="admin-media-preview" href={resolveAssetPath(media.url)} target="_blank" rel="noreferrer" title="点击查看原文件">
-        {isImage ? <ResilientImage src={media.url} alt={media.originalFilename || media.alt?.zh || "上传图片预览"} loading="lazy" /> : null}
+        {isImage ? (
+          <ResilientImage
+            src={optimizedAssetPath(media.thumbnailUrl || media.url, 384, 75)}
+            fallbackSrc={media.thumbnailUrl || media.url}
+            alt={media.originalFilename || media.alt?.zh || "上传图片预览"}
+            loading="lazy"
+          />
+        ) : null}
         {isVideo ? <video src={resolveAssetPath(media.url)} muted playsInline preload="metadata" /> : null}
         {isPdf ? <iframe src={`${resolveAssetPath(media.url)}#page=1&view=FitH`} title={`${media.originalFilename || "PDF"} 预览`} loading="lazy" /> : null}
         {!isImage && !isVideo && !isPdf ? <span className="admin-file-placeholder">FILE</span> : null}
@@ -1340,6 +1397,19 @@ export function AdminPage() {
                             updateMedia(sectionIndex, mediaIndex, { ...media, caption: value }),
                             true,
                           )}
+                          <label className="admin-replace-file">
+                            替换文件
+                            <input
+                              type="file"
+                              accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.mp4,image/png,image/jpeg,image/gif,image/webp,application/pdf,video/mp4"
+                              disabled={uploadState.active}
+                              onChange={(event) => {
+                                const file = event.target.files?.[0];
+                                if (file) void replaceMediaFile(sectionIndex, mediaIndex, file);
+                                event.currentTarget.value = "";
+                              }}
+                            />
+                          </label>
                           <button type="button" className="danger" onClick={() => removeMedia(sectionIndex, mediaIndex)}>移除</button>
                         </div>
                       ))}

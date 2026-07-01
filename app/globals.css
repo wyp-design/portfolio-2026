@@ -3009,6 +3009,28 @@ button {
   margin: 0;
 }
 
+.admin-replace-file {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  padding: 11px 14px;
+  font-weight: 800;
+}
+
+.admin-replace-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .admin-upload {
   border: 1px dashed rgba(0, 0, 0, .35);
   margin: 8px 0 16px;
