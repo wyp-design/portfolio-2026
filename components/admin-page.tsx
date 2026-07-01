@@ -1206,19 +1206,28 @@ export function AdminPage() {
 
           <div className="admin-project-list">
             {sortedProjects.map((project, index) => (
-              <button
-                className={index === selectedIndex ? "is-selected" : ""}
-                key={project.slug}
-                onClick={() => {
-                  setSelectedIndex(index);
-                  setUploadSectionIndex(0);
-                  setProjectJson(JSON.stringify(project, null, 2));
-                }}
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <strong>{project.title.zh || project.title.en}</strong>
-                <small>{[project.year, project.slug].filter(Boolean).join(" · ") || "未填写辅助信息"}</small>
-              </button>
+              <div className="admin-project-list-item" key={`${project.slug}-${index}`}>
+                <button
+                  className={`admin-project-select ${index === selectedIndex ? "is-selected" : ""}`}
+                  onClick={() => {
+                    setSelectedIndex(index);
+                    setUploadSectionIndex(0);
+                    setProjectJson(JSON.stringify(project, null, 2));
+                  }}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{project.title.zh || project.title.en}</strong>
+                  <small>{[project.year, project.slug].filter(Boolean).join(" · ") || "未填写辅助信息"}</small>
+                </button>
+                <button
+                  type="button"
+                  className="admin-project-remove danger"
+                  onClick={() => removeProject(index)}
+                  aria-label={`移除项目 ${project.title.zh || project.title.en}`}
+                >
+                  移除
+                </button>
+              </div>
             ))}
           </div>
         </section>
