@@ -565,14 +565,15 @@ export function AdminPage() {
     }
   }
 
-  async function uploadToGithub(file: File, target: UploadTarget): Promise<UploadedMedia | null> {
+  async function uploadToGithub(file: File, target: UploadTarget, progressLabel?: string): Promise<UploadedMedia | null> {
+    const displayName = progressLabel ? `${progressLabel} · ${file.name}` : file.name;
     const validationError = validateUploadFile(file, target);
     if (validationError) {
       setState("error");
       setMessage(validationError);
       setUploadState({
         active: false,
-        fileName: file.name,
+        fileName: displayName,
         percent: 0,
         phase: "上传未开始",
         target,
@@ -582,10 +583,10 @@ export function AdminPage() {
     }
 
     setState("saving");
-    setMessage(`正在上传 ${file.name}…`);
+    setMessage(`正在上传 ${displayName}…`);
     setUploadState({
       active: true,
-      fileName: file.name,
+      fileName: displayName,
       percent: 2,
       phase: "正在准备文件…",
       target,
@@ -629,7 +630,7 @@ export function AdminPage() {
           setMessage(`上传失败：${errorMessage}`);
           setUploadState({
             active: false,
-            fileName: file.name,
+            fileName: displayName,
             percent: 0,
             phase: "上传失败",
             target,
@@ -641,7 +642,7 @@ export function AdminPage() {
 
         setUploadState({
           active: false,
-          fileName: file.name,
+          fileName: displayName,
           percent: 100,
           phase: "上传完成，已加入当前表单",
           target,
@@ -656,7 +657,7 @@ export function AdminPage() {
         setMessage(`上传失败：${errorMessage}`);
         setUploadState({
           active: false,
-          fileName: file.name,
+          fileName: displayName,
           percent: 0,
           phase: "上传失败",
           target,
@@ -671,7 +672,7 @@ export function AdminPage() {
         setMessage(`上传失败：${errorMessage}`);
         setUploadState({
           active: false,
-          fileName: file.name,
+          fileName: displayName,
           percent: 0,
           phase: "上传超时",
           target,
@@ -693,21 +694,35 @@ export function AdminPage() {
     setMessage("个人照片已上传并加入关于我模块。请点击“保存发布”，前台才会正式更新。");
   }
 
-  async function uploadFile(file: File) {
-    if (!selectedProject) return;
-    const media = (await uploadToGithub(file, "project")) as ProjectMedia | null;
-    if (!media) return;
+  async function uploadFiles(files: File[]) {
+    if (!selectedProject || !files.length) return;
 
+    const uploaded: ProjectMedia[] = [];
+    for (let index = 0; index < files.length; index += 1) {
+      const media = (await uploadToGithub(files[index], "project", `${index + 1}/${files.length}`)) as ProjectMedia | null;
+      if (media) uploaded.push(media);
+    }
+
+    if (!uploaded.length) return;
     const sections = selectedProject.sections.length ? [...selectedProject.sections] : [createSection()];
     const targetIndex = Math.min(uploadSectionIndex, sections.length - 1);
     sections[targetIndex] = {
       ...sections[targetIndex],
-      media: [...(sections[targetIndex].media || []), media],
+      media: [...(sections[targetIndex].media || []), ...uploaded],
     };
-
     updateSelectedProject({ ...selectedProject, sections });
     setState("idle");
-    setMessage("文件已上传并加入当前项目。请点击“保存发布”，前台才会正式更新。");
+    setUploadState({
+      active: false,
+      fileName: `批量上传完成（${uploaded.length}/${files.length}）`,
+      percent: 100,
+      phase: "全部文件已加入当前表单",
+      target: "project",
+      success: uploaded.length === files.length
+        ? "全部文件上传成功。你可以继续编辑，然后保存草稿或保存发布。"
+        : `成功 ${uploaded.length} 个，失败 ${files.length - uploaded.length} 个。成功文件已加入当前项目。`,
+    });
+    setMessage(`已批量加入 ${uploaded.length} 个文件。请保存草稿或保存发布。`);
   }
 
   async function saveContent() {
@@ -1440,14 +1455,15 @@ export function AdminPage() {
                 </select>
               </label>
               <label>
-                上传 PNG / JPG / GIF / WEBP / PDF / MP4（单个文件 ≤ {formatBytes(MAX_PROJECT_UPLOAD_BYTES)}）
+                批量上传 PNG / JPG / GIF / WEBP / PDF / MP4（可一次多选，单个文件 ≤ {formatBytes(MAX_PROJECT_UPLOAD_BYTES)}）
                 <input
                   type="file"
+                  multiple
                   accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,video/mp4"
                   disabled={uploadState.active}
                   onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    if (file) void uploadFile(file);
+                    const files = Array.from(event.target.files || []);
+                    if (files.length) void uploadFiles(files);
                     event.currentTarget.value = "";
                   }}
                 />
