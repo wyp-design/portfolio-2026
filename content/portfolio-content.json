@@ -666,23 +666,23 @@
       ]
     },
     {
-      "slug": "northstar-system",
+      "slug": "web",
       "title": {
         "zh": "Web 类",
         "en": "Web class"
       },
       "summary": {
-        "zh": "为四条产品线建立共享语言与可靠的交付方式。",
-        "en": "A shared language and reliable delivery model across four product lines."
+        "zh": "Web类别设计项目",
+        "en": "Web Category Design Project"
       },
-      "year": "2025",
+      "year": "2026",
       "role": {
-        "zh": "设计系统负责人",
-        "en": "Design Systems Lead"
+        "zh": "UI设计师",
+        "en": "UI designer"
       },
       "category": {
-        "zh": "设计系统",
-        "en": "Design System"
+        "zh": "网站应用",
+        "en": "Website application"
       },
       "accent": "#7e7cff",
       "order": 3,
@@ -713,23 +713,23 @@
       ]
     },
     {
-      "slug": "field-notes",
+      "slug": "app",
       "title": {
         "zh": "App 类",
         "en": "App class"
       },
       "summary": {
-        "zh": "面向实地研究的轻量记录与洞察工具。",
-        "en": "A lightweight capture and synthesis tool for field research."
+        "zh": "移动应用设计项目",
+        "en": "Mobile App Design Project"
       },
-      "year": "2024",
+      "year": "2026",
       "role": {
-        "zh": "产品设计",
-        "en": "Product Design"
+        "zh": "UI设计师",
+        "en": "UI designer"
       },
       "category": {
-        "zh": "工具",
-        "en": "Tooling"
+        "zh": "移动应用",
+        "en": "mobile application"
       },
       "accent": "#ffda45",
       "order": 4,
@@ -760,23 +760,23 @@
       ]
     },
     {
-      "slug": "signal-dashboard",
+      "slug": "design",
       "title": {
         "zh": "平面视觉综合 类",
         "en": "Plane Vision Comprehensive Category"
       },
       "summary": {
-        "zh": "帮助运营团队从大量数据中快速找到可行动信号。",
-        "en": "Helping operations teams find actionable signals in dense data."
+        "zh": "LOGO/IP/海报设计综合项目",
+        "en": "LOGO/IP/poster design comprehensive project"
       },
-      "year": "2024",
+      "year": "2026",
       "role": {
-        "zh": "UI/UX 设计",
-        "en": "UI/UX Design"
+        "zh": "UI设计",
+        "en": "UI design"
       },
       "category": {
-        "zh": "数据产品",
-        "en": "Data Product"
+        "zh": "视觉产品",
+        "en": "visual products"
       },
       "accent": "#5dd8ff",
       "order": 5,
@@ -794,18 +794,191 @@
             "en": "Outcome"
           },
           "title": {
-            "zh": "从看报表，到做决定。",
-            "en": "From reading reports to making decisions."
+            "zh": "亚马逊相关主副图",
+            "en": "Amazon related main and secondary pictures"
           },
           "body": {
             "zh": "围绕异常、影响和建议动作重组信息层级。",
             "en": "The hierarchy was rebuilt around anomalies, impact, and recommended action."
           },
           "tone": "blue",
-          "media": []
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1782958449109-846071d4-9b68-4dc8-893b-2d5897d4e1d0-06.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958452979-9ec816ec-6d64-4ccb-a2be-1fadd8956a06-06-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图06.jpg",
+              "title": {
+                "zh": "主图06",
+                "en": "主图06"
+              },
+              "alt": {
+                "zh": "主图06.jpg",
+                "en": "主图06.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958477215-bb930001-68c5-4217-a1a1-d7a2a10c19a2-10.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958479589-8c1e6696-32b1-4f96-b76a-cbd0211820ac-10-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图10.jpg",
+              "title": {
+                "zh": "主图09",
+                "en": "主图09"
+              },
+              "alt": {
+                "zh": "主图10.jpg",
+                "en": "主图10.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958484402-58954146-8f4c-49d5-901d-210feb715dfc-11.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958487503-9bdeab4f-e12d-4fe8-9ca7-1267209f5b6b-11-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图11.jpg",
+              "title": {
+                "zh": "主图11",
+                "en": "主图11"
+              },
+              "alt": {
+                "zh": "主图11.jpg",
+                "en": "主图11.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958493793-fa445766-9cb1-465c-80f6-d90d73400423-01.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958496620-064d0a49-34bb-4d33-9399-7805ccdb3aec-01-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图01.jpg",
+              "title": {
+                "zh": "主图01",
+                "en": "主图01"
+              },
+              "alt": {
+                "zh": "主图01.jpg",
+                "en": "主图01.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958502809-eb254f14-0183-42dc-a091-28ba7c9679f5-02.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958505541-d71e50a2-fcc0-4ab4-a306-ff7d3ebe9f55-02-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图02.jpg",
+              "title": {
+                "zh": "主图02",
+                "en": "主图02"
+              },
+              "alt": {
+                "zh": "主图02.jpg",
+                "en": "主图02.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958517025-fba6581e-7b53-42b3-8135-31ec0f882ace-07.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958519447-db76994e-c0cf-4135-bffa-70a903f12a75-07-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图07.jpg",
+              "title": {
+                "zh": "主图07",
+                "en": "主图07"
+              },
+              "alt": {
+                "zh": "主图07.jpg",
+                "en": "主图07.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958566458-e5baecca-7dac-4027-b08e-602e4ffbb8e7-04.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958569359-966dbafb-fbff-415c-8105-1a6954a01e5f-04-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图04.jpg",
+              "title": {
+                "zh": "主图04",
+                "en": "主图04"
+              },
+              "alt": {
+                "zh": "主图04.jpg",
+                "en": "主图04.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1782958574962-4929d74d-9eca-435b-8c53-9a0519adb1a8-05.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1782958577307-6a46c52b-2a2e-434a-95a8-bd509e645a20-05-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "主图05.jpg",
+              "title": {
+                "zh": "主图05",
+                "en": "主图05"
+              },
+              "alt": {
+                "zh": "主图05.jpg",
+                "en": "主图05.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ],
+          "titleAlign": "center",
+          "bodyAlign": "center",
+          "tableAlign": "center",
+          "mediaLayout": "square-gallery"
         }
       ]
     }
   ],
-  "updatedAt": "2026-07-01T07:13:19.017Z"
+  "updatedAt": "2026-07-02T02:16:24.616Z"
 }
