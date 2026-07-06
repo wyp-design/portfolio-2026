@@ -588,7 +588,134 @@
             "en": "I decomposed tasks into composable nodes so inputs, decisions, tools, and outputs could be inspected, copied, and shared."
           },
           "tone": "blue",
-          "media": []
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1783325238346-6a62058b-aafe-47e0-9e93-f5cbb64edb4e-Mask-group.png",
+              "thumbnailUrl": "/uploads/thumbnails/1783325249359-6f16cf8b-30d3-4c0d-97b6-87542c8d70c9-Mask-group-thumbnail.jpg",
+              "mimeType": "image/png",
+              "originalFilename": "Mask group.png",
+              "title": {
+                "zh": "Mask group",
+                "en": "Mask group"
+              },
+              "alt": {
+                "zh": "Mask group.png",
+                "en": "Mask group.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1783325252832-791507c9-77fc-4e51-90e9-239c398eef12-Mask-group-1.png",
+              "thumbnailUrl": "/uploads/thumbnails/1783325256024-68e6d5b2-34d4-4724-ad2a-681c3fd5c245-Mask-group-1-thumbnail.jpg",
+              "mimeType": "image/png",
+              "originalFilename": "Mask group-1.png",
+              "title": {
+                "zh": "Mask group-1",
+                "en": "Mask group-1"
+              },
+              "alt": {
+                "zh": "Mask group-1.png",
+                "en": "Mask group-1.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1783325258548-a2a217ce-ad28-4b7f-a2b8-1e40729753c3-Mask-group-2.png",
+              "thumbnailUrl": "/uploads/thumbnails/1783325261405-1e8becc6-a263-4f10-ace8-3fd91bf9b2fd-Mask-group-2-thumbnail.jpg",
+              "mimeType": "image/png",
+              "originalFilename": "Mask group-2.png",
+              "title": {
+                "zh": "Mask group-2",
+                "en": "Mask group-2"
+              },
+              "alt": {
+                "zh": "Mask group-2.png",
+                "en": "Mask group-2.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1783325263739-8d72b301-23fb-40bc-af5e-dc419dce2371-Mask-group-3.png",
+              "thumbnailUrl": "/uploads/thumbnails/1783325266732-d05fc4d5-0f61-418b-a5e6-5322796b0671-Mask-group-3-thumbnail.jpg",
+              "mimeType": "image/png",
+              "originalFilename": "Mask group-3.png",
+              "title": {
+                "zh": "Mask group-3",
+                "en": "Mask group-3"
+              },
+              "alt": {
+                "zh": "Mask group-3.png",
+                "en": "Mask group-3.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1783325269708-0c63af3b-4641-49d1-9247-e7fb3ca24b67-Mask-group-4.png",
+              "thumbnailUrl": "/uploads/thumbnails/1783325272242-bf07bb6c-8e0d-4597-a8fc-50c50a59ffa8-Mask-group-4-thumbnail.jpg",
+              "mimeType": "image/png",
+              "originalFilename": "Mask group-4.png",
+              "title": {
+                "zh": "Mask group-4",
+                "en": "Mask group-4"
+              },
+              "alt": {
+                "zh": "Mask group-4.png",
+                "en": "Mask group-4.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1783325274657-68f54316-ea57-4d83-a7eb-9acb79e6a82b-Mask-group-5.png",
+              "thumbnailUrl": "/uploads/thumbnails/1783325276986-b9e7a21a-7c21-4de9-be32-ede3f7302952-Mask-group-5-thumbnail.jpg",
+              "mimeType": "image/png",
+              "originalFilename": "Mask group-5.png",
+              "title": {
+                "zh": "Mask group-5",
+                "en": "Mask group-5"
+              },
+              "alt": {
+                "zh": "Mask group-5.png",
+                "en": "Mask group-5.png"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ]
         }
       ]
     },
@@ -980,5 +1107,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-02T02:16:24.616Z"
+  "updatedAt": "2026-07-06T08:08:02.079Z"
 }
