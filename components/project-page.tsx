@@ -380,9 +380,7 @@ export function ProjectPage({
             >
               <BodyContent body={t(section.body)} align={section.bodyAlign} tableAlign={section.tableAlign} />
             </div>
-            {section.media?.length ? (
-              <SectionMedia section={section} t={t} onOpen={setLightboxMedia} />
-            ) : (
+            {section.media?.length ? null : (
               <div className="case-placeholder">
                 <span>{language === "zh" ? "在后台上传项目图片 / GIF / 视频 / PDF" : "Upload project image / GIF / video / PDF in admin"}</span>
                 <div style={{ background: project.accent }} />
@@ -391,6 +389,35 @@ export function ProjectPage({
           </article>
         ))}
       </section>
+
+      {projectMedia.length ? (
+        <section className="case-project-media-wall">
+          <div className="case-project-media-heading">
+            <span>{language === "zh" ? "项目文件" : "Project files"}</span>
+            <h2>{language === "zh" ? "完整作品资料墙" : "Complete project media wall"}</h2>
+            <p>{language === "zh" ? "点击任意文件可放大查看，并可左右切换同一项目下的所有相关素材。" : "Open any file to preview it larger and switch through all related media."}</p>
+          </div>
+          <div className="case-square-gallery">
+            {projectMedia.map((item, index) => (
+              <GalleryMediaCard
+                media={item}
+                title={item.title ? t(item.title) : ""}
+                caption={item.caption ? t(item.caption) : ""}
+                index={index}
+                onOpen={() => setLightboxMedia(item)}
+                key={`${item.url}-${index}`}
+              />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="case-project-media-wall is-empty">
+          <div className="case-placeholder">
+            <span>{language === "zh" ? "在后台上传项目图片 / GIF / 视频 / PDF" : "Upload project image / GIF / video / PDF in admin"}</span>
+            <div style={{ background: project.accent }} />
+          </div>
+        </section>
+      )}
 
       {nextProject ? (
         <Link className="next-project" href={`/projects/${nextProject.slug}`}>

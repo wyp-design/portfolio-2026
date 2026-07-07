@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import type { EducationItem, Project } from "@/content/types";
+import type { EducationItem, Project, UploadedMedia } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
@@ -15,6 +15,18 @@ const HeroScene = dynamic(() => import("./hero-scene").then((module) => module.H
   ssr: false,
   loading: () => null,
 });
+
+function firstProjectMedia(project: Project) {
+  return project.sections.flatMap((section) => section.media || []).find(Boolean);
+}
+
+function isPdf(media?: UploadedMedia) {
+  return media?.mimeType === "application/pdf";
+}
+
+function isVideo(media?: UploadedMedia) {
+  return Boolean(media?.mimeType?.startsWith("video/"));
+}
 
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
   const assetPath = useAssetPath();
@@ -139,18 +151,36 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <p className="rich-text">{t(site.workIntro)}</p>
               </div>
               <div className="project-list">
-                {projects.map((project, index) => (
+                {projects.map((project, index) => {
+                  const cover = firstProjectMedia(project);
+                  const coverSrc = cover?.thumbnailUrl || cover?.url;
+                  return (
                   <Link className="project-row reveal" href={`/projects/${project.slug}`} key={project.slug}>
                     <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="project-card-plus">＋</span>
+                    {coverSrc && !isPdf(cover) && !isVideo(cover) ? (
+                      <ResilientImage
+                        src={coverSrc}
+                        alt={cover?.alt ? t(cover.alt) : t(project.title)}
+                        loading={index < 4 ? "eager" : "lazy"}
+                        decoding="async"
+                      />
+                    ) : isVideo(cover) && cover?.url ? (
+                      <video src={assetPath(cover.url)} muted playsInline preload="metadata" />
+                    ) : (
+                      <span className="project-card-fallback" style={{ background: project.accent }}>
+                        {isPdf(cover) ? "PDF" : t(project.title)}
+                      </span>
+                    )}
+                    <span className="project-card-shade" />
                     <div>
                       <span className="project-category">{[t(project.category), project.year].filter(Boolean).join(" · ")}</span>
                       <h3>{t(project.title)}</h3>
                       <p className="rich-text">{t(project.summary)}</p>
                     </div>
-                    <span className="project-orb" style={{ background: project.accent }} />
-                    <span className="project-arrow">↗</span>
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </section>
           );
