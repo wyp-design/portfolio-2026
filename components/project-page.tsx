@@ -151,8 +151,6 @@ export function ProjectPage({
     ? Math.max(0, lightboxPool.findIndex((item) => item === lightboxMedia || item.url === lightboxMedia.url))
     : -1;
 
-  const categoryLine = [t(project.category), project.year].filter(Boolean).join(" / ");
-
   const selectSection = useCallback((index: number) => {
     setActiveSectionIndex(index);
     setLightboxMedia(null);
@@ -210,41 +208,29 @@ export function ProjectPage({
         <SiteHeader name={site.name} />
         <div className="case-category-shell">
           <Link className="back-link" href="/#work">&lt; All work</Link>
-          <div className="case-category-intro">
-            <span>{categoryLine || "Project category"}</span>
-            <h1>{t(project.title)}</h1>
-            <p>{t(project.summary)}</p>
-            <div className="case-category-meta">
-              <span>{t(project.role)}</span>
-              <span>{t(project.category)}</span>
-              {project.year ? <span>{project.year}</span> : null}
-            </div>
+        </div>
+      </section>
+
+      {!activeSection ? (
+        <section className="case-section-index case-section-index-directory">
+          <div className="case-section-index-grid">
+            {project.sections.map((section, index) => (
+              <SectionIndexCard
+                section={section}
+                index={index}
+                active={activeSectionIndex === index}
+                t={t}
+                onSelect={() => selectSection(index)}
+                key={`${section.title.en}-${index}`}
+              />
+            ))}
           </div>
-        </div>
-      </section>
-
-      <section className="case-section-index case-section-index-directory">
-        <div className="case-project-media-heading">
-          <span>{language === "zh" ? "PROJECT LIST" : "PROJECT LIST"}</span>
-          <h2>{t(project.title)}</h2>
-          <p>{t(project.summary)}</p>
-        </div>
-        <div className="case-section-index-grid">
-          {project.sections.map((section, index) => (
-            <SectionIndexCard
-              section={section}
-              index={index}
-              active={activeSectionIndex === index}
-              t={t}
-              onSelect={() => selectSection(index)}
-              key={`${section.title.en}-${index}`}
-            />
-          ))}
-        </div>
-      </section>
-
-      {activeSection ? (
+        </section>
+      ) : (
         <section className={`case-project-media-wall ${activeSectionMedia.length ? "" : "is-empty"}`} ref={mediaWallRef}>
+          <button className="case-back-button" type="button" onClick={() => setActiveSectionIndex(null)}>
+            &lt; {language === "zh" ? "返回项目列表" : "Back to project list"}
+          </button>
           <div className="case-project-media-heading">
             <span>{String((activeSectionIndex || 0) + 1).padStart(2, "0")} / {t(activeSection.eyebrow)}</span>
             <h2>{t(activeSection.title)}</h2>
@@ -270,7 +256,7 @@ export function ProjectPage({
             </div>
           )}
         </section>
-      ) : null}
+      )}
 
       {nextProject ? (
         <Link className="next-project" href={`/projects/${nextProject.slug}`}>

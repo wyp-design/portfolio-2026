@@ -3878,3 +3878,102 @@ button {
     columns: 1;
   }
 }
+
+/* Slimmed category flow: category card list first, section detail second. */
+.case-page-directory .case-category-landing {
+  min-height: 0;
+  background: #111310;
+}
+
+.case-page-directory .case-category-shell {
+  padding: clamp(72px, 8vw, 120px) 0 clamp(18px, 3vw, 44px);
+}
+
+.case-page-directory .case-category-shell .back-link {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+.case-page-directory .case-section-index-directory {
+  padding: clamp(36px, 5vw, 76px) 0 clamp(80px, 10vw, 150px);
+}
+
+.case-page-directory .case-section-index-directory .case-section-index-grid {
+  align-items: stretch;
+}
+
+.case-page-directory .case-project-media-wall {
+  padding-top: clamp(48px, 7vw, 108px);
+}
+
+.case-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: clamp(28px, 4vw, 58px);
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, .04);
+  color: color-mix(in srgb, currentColor 74%, transparent);
+  cursor: pointer;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+
+.case-back-button:hover {
+  background: rgba(255, 255, 255, .1);
+  color: currentColor;
+  transform: translateX(-3px);
+}
+
+.case-page-directory .case-project-media-wall .case-project-media-heading {
+  align-items: start;
+  margin-bottom: clamp(36px, 6vw, 88px);
+}
+
+.case-page-directory .case-project-media-wall .case-project-media-heading h2 {
+  font-size: clamp(48px, 6.4vw, 112px);
+}
+
+.case-page-directory .case-project-media-wall .case-project-media-heading p {
+  max-width: 520px;
+  font-size: clamp(14px, 1vw, 17px);
+}
+
+.case-page-directory .next-project {
+  margin-top: clamp(48px, 8vw, 112px);
+  margin-bottom: clamp(64px, 8vw, 120px);
+  border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  padding: clamp(30px, 4vw, 52px) 0;
+  background: transparent;
+  color: color-mix(in srgb, currentColor 82%, transparent);
+  text-decoration: none;
+}
+
+.case-page-directory .next-project span {
+  color: color-mix(in srgb, currentColor 48%, transparent);
+}
+
+.case-page-directory .next-project h2 {
+  margin: 10px 0 0;
+  font-size: clamp(28px, 4vw, 64px);
+  line-height: 1;
+  letter-spacing: -.055em;
+}
+
+@media (max-width: 900px) {
+  .case-page-directory .case-category-shell {
+    padding: 86px 0 22px;
+  }
+
+  .case-page-directory .case-section-index-directory {
+    padding-top: 26px;
+  }
+
+  .case-page-directory .case-project-media-wall .case-project-media-heading h2 {
+    font-size: clamp(40px, 13vw, 72px);
+  }
+}
