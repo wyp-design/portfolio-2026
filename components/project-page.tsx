@@ -167,6 +167,60 @@ function GalleryMediaCard({
   );
 }
 
+function SectionIndexCard({
+  section,
+  index,
+  active,
+  t,
+  onSelect,
+}: {
+  section: ProjectSection;
+  index: number;
+  active: boolean;
+  t: (value: LocalizedText) => string;
+  onSelect: () => void;
+}) {
+  const assetPath = useAssetPath();
+  const cover = section.media?.[0];
+  const coverTitle = cover?.title ? t(cover.title) : t(section.title);
+  const coverCaption = cover?.caption ? t(cover.caption) : t(section.body);
+
+  return (
+    <button
+      className={`case-section-index-card ${active ? "is-active" : ""}`}
+      type="button"
+      onClick={onSelect}
+      aria-label={`Open ${coverTitle}`}
+    >
+      {cover ? (
+        isPdf(cover) ? (
+          <span className="case-section-index-file">PDF</span>
+        ) : isVideo(cover) ? (
+          <video src={assetPath(cover.url)} muted playsInline preload="metadata" />
+        ) : (
+          <ResilientImage
+            src={optimizedAssetPath(cover.thumbnailUrl || cover.url, 900, 76)}
+            fallbackSrc={cover.thumbnailUrl || cover.url}
+            alt={coverTitle}
+            loading={index < 4 ? "eager" : "lazy"}
+            decoding="async"
+          />
+        )
+      ) : (
+        <span className="case-section-index-file">{coverTitle}</span>
+      )}
+      <span className="case-section-index-shade" />
+      <span className="case-section-index-number">{String(index + 1).padStart(2, "0")}</span>
+      <span className="case-section-index-plus">+</span>
+      <div>
+        <span>{t(section.eyebrow)}</span>
+        <strong>{coverTitle}</strong>
+        <p>{coverCaption}</p>
+      </div>
+    </button>
+  );
+}
+
 function SectionMedia({
   section,
   t,
@@ -265,24 +319,29 @@ export function ProjectPage({
   const assetPath = useAssetPath();
   const { language, t } = useLanguage();
   const root = useRef<HTMLElement>(null);
+  const mediaWallRef = useRef<HTMLElement>(null);
   const modalScrollRef = useRef<HTMLElement>(null);
   const touchStartXRef = useRef<number | null>(null);
   const [lightboxMedia, setLightboxMedia] = useState<UploadedMedia | null>(null);
+  const [activeSectionIndex, setActiveSectionIndex] = useState<number | null>(null);
   const [mediaZoom, setMediaZoom] = useState(1);
   const projectMedia = useMemo(
     () => project.sections.flatMap((section) => section.media || []),
     [project.sections],
   );
+  const activeSection = activeSectionIndex === null ? null : project.sections[activeSectionIndex] || null;
+  const activeSectionMedia = activeSection?.media || [];
+  const lightboxPool = activeSectionMedia.length ? activeSectionMedia : projectMedia;
   const activeMediaIndex = lightboxMedia
-    ? Math.max(0, projectMedia.findIndex((item) => item === lightboxMedia || item.url === lightboxMedia.url))
+    ? Math.max(0, lightboxPool.findIndex((item) => item === lightboxMedia || item.url === lightboxMedia.url))
     : -1;
   const navigateMedia = useCallback((direction: -1 | 1) => {
-    if (!lightboxMedia || projectMedia.length < 2) return;
-    const nextIndex = (activeMediaIndex + direction + projectMedia.length) % projectMedia.length;
-    setLightboxMedia(projectMedia[nextIndex]);
+    if (!lightboxMedia || lightboxPool.length < 2) return;
+    const nextIndex = (activeMediaIndex + direction + lightboxPool.length) % lightboxPool.length;
+    setLightboxMedia(lightboxPool[nextIndex]);
     setMediaZoom(1);
     requestAnimationFrame(() => modalScrollRef.current?.scrollTo({ top: 0, left: 0 }));
-  }, [activeMediaIndex, lightboxMedia, projectMedia]);
+  }, [activeMediaIndex, lightboxMedia, lightboxPool]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -293,6 +352,19 @@ export function ProjectPage({
     ));
     return () => animations.forEach((animation) => animation.cancel());
   }, [project.slug]);
+
+  useEffect(() => {
+    setActiveSectionIndex(null);
+    setLightboxMedia(null);
+  }, [project.slug]);
+
+  const selectSection = useCallback((index: number) => {
+    setActiveSectionIndex(index);
+    setLightboxMedia(null);
+    requestAnimationFrame(() => {
+      mediaWallRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
 
   useEffect(() => {
     if (!lightboxMedia) return;
@@ -390,7 +462,56 @@ export function ProjectPage({
         ))}
       </section>
 
-      {projectMedia.length ? (
+      <section className="case-section-index">
+        <div className="case-project-media-heading">
+          <span>{language === "zh" ? "项目目录" : "Project index"}</span>
+          <h2>{language === "zh" ? "选择一个作品组" : "Choose a media set"}</h2>
+          <p>{language === "zh" ? "先进入项目内的作品组，再查看该组下所有相关素材；这样一个项目不会被拆成零散图片。" : "Open a media set first, then browse all related files inside that set."}</p>
+        </div>
+        <div className="case-section-index-grid">
+          {project.sections.map((section, index) => (
+            <SectionIndexCard
+              section={section}
+              index={index}
+              active={activeSectionIndex === index}
+              t={t}
+              onSelect={() => selectSection(index)}
+              key={`${section.title.en}-${index}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {activeSection ? (
+        <section className={`case-project-media-wall ${activeSectionMedia.length ? "" : "is-empty"}`} ref={mediaWallRef} data-active-media-wall="true">
+          <div className="case-project-media-heading">
+            <span>{String((activeSectionIndex || 0) + 1).padStart(2, "0")} / {t(activeSection.eyebrow)}</span>
+            <h2>{t(activeSection.title)}</h2>
+            <p>{t(activeSection.body)}</p>
+          </div>
+          {activeSectionMedia.length ? (
+            <div className="case-square-gallery">
+              {activeSectionMedia.map((item, index) => (
+                <GalleryMediaCard
+                  media={item}
+                  title={item.title ? t(item.title) : ""}
+                  caption={item.caption ? t(item.caption) : ""}
+                  index={index}
+                  onOpen={() => setLightboxMedia(item)}
+                  key={`${item.url}-${index}`}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="case-placeholder">
+              <span>{language === "zh" ? "这个作品组还没有上传文件" : "No files in this media set yet"}</span>
+              <div style={{ background: project.accent }} />
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {false && projectMedia.length ? (
         <section className="case-project-media-wall">
           <div className="case-project-media-heading">
             <span>{language === "zh" ? "项目文件" : "Project files"}</span>
@@ -421,16 +542,16 @@ export function ProjectPage({
 
       {nextProject ? (
         <Link className="next-project" href={`/projects/${nextProject.slug}`}>
-          <span>{language === "zh" ? "下一个项目" : "Next project"}</span>
-          <h2>{t(nextProject.title)} ↗</h2>
+          <span>{language === "zh" ? "Next project" : "Next project"}</span>
+          <h2>{t(nextProject.title)} -&gt;</h2>
         </Link>
       ) : null}
 
       {lightboxMedia ? (
         <div className="case-work-modal" role="dialog" aria-modal="true" aria-label={lightboxMedia.originalFilename || "Project media"}>
           <button className="case-work-modal-backdrop" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭作品弹框" />
-          {projectMedia.length > 1 ? (
-            <button className="case-work-modal-nav is-prev" type="button" onClick={() => navigateMedia(-1)} aria-label="上一个文件">←</button>
+          {lightboxPool.length > 1 ? (
+            <button className="case-work-modal-nav is-prev" type="button" onClick={() => navigateMedia(-1)} aria-label="Previous file">&lt;</button>
           ) : null}
           <article
             className="case-work-modal-card case-work-modal-browser"
@@ -444,15 +565,15 @@ export function ProjectPage({
               navigateMedia(endX < startX ? 1 : -1);
             }}
           >
-            <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="关闭">×</button>
+            <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="Close">x</button>
             <div className="case-work-modal-media">
               {!isPdf(lightboxMedia) && !isVideo(lightboxMedia) ? (
                 <div className="case-work-modal-toolbar" aria-label="图片缩放控制">
-                  <button type="button" onClick={() => setMediaZoom((current) => Math.max(0.5, current - 0.25))} disabled={mediaZoom <= 0.5} aria-label="缩小图片">−</button>
+                  <button type="button" onClick={() => setMediaZoom((current) => Math.max(0.5, current - 0.25))} disabled={mediaZoom <= 0.5} aria-label="Zoom out">-</button>
                   <span>{Math.round(mediaZoom * 100)}%</span>
-                  <button type="button" onClick={() => setMediaZoom((current) => Math.min(2.5, current + 0.25))} disabled={mediaZoom >= 2.5} aria-label="放大图片">＋</button>
+                  <button type="button" onClick={() => setMediaZoom((current) => Math.min(2.5, current + 0.25))} disabled={mediaZoom >= 2.5} aria-label="Zoom in">+</button>
                   <button type="button" className="case-work-modal-fit" onClick={() => setMediaZoom(1)}>{language === "zh" ? "适合宽度" : "Fit width"}</button>
-                  <a href={assetPath(lightboxMedia.url)} target="_blank" rel="noreferrer">{language === "zh" ? "查看原图" : "Original"} ↗</a>
+                  <a href={assetPath(lightboxMedia.url)} target="_blank" rel="noreferrer">{language === "zh" ? "Original" : "Original"} -&gt;</a>
                 </div>
               ) : null}
               {isPdf(lightboxMedia) ? (
@@ -471,10 +592,10 @@ export function ProjectPage({
               )}
             </div>
           </article>
-          {projectMedia.length > 1 ? (
+          {lightboxPool.length > 1 ? (
             <>
-              <button className="case-work-modal-nav is-next" type="button" onClick={() => navigateMedia(1)} aria-label="下一个文件">→</button>
-              <span className="case-work-modal-count">{activeMediaIndex + 1} / {projectMedia.length}</span>
+              <button className="case-work-modal-nav is-next" type="button" onClick={() => navigateMedia(1)} aria-label="Next file">&gt;</button>
+              <span className="case-work-modal-count">{activeMediaIndex + 1} / {lightboxPool.length}</span>
             </>
           ) : null}
         </div>

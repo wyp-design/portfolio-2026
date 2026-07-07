@@ -537,6 +537,102 @@ button {
   -webkit-line-clamp: 2;
 }
 
+.project-list {
+  display: block;
+}
+
+.project-row {
+  display: grid;
+  grid-template-columns: 7vw minmax(0, 1fr) 100px 40px;
+  align-items: center;
+  gap: 20px;
+  min-height: 190px;
+  overflow: visible;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--bg) 18%, transparent);
+  background: transparent;
+  color: var(--bg);
+  isolation: auto;
+}
+
+.project-row:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--bg) 18%, transparent);
+}
+
+.project-row::before {
+  content: "";
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lime) 74%, #fff);
+  box-shadow: inset -18px -18px 30px rgba(0, 0, 0, .25), inset 16px 16px 30px rgba(255, 255, 255, .55);
+  transition: transform .4s ease;
+}
+
+.project-row::after {
+  content: "↗";
+  justify-self: end;
+  font-size: 24px;
+  transition: transform .35s ease;
+}
+
+.project-row > img,
+.project-row > video,
+.project-card-fallback,
+.project-card-shade,
+.project-card-plus {
+  display: none;
+}
+
+.project-row > div,
+.project-number {
+  position: static;
+}
+
+.project-row h3 {
+  margin: 8px 0;
+  font-size: clamp(42px, 6vw, 102px);
+  line-height: .9;
+  letter-spacing: -0.07em;
+}
+
+.project-row p {
+  display: block;
+  max-width: 640px;
+  color: color-mix(in srgb, var(--bg) 62%, transparent);
+  -webkit-line-clamp: unset;
+}
+
+.project-orb {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  box-shadow: inset -18px -18px 30px rgba(0, 0, 0, .25), inset 16px 16px 30px rgba(255, 255, 255, .55);
+  transition: transform .4s ease;
+}
+
+.project-arrow {
+  justify-self: end;
+  font-size: 24px;
+  transition: transform .35s ease;
+}
+
+.project-row:hover .project-orb {
+  transform: scale(1.18) rotate(18deg);
+}
+
+.project-row:hover .project-arrow {
+  transform: translate(6px, -6px);
+}
+
+.project-row:hover::before {
+  transform: scale(1.18) rotate(18deg);
+}
+
+.project-row:hover::after {
+  transform: translate(6px, -6px);
+}
+
 .rich-text {
   white-space: pre-line;
 }
@@ -1296,6 +1392,141 @@ button {
   display: none;
 }
 
+.case-section-index {
+  padding: 12vh var(--pad) 14vh;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .case-section-index {
+  background: #050b18;
+  color: #f8f6ec;
+}
+
+.case-section-index-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.25vw, 22px);
+}
+
+.case-section-index-card {
+  position: relative;
+  display: block;
+  min-height: clamp(310px, 31vw, 520px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  isolation: isolate;
+}
+
+.case-section-index-card > img,
+.case-section-index-card > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s cubic-bezier(.2, .8, .2, 1), filter .35s ease;
+}
+
+.case-section-index-card:hover > img,
+.case-section-index-card:hover > video,
+.case-section-index-card.is-active > img,
+.case-section-index-card.is-active > video {
+  transform: scale(1.06);
+  filter: saturate(1.08);
+}
+
+.case-section-index-file,
+.case-section-index-shade {
+  position: absolute;
+  inset: 0;
+}
+
+.case-section-index-file {
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #caff6a;
+  color: #111;
+  font-size: clamp(28px, 3vw, 54px);
+  font-weight: 950;
+  line-height: .95;
+  letter-spacing: -.055em;
+  text-align: center;
+}
+
+.case-section-index-shade {
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .02) 34%, rgba(0, 0, 0, .78));
+}
+
+.case-section-index-number,
+.case-section-index-plus,
+.case-section-index-card > div {
+  position: absolute;
+  z-index: 2;
+}
+
+.case-section-index-number {
+  top: 18px;
+  left: 18px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+}
+
+.case-section-index-plus {
+  top: 12px;
+  right: 16px;
+  font-size: 30px;
+  line-height: 1;
+  transition: transform .35s ease;
+}
+
+.case-section-index-card:hover .case-section-index-plus,
+.case-section-index-card.is-active .case-section-index-plus {
+  transform: rotate(90deg);
+}
+
+.case-section-index-card > div {
+  right: 22px;
+  bottom: 22px;
+  left: 22px;
+}
+
+.case-section-index-card span:not(.case-section-index-number):not(.case-section-index-plus):not(.case-section-index-file):not(.case-section-index-shade) {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.case-section-index-card strong {
+  display: block;
+  margin: 8px 0;
+  font-size: clamp(30px, 2.7vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.case-section-index-card p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: rgba(255, 255, 255, .78);
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.case-section-index-card.is-active {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
 .case-project-media-wall {
   padding: 12vh var(--pad) 16vh;
   background: var(--bg);
@@ -1336,6 +1567,10 @@ button {
 
 .case-project-media-wall.is-empty {
   min-height: 42vh;
+}
+
+.case-section-index ~ .case-project-media-wall.is-empty:not([data-active-media-wall="true"]) {
+  display: none;
 }
 
 .case-media-grid {
@@ -3371,5 +3606,48 @@ button {
   .admin-photo-preview,
   .admin-media-list > div {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .project-list {
+    display: block;
+  }
+
+  .project-row {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    min-height: 210px;
+    gap: 12px;
+  }
+
+  .project-row h3 {
+    font-size: clamp(38px, 13vw, 64px);
+  }
+
+  .project-orb,
+  .project-row::before {
+    display: none;
+  }
+
+  .project-arrow,
+  .project-row::after {
+    font-size: 20px;
+  }
+
+  .case-section-index {
+    padding: 84px 24px 96px;
+  }
+
+  .case-section-index-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .case-section-index-card {
+    min-height: 300px;
+  }
+
+  .case-section-index-card strong {
+    font-size: clamp(30px, 8vw, 42px);
   }
 }
