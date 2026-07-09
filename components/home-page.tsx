@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import type { EducationItem, Project, UploadedMedia } from "@/content/types";
 import type { SiteContent } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
@@ -16,8 +16,15 @@ const HeroScene = dynamic(() => import("./hero-scene").then((module) => module.H
   loading: () => null,
 });
 
-function firstProjectMedia(project: Project) {
-  return project.sections.flatMap((section) => section.media || []).find(Boolean);
+function previewProjectMedia(project: Project) {
+  return project.sections
+    .flatMap((section) => section.media || [])
+    .filter((media) => !isPdf(media))
+    .slice(0, 3);
+}
+
+function projectMediaCount(project: Project) {
+  return project.sections.flatMap((section) => section.media || []).length;
 }
 
 function isPdf(media?: UploadedMedia) {
@@ -34,7 +41,8 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
   const { language, t } = useLanguage();
   const [activeExperienceIndex, setActiveExperienceIndex] = useState<number | null>(null);
   const sections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
-  const sectionNumber = (id: string) => `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
+  const sectionNumber = (id: string) =>
+    `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
   const activeExperience =
     activeExperienceIndex === null ? null : site.experiences[activeExperienceIndex] || null;
   const heroStyle = site.heroStyle || "cinematic";
@@ -46,7 +54,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
     .split(/\n{2,}/)
     .map((block) => block.trim())
     .filter(Boolean);
-  const firstPointIndex = bioBlocks.findIndex((block) => /^\s*(\d+[、.．]|[*-]*\s*\*\*\d+[、.．])/.test(block));
+  const firstPointIndex = bioBlocks.findIndex((block) => /^\s*(\d+[.、：:）)]|[*-]*\s*\*\*\d+[.、：:）)])/.test(block));
   const bioIntro = firstPointIndex >= 0 ? bioBlocks.slice(0, firstPointIndex).join("\n\n") : t(site.bio);
   const bioPoints = firstPointIndex >= 0 ? bioBlocks.slice(firstPointIndex) : [];
 
@@ -125,7 +133,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
               <div className="sticker sticker-two">UX↗</div>
               <div className="sticker sticker-three">GOOD<br />SYSTEMS</div>
               <div className="hero-index">{site.heroIndex}</div>
-              <a className="scroll-cue" href="#work">{t(site.scrollLabel)} ↓</a>
+              <a className="scroll-cue" href="#work">{t(site.scrollLabel)} ↘</a>
             </section>
           );
         }
@@ -150,35 +158,50 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <span>{sectionNumber("work")} {t(site.workLabel)}</span>
                 <p className="rich-text">{t(site.workIntro)}</p>
               </div>
-              <div className="project-list">
+              <div className="work-folder-grid">
                 {projects.map((project, index) => {
-                  const cover = firstProjectMedia(project);
-                  const coverSrc = cover?.thumbnailUrl || cover?.url;
+                  const previews = previewProjectMedia(project);
+                  const mediaCount = projectMediaCount(project);
+                  const folderColor = project.accent || ["#f2389b", "#2f7df6", "#303030", "#21c792", "#ff7b22", "#f6c52e", "#7c55f3", "#16c8bd"][index % 8];
+                  const previewItems = previews.length ? previews : [undefined];
                   return (
-                  <Link className="project-row reveal" href={`/projects/${project.slug}`} key={project.slug}>
-                    <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
-                    <span className="project-card-plus">＋</span>
-                    {coverSrc && !isPdf(cover) && !isVideo(cover) ? (
-                      <ResilientImage
-                        src={coverSrc}
-                        alt={cover?.alt ? t(cover.alt) : t(project.title)}
-                        loading={index < 4 ? "eager" : "lazy"}
-                        decoding="async"
-                      />
-                    ) : isVideo(cover) && cover?.url ? (
-                      <video src={assetPath(cover.url)} muted playsInline preload="metadata" />
-                    ) : (
-                      <span className="project-card-fallback" style={{ background: project.accent }}>
-                        {isPdf(cover) ? "PDF" : t(project.title)}
-                      </span>
-                    )}
-                    <span className="project-card-shade" />
-                    <div>
-                      <span className="project-category">{[t(project.category), project.year].filter(Boolean).join(" · ")}</span>
-                      <h3>{t(project.title)}</h3>
-                      <p className="rich-text">{t(project.summary)}</p>
-                    </div>
-                  </Link>
+                    <Link
+                      className="work-folder-card reveal"
+                      href={`/projects/${project.slug}`}
+                      key={project.slug}
+                      style={{ "--folder-color": folderColor } as CSSProperties}
+                    >
+                      <div className="work-folder-art" aria-hidden="true">
+                        <span className="work-folder-back" />
+                        <span className="work-folder-pocket" />
+                        <div className="work-folder-stack">
+                          {previewItems.map((media, previewIndex) => {
+                            const src = media?.thumbnailUrl || media?.url;
+                            return (
+                              <span className="work-folder-sheet" key={`${project.slug}-${media?.url || "empty"}-${previewIndex}`}>
+                                {src && !isVideo(media) ? (
+                                  <ResilientImage
+                                    src={src}
+                                    alt={media?.alt ? t(media.alt) : t(project.title)}
+                                    loading={index < 3 ? "eager" : "lazy"}
+                                    decoding="async"
+                                  />
+                                ) : src && isVideo(media) ? (
+                                  <video src={assetPath(src)} muted playsInline preload="metadata" />
+                                ) : (
+                                  <span className="work-folder-empty">{t(project.title)}</span>
+                                )}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div className="work-folder-copy">
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <h3>{t(project.title)}</h3>
+                        <p>{mediaCount || project.sections.length} {language === "zh" ? "个素材" : mediaCount === 1 ? "file" : "files"}</p>
+                      </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -227,7 +250,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                         <h3 className={`rich-size-${education.titleStyle?.fontSize || (index === 0 ? "large" : "medium")} rich-weight-${education.titleStyle?.fontWeight || "bold"}`}>
                           {t(education.school)}
                         </h3>
-                        <strong>{t(education.degree)} · {t(education.time)}</strong>
+                        <strong>{t(education.degree)} / {t(education.time)}</strong>
                         {education.link ? <a href={education.link} target="_blank" rel="noreferrer">Link ↗</a> : null}
                       </article>
                     ))}
@@ -242,7 +265,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                       >
                         {t(experience.company)}
                       </button>
-                      <strong>{t(experience.position)} · {t(experience.time)}</strong>
+                      <strong>{t(experience.position)} / {t(experience.time)}</strong>
                     </article>
                   ))}
                 </div>
@@ -292,7 +315,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
             >
               {t(activeExperience.company)}
             </h2>
-            <strong>{t(activeExperience.position)} · {t(activeExperience.time)}</strong>
+            <strong>{t(activeExperience.position)} / {t(activeExperience.time)}</strong>
             <p className={`rich-text rich-size-${activeExperience.style?.fontSize || "medium"} rich-weight-${activeExperience.style?.fontWeight || "regular"}`}>
               {t(activeExperience.description)}
             </p>
