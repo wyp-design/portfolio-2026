@@ -40,6 +40,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
   const root = useRef<HTMLElement>(null);
   const { language, t } = useLanguage();
   const [activeExperienceIndex, setActiveExperienceIndex] = useState<number | null>(null);
+  const [isPortraitOpen, setIsPortraitOpen] = useState(false);
   const sections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
   const sectionNumber = (id: string) =>
     `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
@@ -102,6 +103,21 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [activeExperienceIndex]);
+
+  useEffect(() => {
+    if (!isPortraitOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsPortraitOpen(false);
+      }
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isPortraitOpen]);
 
   return (
     <main ref={root} id="top">
@@ -210,6 +226,94 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
         }
 
         if (section.id === "about") {
+          return (
+            <section className="about-section about-profile-section" id="about" key={section.id}>
+              <div className="about-profile-shell">
+                <div className="about-label reveal">{sectionNumber("about")} {t(site.aboutLabel)}</div>
+                <div className="about-profile-head reveal">
+                  <button
+                    className="about-profile-photo"
+                    type="button"
+                    onClick={() => site.aboutPhoto?.url && setIsPortraitOpen(true)}
+                    disabled={!site.aboutPhoto?.url}
+                    aria-label={language === "zh" ? "放大查看头像" : "Open portrait"}
+                  >
+                    {site.aboutPhoto?.url ? (
+                      <ResilientImage
+                        src={site.aboutPhoto.url}
+                        alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <span>{language === "zh" ? "后台上传个人照片" : "Upload portrait in admin"}</span>
+                    )}
+                  </button>
+                  <div className="about-profile-identity">
+                    <h2 className={`rich-size-${site.aboutHeadlineStyle?.fontSize || "large"} rich-weight-${site.aboutHeadlineStyle?.fontWeight || "bold"}`}>
+                      {t(site.aboutHeadline) || site.name}
+                    </h2>
+                    <p>{t(site.shortRole)}</p>
+                    <div className="about-profile-links">
+                      {site.phone ? <a href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone}</a> : null}
+                      <a href={`mailto:${site.email}`}>{site.email}</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`about-profile-bio reveal rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
+                  <p className="about-bio-intro rich-text">{bioIntro}</p>
+                  {bioPoints.length ? (
+                    <div className="about-bio-points">
+                      {bioPoints.map((point, index) => (
+                        <p className="rich-text" key={`${point}-${index}`}>{point}</p>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+
+                {educationItems.length ? (
+                  <div className="about-profile-education reveal">
+                    <div className="about-profile-subtitle">{language === "zh" ? "教育经历" : "Education"}</div>
+                    <div className="about-profile-education-list">
+                      {educationItems.map((education, index) => (
+                        <article className="education-card" key={`${education.school.en}-${index}`}>
+                          <span>{index === 0 ? "EDU" : "EDU 02"}</span>
+                          <h3 className={`rich-size-${education.titleStyle?.fontSize || "medium"} rich-weight-${education.titleStyle?.fontWeight || "bold"}`}>
+                            {t(education.school)}
+                          </h3>
+                          <strong>{t(education.degree)} / {t(education.time)}</strong>
+                          {education.link ? <a href={education.link} target="_blank" rel="noreferrer">Link →</a> : null}
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="about-profile-experiences reveal">
+                  <div className="about-profile-subtitle">{language === "zh" ? "工作经历" : "Experience"}</div>
+                  <div className="about-profile-experience-list">
+                    {site.experiences.map((experience, index) => (
+                      <article key={`${experience.company.en}-${index}`}>
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <button
+                          className={`experience-trigger rich-size-${experience.titleStyle?.fontSize || "medium"} rich-weight-${experience.titleStyle?.fontWeight || "bold"}`}
+                          type="button"
+                          onClick={() => setActiveExperienceIndex(index)}
+                        >
+                          {t(experience.company)}
+                        </button>
+                        <strong>{t(experience.position)} / {t(experience.time)}</strong>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (section.id === "about-disabled") {
           return (
             <section className="about-section grid-surface" id="about" key={section.id}>
               <div className="about-side reveal">
@@ -324,6 +428,25 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 {language === "zh" ? "查看项目链接" : "View project"} ↗
               </a>
             ) : null}
+          </div>
+        </div>
+      ) : null}
+
+      {isPortraitOpen && site.aboutPhoto?.url ? (
+        <div className="portrait-modal" role="dialog" aria-modal="true" aria-label={language === "zh" ? "个人照片" : "Portrait"}>
+          <button className="portrait-modal-backdrop" type="button" onClick={() => setIsPortraitOpen(false)}>
+            <span>Close</span>
+          </button>
+          <div className="portrait-modal-card">
+            <button className="portrait-modal-close" type="button" onClick={() => setIsPortraitOpen(false)}>
+              ×
+            </button>
+            <ResilientImage
+              src={site.aboutPhoto.url}
+              alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
+              loading="eager"
+              decoding="async"
+            />
           </div>
         </div>
       ) : null}
