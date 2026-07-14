@@ -55,7 +55,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
     .split(/\n{2,}/)
     .map((block) => block.trim())
     .filter(Boolean);
-  const firstPointIndex = bioBlocks.findIndex((block) => /^\s*(\d+[.、：:）)]|[*-]*\s*\*\*\d+[.、：:）)])/.test(block));
+  const firstPointIndex = bioBlocks.findIndex((block) => /^\s*(\d+[.、:：]|[*-]*\s*\*\*\d+[.、:：])/.test(block));
   const bioIntro = firstPointIndex >= 0 ? bioBlocks.slice(0, firstPointIndex).join("\n\n") : t(site.bio);
   const bioPoints = firstPointIndex >= 0 ? bioBlocks.slice(firstPointIndex) : [];
 
@@ -313,71 +313,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
           );
         }
 
-        if (section.id === "about-disabled") {
-          return (
-            <section className="about-section grid-surface" id="about" key={section.id}>
-              <div className="about-side reveal">
-                <div className="about-label">{sectionNumber("about")} {t(site.aboutLabel)}</div>
-                <div className="about-photo">
-                  {site.aboutPhoto?.url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <ResilientImage
-                      src={site.aboutPhoto.url}
-                      alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <span>{language === "zh" ? "后台上传个人照片" : "Upload portrait in admin"}</span>
-                  )}
-                </div>
-              </div>
-              <div className="about-copy reveal">
-                <h2 className={`rich-size-${site.aboutHeadlineStyle?.fontSize || "large"} rich-weight-${site.aboutHeadlineStyle?.fontWeight || "bold"}`}>
-                  {t(site.aboutHeadline)}
-                </h2>
-                <div className={`about-bio rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
-                  <p className="about-bio-intro rich-text">{bioIntro}</p>
-                  {bioPoints.length ? (
-                    <div className="about-bio-points">
-                      {bioPoints.map((point, index) => (
-                        <p className="rich-text" key={`${point}-${index}`}>{point}</p>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-                <div className="about-info">
-                  <div className="education-list">
-                    {educationItems.map((education, index) => (
-                      <article className="education-card" key={`${education.school.en}-${index}`}>
-                        <span>{index === 0 ? "EDU" : "EDU 02"}</span>
-                        <h3 className={`rich-size-${education.titleStyle?.fontSize || (index === 0 ? "large" : "medium")} rich-weight-${education.titleStyle?.fontWeight || "bold"}`}>
-                          {t(education.school)}
-                        </h3>
-                        <strong>{t(education.degree)} / {t(education.time)}</strong>
-                        {education.link ? <a href={education.link} target="_blank" rel="noreferrer">Link ↗</a> : null}
-                      </article>
-                    ))}
-                  </div>
-                  {site.experiences.map((experience, index) => (
-                    <article key={`${experience.company.en}-${index}`}>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
-                      <button
-                        className={`experience-trigger rich-size-${experience.titleStyle?.fontSize || "medium"} rich-weight-${experience.titleStyle?.fontWeight || "bold"}`}
-                        type="button"
-                        onClick={() => setActiveExperienceIndex(index)}
-                      >
-                        {t(experience.company)}
-                      </button>
-                      <strong>{t(experience.position)} / {t(experience.time)}</strong>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </section>
-          );
-        }
-
         if (section.id === "contact") {
           return (
             <footer className="contact-section" id="contact" key={section.id}>
@@ -386,8 +321,8 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
                 <h2>{t(site.contactHeadline)}</h2>
               </div>
               <div className="contact-links reveal">
-                <a className="email-link" href={`mailto:${site.email}`}>{site.email} ↗</a>
-                {site.phone ? <a className="phone-link" href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone} ↗</a> : null}
+                <a className="email-link" href={`mailto:${site.email}`}>{site.email} →</a>
+                {site.phone ? <a className="phone-link" href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone} →</a> : null}
               </div>
               <div className="footer-row">
                 <span>© 2026 {site.name}</span>
@@ -425,7 +360,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
             </p>
             {activeExperience.link ? (
               <a href={activeExperience.link} target="_blank" rel="noreferrer">
-                {language === "zh" ? "查看项目链接" : "View project"} ↗
+                {language === "zh" ? "查看项目链接" : "View project"} →
               </a>
             ) : null}
           </div>
@@ -450,7 +385,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
           </div>
         </div>
       ) : null}
-
     </main>
   );
 }
