@@ -26,13 +26,11 @@ function firstMedia(section: ProjectSection) {
 function SectionIndexCard({
   section,
   index,
-  active,
   t,
   onSelect,
 }: {
   section: ProjectSection;
   index: number;
-  active: boolean;
   t: (value: LocalizedText) => string;
   onSelect: () => void;
 }) {
@@ -40,36 +38,39 @@ function SectionIndexCard({
   const cover = firstMedia(section);
   const title = t(section.title);
   const summary = t(section.body);
+  const mediaCount = section.media?.length || 0;
 
   return (
     <button
-      className={`case-section-index-card ${active ? "is-active" : ""}`}
+      className="case-section-index-card project-card-folder"
       type="button"
       onClick={onSelect}
       aria-label={`Open ${title}`}
     >
-      {cover ? (
-        isPdf(cover) ? (
-          <span className="case-section-index-file">PDF</span>
-        ) : isVideo(cover) ? (
-          <video src={assetPath(cover.url)} muted playsInline preload="metadata" />
+      <div className="project-card-media">
+        {cover ? (
+          isPdf(cover) ? (
+            <span className="case-section-index-file">PDF</span>
+          ) : isVideo(cover) ? (
+            <video src={assetPath(cover.url)} muted playsInline preload="metadata" />
+          ) : (
+            <ResilientImage
+              src={optimizedAssetPath(cover.thumbnailUrl || cover.url, 900, 76)}
+              fallbackSrc={cover.thumbnailUrl || cover.url}
+              alt={cover.alt ? t(cover.alt) : title}
+              loading={index < 4 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          )
         ) : (
-          <ResilientImage
-            src={optimizedAssetPath(cover.thumbnailUrl || cover.url, 900, 76)}
-            fallbackSrc={cover.thumbnailUrl || cover.url}
-            alt={cover.alt ? t(cover.alt) : title}
-            loading={index < 4 ? "eager" : "lazy"}
-            decoding="async"
-          />
-        )
-      ) : (
-        <span className="case-section-index-file">{title}</span>
-      )}
-      <span className="case-section-index-shade" />
-      <span className="case-section-index-number">{String(index + 1).padStart(2, "0")}</span>
-      <span className="case-section-index-plus">+</span>
-      <div>
-        <span>{t(section.eyebrow)}</span>
+          <span className="case-section-index-file">{title}</span>
+        )}
+        <span className="case-section-index-shade" />
+        <span className="case-section-index-number">{String(index + 1).padStart(2, "0")}</span>
+        <span className="case-section-index-plus">+</span>
+      </div>
+      <div className="project-card-copy">
+        <span>{mediaCount} files</span>
         <strong>{title}</strong>
         <p>{summary}</p>
       </div>
@@ -95,7 +96,7 @@ function GalleryMediaCard({
 
   return (
     <button
-      className={`case-gallery-card ${index % 5 === 0 || index % 5 === 3 ? "is-portrait" : "is-landscape"}`}
+      className="case-gallery-card masonry-media-card"
       type="button"
       onClick={onOpen}
       aria-label={`Open ${label}`}
@@ -106,10 +107,10 @@ function GalleryMediaCard({
         <video src={assetPath(media.url)} muted playsInline preload="metadata" />
       ) : (
         <ResilientImage
-          src={optimizedAssetPath(media.thumbnailUrl || media.url, 700, 76)}
+          src={optimizedAssetPath(media.thumbnailUrl || media.url, 900, 76)}
           fallbackSrc={media.thumbnailUrl || media.url}
           alt={caption || label}
-          loading={index < 4 ? "eager" : "lazy"}
+          loading={index < 8 ? "eager" : "lazy"}
           decoding="async"
         />
       )}
@@ -132,7 +133,6 @@ export function ProjectPage({
 }) {
   const assetPath = useAssetPath();
   const { language, t } = useLanguage();
-  const root = useRef<HTMLElement>(null);
   const mediaWallRef = useRef<HTMLElement>(null);
   const modalScrollRef = useRef<HTMLElement>(null);
   const touchStartXRef = useRef<number | null>(null);
@@ -203,22 +203,31 @@ export function ProjectPage({
   }, [lightboxMedia, navigateMedia]);
 
   return (
-    <main className="case-page case-page-directory" ref={root}>
-      <section className="case-category-landing">
+    <main className="case-page case-page-directory creatie-case-page">
+      <section className="case-category-landing creatie-category-hero">
         <SiteHeader name={site.name} />
         <div className="case-category-shell">
           <Link className="back-link" href="/#work">&lt; All work</Link>
+          <div className="case-category-heading">
+            <span>{t(project.category)} · {project.year}</span>
+            <h1>{t(project.title)}</h1>
+            <p>{t(project.summary)}</p>
+          </div>
         </div>
       </section>
 
       {!activeSection ? (
-        <section className="case-section-index case-section-index-directory">
-          <div className="case-section-index-grid">
+        <section className="case-section-index case-section-index-directory creatie-project-index">
+          <div className="case-project-index-head">
+            <span>Project list</span>
+            <h2>{t(project.title)}</h2>
+            <p>{t(project.summary)}</p>
+          </div>
+          <div className="case-section-index-grid creatie-project-grid">
             {project.sections.map((section, index) => (
               <SectionIndexCard
                 section={section}
                 index={index}
-                active={activeSectionIndex === index}
                 t={t}
                 onSelect={() => selectSection(index)}
                 key={`${section.title.en}-${index}`}
@@ -227,9 +236,9 @@ export function ProjectPage({
           </div>
         </section>
       ) : (
-        <section className={`case-project-media-wall ${activeSectionMedia.length ? "" : "is-empty"}`} ref={mediaWallRef}>
+        <section className={`case-project-media-wall creatie-media-wall ${activeSectionMedia.length ? "" : "is-empty"}`} ref={mediaWallRef}>
           <button className="case-back-button" type="button" onClick={() => setActiveSectionIndex(null)}>
-            &lt; {language === "zh" ? "返回项目列表" : "Back to project list"}
+            &lt; {language === "zh" ? "返回上一级" : "Back"}
           </button>
           <div className="case-project-media-heading">
             <span>{String((activeSectionIndex || 0) + 1).padStart(2, "0")} / {t(activeSection.eyebrow)}</span>
@@ -237,7 +246,7 @@ export function ProjectPage({
             <p>{t(activeSection.body)}</p>
           </div>
           {activeSectionMedia.length ? (
-            <div className="case-square-gallery">
+            <div className="case-masonry-gallery">
               {activeSectionMedia.map((item, index) => (
                 <GalleryMediaCard
                   media={item}
@@ -251,7 +260,7 @@ export function ProjectPage({
             </div>
           ) : (
             <div className="case-placeholder">
-              <span>No files in this project yet.</span>
+              <span>{language === "zh" ? "这个项目还没有上传文件" : "No files in this project yet."}</span>
               <div style={{ background: project.accent }} />
             </div>
           )}
@@ -259,7 +268,7 @@ export function ProjectPage({
       )}
 
       {nextProject ? (
-        <Link className="next-project" href={`/projects/${nextProject.slug}`}>
+        <Link className="next-project subtle-next-project" href={`/projects/${nextProject.slug}`}>
           <span>Next category</span>
           <h2>{t(nextProject.title)} -&gt;</h2>
         </Link>
@@ -283,7 +292,7 @@ export function ProjectPage({
               navigateMedia(endX < startX ? 1 : -1);
             }}
           >
-            <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="Close">x</button>
+            <button className="case-work-modal-close" type="button" onClick={() => setLightboxMedia(null)} aria-label="Close">×</button>
             <div className="case-work-modal-media">
               {!isPdf(lightboxMedia) && !isVideo(lightboxMedia) ? (
                 <div className="case-work-modal-toolbar" aria-label="Image zoom controls">
