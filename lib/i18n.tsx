@@ -5,9 +5,9 @@ import type { LocalizedText } from "@/content/types";
 
 type Language = "zh" | "en";
 
-function looksGarbled(value: string) {
+export function looksGarbled(value?: string) {
   if (!value) return false;
-  return /锟|閳|閴|娑|閺|缁|閸|閻|妞|鏉|閿|閵|鈧|�/.test(value);
+  return /(?:�|锟|閿|闁|濞|缂|閺|鈥|涓|绫|鏉|楣|褰|赂|诲|€|熸|浣|椤|礌|搧|鍝|彉|湁|洖|圭|洰)/.test(value);
 }
 
 function pickText(value: LocalizedText, language: Language) {

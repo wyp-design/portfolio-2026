@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
-import type { EducationItem, Project, SiteContent, UploadedMedia } from "@/content/types";
-import { useLanguage } from "@/lib/i18n";
+import { type CSSProperties, useMemo } from "react";
+import type { Project, SiteContent, UploadedMedia } from "@/content/types";
 import { useAssetPath } from "@/lib/use-asset-path";
+import { looksGarbled, useLanguage } from "@/lib/i18n";
 import { ResilientImage } from "./resilient-image";
-import { SiteHeader } from "./site-header";
 
-const folderColors = ["#b9ff55", "#ff756b", "#8780ff", "#ffd84a", "#4ed0e9", "#a579ff"];
-const tags = ["UI/UX", "AI Design", "Product System", "Web / App", "Visual"];
+const folderColors = ["#8bf34f", "#ff6f66", "#7b78ff", "#ffd54a", "#45c9e8", "#9b70ff"];
+
+function safeText(value: string | undefined, fallback: string) {
+  if (!value || looksGarbled(value)) return fallback;
+  return value;
+}
 
 function isPdf(media?: UploadedMedia) {
   return media?.mimeType === "application/pdf";
@@ -27,59 +30,29 @@ function previewMedia(project: Project) {
   return allMedia(project).filter((media) => !isPdf(media)).slice(0, 3);
 }
 
-function splitParagraphs(value: string) {
-  return value
-    .split(/\n{2,}/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function educationVisible(item?: EducationItem) {
-  if (!item) return false;
-  return Boolean(item.school.zh || item.school.en || item.degree.zh || item.degree.en || item.time.zh || item.time.en);
-}
-
-function SectionLabel({ children }: { children: string }) {
-  return <p className="creatie-section-label">{children}</p>;
-}
-
-function ProjectFolderCard({
-  project,
-  index,
-  title,
-  summary,
-}: {
-  project: Project;
-  index: number;
-  title: string;
-  summary: string;
-}) {
+function FolderCard({ project, index }: { project: Project; index: number }) {
+  const { t } = useLanguage();
   const assetPath = useAssetPath();
+  const title = safeText(t(project.title), `Project ${index + 1}`);
+  const count = allMedia(project).length;
   const previews = previewMedia(project);
   const color = project.accent || folderColors[index % folderColors.length];
-  const count = allMedia(project).length;
 
   return (
-    <Link className="creatie-folder-card" href={`/projects/${project.slug}`} style={{ "--folder": color } as CSSProperties}>
-      <div className="creatie-folder-art" aria-hidden="true">
-        <span className="creatie-folder-back" />
-        <span className="creatie-folder-pocket" />
-        <div className="creatie-folder-stack">
+    <Link className="creatie-v2-folder" href={`/projects/${project.slug}`} style={{ "--folder-color": color } as CSSProperties}>
+      <div className="creatie-v2-folder-art" aria-hidden="true">
+        <span className="creatie-v2-folder-back" />
+        <span className="creatie-v2-folder-pocket" />
+        <div className="creatie-v2-sheets">
           {[0, 1, 2].map((slot) => {
             const media = previews[slot];
             return (
-              <span className={`creatie-folder-sheet sheet-${slot + 1}`} key={slot}>
+              <span className={`creatie-v2-sheet sheet-${slot + 1}`} key={slot}>
                 {media ? (
                   isVideo(media) ? (
                     <video src={assetPath(media.url)} muted playsInline preload="metadata" />
                   ) : (
-                    <ResilientImage
-                      src={media.thumbnailUrl || media.url}
-                      fallbackSrc={media.url}
-                      alt=""
-                      loading={index < 3 ? "eager" : "lazy"}
-                      decoding="async"
-                    />
+                    <ResilientImage src={media.thumbnailUrl || media.url} fallbackSrc={media.url} alt="" loading={index < 3 ? "eager" : "lazy"} decoding="async" />
                   )
                 ) : (
                   <b>{title}</b>
@@ -89,224 +62,120 @@ function ProjectFolderCard({
           })}
         </div>
       </div>
-      <span className="creatie-folder-index">{String(index + 1).padStart(2, "0")}</span>
+      <small>{String(index + 1).padStart(2, "0")}</small>
       <h3>{title}</h3>
-      <p>{count ? `${count} 个素材` : summary}</p>
+      <p>{count || 1} 个素材</p>
     </Link>
   );
 }
 
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
-  const { language, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const assetPath = useAssetPath();
-  const [activeExperience, setActiveExperience] = useState<number | null>(null);
-  const [portraitOpen, setPortraitOpen] = useState(false);
-  const orderedSections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
-  const visible = (id: string) => orderedSections.some((section) => section.id === id);
-  const label = (id: string, fallback: string) => {
-    const index = orderedSections.findIndex((section) => section.id === id);
-    const section = orderedSections[index];
-    return `${String(index + 1).padStart(2, "0")} — ${section ? t(section.label) : fallback}`;
-  };
-  const bioBlocks = splitParagraphs(t(site.bio));
-  const education = [site.education, site.education2].filter(educationVisible) as EducationItem[];
-  const active = activeExperience === null ? null : site.experiences[activeExperience];
-
-  useEffect(() => {
-    document.body.classList.toggle("is-modal-open", activeExperience !== null || portraitOpen);
-    return () => document.body.classList.remove("is-modal-open");
-  }, [activeExperience, portraitOpen]);
-
-  const heroTitle = useMemo(() => {
-    const line1 = t(site.heroTitle.line1) || "让复杂变清晰";
-    const line2 = t(site.heroTitle.line2) || "让体验有感觉";
-    return `${line1} ${line2}`;
-  }, [site.heroTitle.line1, site.heroTitle.line2, t]);
+  const heroPreview = useMemo(() => previewMedia(projects[0] || ({} as Project))[0], [projects]);
+  const avatar = site.aboutPhoto;
 
   return (
-    <main className="creatie-site">
-      {visible("hero") && (
-        <section className="creatie-hero" id="top">
-          <SiteHeader name={site.name} />
-          <div className="creatie-sky" />
-          <span className="creatie-cloud cloud-a" />
-          <span className="creatie-cloud cloud-b" />
-          <span className="creatie-cloud cloud-c" />
-          <span className="creatie-orb orb-a">UI</span>
-          <span className="creatie-orb orb-b">AI</span>
-          <span className="creatie-orb orb-c">UX</span>
-          <div className="creatie-hero-inner">
-            <div className="creatie-profile-pill">
-              {site.aboutPhoto?.url ? (
-                <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} />
-              ) : (
-                <span>{site.name.slice(0, 1)}</span>
-              )}
-              <div>
-                <strong>{site.name}</strong>
-                <small>{t(site.shortRole)}</small>
-              </div>
-              <em>Available for work</em>
-            </div>
-            <p className="creatie-hero-kicker">{t(site.location)} · Portfolio 2026</p>
-            <h1 className="creatie-hero-title">{heroTitle}</h1>
-            <p className="creatie-hero-copy">{t(site.intro)}</p>
-            <div className="creatie-tags">
-              {tags.map((tag) => (
-                <span key={tag}>{tag}</span>
-              ))}
-            </div>
-            <Link className="creatie-hero-cta" href="#work">
-              查看精选作品
-              <span>↗</span>
-            </Link>
-          </div>
-          <div className="creatie-hill" />
-        </section>
-      )}
+    <main className="creatie-v2">
+      <header className="creatie-v2-nav">
+        <Link href="/" className="creatie-v2-logo">CREATIE®</Link>
+        <nav>
+          <a href="#work">WORK</a>
+          <a href="#about">ABOUT</a>
+          <a href="#contact">CONTACT</a>
+          <button type="button" onClick={() => setLanguage(language === "zh" ? "en" : "zh")}>{language === "zh" ? "EN" : "中"}</button>
+        </nav>
+      </header>
 
-      {visible("about") && (
-        <section className="creatie-about" id="about">
-          <SectionLabel>{label("about", language === "zh" ? "关于我" : "About")}</SectionLabel>
-          <div className="creatie-about-card">
-            <button className="creatie-avatar" type="button" onClick={() => setPortraitOpen(true)} aria-label="放大头像">
-              {site.aboutPhoto?.url ? (
-                <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} />
-              ) : (
-                <span>{site.name.slice(0, 1)}</span>
-              )}
-            </button>
-            <div className="creatie-about-head">
-              <h2>{site.name}</h2>
-              <p>{t(site.shortRole)}</p>
-              <div className="creatie-contact-mini">
-                {site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}
-                <a href={`mailto:${site.email}`}>{site.email}</a>
-              </div>
-            </div>
-          </div>
-          <div className="creatie-about-copy">
-            {bioBlocks.map((block) => (
-              <p key={block}>{block}</p>
-            ))}
-          </div>
-          {education.length > 0 && (
-            <div className="creatie-education">
-              {education.map((item, index) => (
-                <article key={`${t(item.school)}-${index}`}>
-                  <small>EDU {String(index + 1).padStart(2, "0")}</small>
-                  <h3>{t(item.school)}</h3>
-                  <p>
-                    {t(item.degree)}
-                    {t(item.time) ? ` · ${t(item.time)}` : ""}
-                  </p>
-                </article>
-              ))}
-            </div>
-          )}
-          <div className="creatie-experience-grid">
-            {site.experiences.map((item, index) => (
-              <button key={`${t(item.company)}-${index}`} type="button" onClick={() => setActiveExperience(index)}>
-                <small>{String(index + 1).padStart(2, "0")}</small>
-                <h3>{t(item.company)}</h3>
-                <p>
-                  {t(item.position)} · {t(item.time)}
-                </p>
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
+      <section className="creatie-v2-hero">
+        <div className="creatie-v2-sky">
+          <span className="cloud cloud-1" />
+          <span className="cloud cloud-2" />
+          <span className="hill hill-1" />
+          <span className="hill hill-2" />
+          <span className="hill hill-3" />
+        </div>
 
-      {visible("manifesto") && (
-        <section className="creatie-manifesto">
-          <SectionLabel>{label("manifesto", language === "zh" ? "设计宣言" : "Manifesto")}</SectionLabel>
-          <h2>
-            {t(site.manifestoLine1)}
+        <div className="creatie-v2-profile">
+          {avatar?.url ? <ResilientImage src={avatar.thumbnailUrl || avatar.url} fallbackSrc={avatar.url} alt={site.name} /> : <span>{site.name.slice(0, 1)}</span>}
+          <div>
+            <strong>{site.name || "SARAH"}</strong>
+            <small>{language === "zh" ? "产品设计师" : "PRODUCT DESIGNER"}</small>
+          </div>
+          <em>Available for work</em>
+        </div>
+
+        <div className="creatie-v2-float-tag tag-ui">UI/UX Design</div>
+        <div className="creatie-v2-float-tag tag-ill">Illustration</div>
+        <div className="creatie-v2-float-tag tag-3d">3D Design</div>
+
+        <div className="creatie-v2-hero-copy">
+          <h1>
+            DESIGN THAT
             <br />
-            {t(site.manifestoLine2)}
-          </h2>
-          <p>{t(site.manifestoIntro)}</p>
-          <div className="creatie-stat-row">
-            <span>9+ years</span>
-            <span>AI / UX</span>
-            <span>Web / App</span>
-            <span>Design System</span>
-          </div>
-        </section>
-      )}
+            MAKES PEOPLE
+            <br />
+            LOOK TWICE
+          </h1>
+        </div>
 
-      {visible("work") && (
-        <section className="creatie-work" id="work">
-          <div className="creatie-section-head">
-            <SectionLabel>{label("work", language === "zh" ? "精选作品" : "Work")}</SectionLabel>
-            <p>{t(site.workIntro)}</p>
-          </div>
-          <div className="creatie-folder-grid">
-            {projects.map((project, index) => (
-              <ProjectFolderCard
-                key={project.slug}
-                project={project}
-                index={index}
-                title={t(project.title)}
-                summary={t(project.summary)}
-              />
-            ))}
-          </div>
-        </section>
-      )}
+        <p className="creatie-v2-caption">— Not just visuals, I make digital things look alive</p>
 
-      {visible("contact") && (
-        <section className="creatie-contact" id="contact">
-          <SectionLabel>{label("contact", language === "zh" ? "联系我" : "Contact")}</SectionLabel>
-          <h2>{t(site.contactHeadline) || "有意思的东西。"}</h2>
-          <div className="creatie-contact-links">
-            <a href={`mailto:${site.email}`}>{site.email} ↗</a>
+        <div className="creatie-v2-dock" aria-label="Quick links">
+          {["📁", "🎨", "🙂", "✉️"].map((icon, index) => (
+            <a key={index} href={index === 3 ? `mailto:${site.email}` : "#work"}>{icon}</a>
+          ))}
+        </div>
+
+        <Link className="creatie-v2-mini-card" href={projects[0] ? `/projects/${projects[0].slug}` : "#work"}>
+          {heroPreview && !isVideo(heroPreview) ? (
+            <ResilientImage src={heroPreview.thumbnailUrl || heroPreview.url} fallbackSrc={heroPreview.url} alt="" />
+          ) : (
+            <span>CASE</span>
+          )}
+          <div>
+            <small>2026</small>
+            <strong>{projects[0] ? safeText(language === "zh" ? projects[0].title.zh : projects[0].title.en, "WAYXWAY") : "WAYXWAY"}</strong>
+            <em>VIEW CASE STUDY</em>
+          </div>
+        </Link>
+      </section>
+
+      <section className="creatie-v2-about" id="about">
+        <div className="creatie-v2-about-card">
+          <div className="avatar-large">
+            {avatar?.url ? <ResilientImage src={avatar.thumbnailUrl || avatar.url} fallbackSrc={avatar.url} alt={site.name} /> : <span>{site.name.slice(0, 1)}</span>}
+          </div>
+          <div>
+            <h2>{site.name || "Penn.W"}</h2>
+            <p>{language === "zh" ? "UI/UX / AI 产品设计师" : "UI/UX / AI Product Designer"}</p>
+            <a href={`mailto:${site.email}`}>{site.email}</a>
             {site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}
-            {site.social.map((item) => (
-              <a href={item.href} key={item.href} target="_blank" rel="noreferrer">
-                {item.label}
-              </a>
-            ))}
           </div>
-        </section>
-      )}
-
-      {portraitOpen && site.aboutPhoto?.url && (
-        <div className="creatie-modal" role="dialog" aria-modal="true" onClick={() => setPortraitOpen(false)}>
-          <button className="creatie-modal-close" type="button" aria-label="关闭" onClick={() => setPortraitOpen(false)}>
-            ×
-          </button>
-          <ResilientImage
-            className="creatie-portrait-large"
-            src={assetPath(site.aboutPhoto.url)}
-            fallbackSrc={site.aboutPhoto.url}
-            alt={site.name}
-            onClick={(event) => event.stopPropagation()}
-          />
         </div>
-      )}
+        <p className="creatie-v2-about-copy">
+          Creativity is the actual skill. Tech is just the tool. I design smooth, interactive interfaces, connect product logic with visual systems, and turn complex experiences into clear, memorable digital products.
+        </p>
+      </section>
 
-      {active && (
-        <div className="creatie-modal" role="dialog" aria-modal="true" onClick={() => setActiveExperience(null)}>
-          <article className="creatie-experience-modal" onClick={(event) => event.stopPropagation()}>
-            <button className="creatie-modal-close" type="button" aria-label="关闭" onClick={() => setActiveExperience(null)}>
-              ×
-            </button>
-            <small>{t(active.time)}</small>
-            <h2>{t(active.company)}</h2>
-            <h3>{t(active.position)}</h3>
-            {splitParagraphs(t(active.description)).map((block) => (
-              <p key={block}>{block}</p>
-            ))}
-            {active.link && (
-              <a href={active.link} target="_blank" rel="noreferrer">
-                项目链接 ↗
-              </a>
-            )}
-          </article>
+      <section className="creatie-v2-work" id="work">
+        <div className="creatie-v2-section-head">
+          <span>04 — WORK</span>
+          <p>Folders, case cards, experiments and visual systems.</p>
         </div>
-      )}
+        <div className="creatie-v2-folder-grid">
+          {projects.map((project, index) => (
+            <FolderCard key={project.slug} project={project} index={index} />
+          ))}
+        </div>
+      </section>
+
+      <section className="creatie-v2-contact" id="contact">
+        <small>05 — CONTACT</small>
+        <h2>LET'S MAKE SOMETHING MEMORABLE.</h2>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        {site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}
+      </section>
     </main>
   );
 }

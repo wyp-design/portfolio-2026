@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
-import type { LocalizedText, Project, SiteContent, UploadedMedia } from "@/content/types";
-import { useLanguage } from "@/lib/i18n";
+import { useEffect, useMemo, useState } from "react";
+import type { Project, SiteContent, UploadedMedia } from "@/content/types";
+import { looksGarbled, useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
 import { ResilientImage } from "./resilient-image";
-import { SiteHeader } from "./site-header";
 
 type ProjectSection = Project["sections"][number];
+
+function safe(value: string | undefined, fallback: string) {
+  if (!value || looksGarbled(value)) return fallback;
+  return value;
+}
 
 function isPdf(media?: UploadedMedia) {
   return media?.mimeType === "application/pdf";
@@ -22,113 +26,36 @@ function sectionCover(section: ProjectSection) {
   return section.media?.find((media) => !isPdf(media)) || section.media?.[0];
 }
 
-function text(value: LocalizedText | undefined, t: (value: LocalizedText) => string, fallback = "") {
-  return value ? t(value) || fallback : fallback;
-}
-
-function ProjectIndexCard({
-  section,
-  index,
-  onSelect,
-  t,
-}: {
-  section: ProjectSection;
-  index: number;
-  onSelect: () => void;
-  t: (value: LocalizedText) => string;
-}) {
+function MediaPreview({ media, title }: { media?: UploadedMedia; title: string }) {
   const assetPath = useAssetPath();
-  const cover = sectionCover(section);
-  const title = text(section.title, t, `Project ${index + 1}`);
-  const count = section.media?.length || 0;
-
-  return (
-    <button className="creatie-case-card" type="button" onClick={onSelect}>
-      <div className="creatie-case-card-media">
-        {cover ? (
-          isPdf(cover) ? (
-            <span>PDF</span>
-          ) : isVideo(cover) ? (
-            <video src={assetPath(cover.url)} muted playsInline preload="metadata" />
-          ) : (
-            <ResilientImage
-              src={cover.thumbnailUrl || cover.url}
-              fallbackSrc={cover.url}
-              alt={cover.alt ? t(cover.alt) : title}
-              loading={index < 4 ? "eager" : "lazy"}
-              decoding="async"
-            />
-          )
-        ) : (
-          <span>{title}</span>
-        )}
-      </div>
-      <small>{String(index + 1).padStart(2, "0")}</small>
-      <h3>{title}</h3>
-      <p>{count} 个素材</p>
-    </button>
-  );
+  if (!media) return <span>{title}</span>;
+  if (isPdf(media)) return <span>PDF</span>;
+  if (isVideo(media)) return <video src={assetPath(media.url)} muted playsInline preload="metadata" />;
+  return <ResilientImage src={media.thumbnailUrl || media.url} fallbackSrc={media.url} alt={title} loading="lazy" decoding="async" />;
 }
 
-function MediaTile({
-  media,
-  index,
-  title,
-  onOpen,
-}: {
-  media: UploadedMedia;
-  index: number;
-  title: string;
-  onOpen: () => void;
-}) {
-  const assetPath = useAssetPath();
-  const label = title || media.originalFilename || `File ${index + 1}`;
-
-  return (
-    <button className="creatie-masonry-tile" type="button" onClick={onOpen} aria-label={`打开 ${label}`}>
-      {isPdf(media) ? (
-        <span className="creatie-file-badge">PDF</span>
-      ) : isVideo(media) ? (
-        <video src={assetPath(media.url)} muted playsInline preload="metadata" />
-      ) : (
-        <ResilientImage
-          src={media.thumbnailUrl || media.url}
-          fallbackSrc={media.url}
-          alt={media.alt?.zh || label}
-          loading={index < 8 ? "eager" : "lazy"}
-          decoding="async"
-        />
-      )}
-      <span className="creatie-media-shade" />
-      <small>{String(index + 1).padStart(2, "0")}</small>
-      <strong>{label}</strong>
-      <em>+</em>
-    </button>
-  );
-}
-
-export function ProjectPage({
-  project,
-  nextProject,
-  site,
-}: {
-  project: Project;
-  nextProject?: Project;
-  site: SiteContent;
-}) {
+export function ProjectPage({ project, nextProject, site }: { project: Project; nextProject?: Project; site: SiteContent }) {
   const { language, t } = useLanguage();
   const assetPath = useAssetPath();
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [activeSectionIndex, setActiveSectionIndex] = useState<number | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const activeSection = project.sections[activeSectionIndex] || project.sections[0];
+  const title = safe(t(project.title), language === "zh" ? "项目分类" : "Project category");
+  const summary = safe(t(project.summary), language === "zh" ? "项目说明" : "Project overview");
+  const activeSection = activeSectionIndex === null ? null : project.sections[activeSectionIndex];
   const media = activeSection?.media || [];
   const activeMedia = lightboxIndex === null ? null : media[lightboxIndex];
-  const projectTitle = t(project.title);
-  const sectionTitle = activeSection ? t(activeSection.title) : projectTitle;
-  const sectionBody = activeSection ? t(activeSection.body) : t(project.summary);
 
-  const next = () => setLightboxIndex((current) => (current === null ? 0 : (current + 1) % media.length));
-  const prev = () => setLightboxIndex((current) => (current === null ? 0 : (current - 1 + media.length) % media.length));
+  const sectionCards = useMemo(
+    () =>
+      project.sections.map((section, index) => ({
+        section,
+        index,
+        title: safe(t(section.title), `${language === "zh" ? "项目" : "Project"} ${index + 1}`),
+        body: safe(t(section.body), ""),
+        cover: sectionCover(section),
+      })),
+    [language, project.sections, t],
+  );
 
   useEffect(() => {
     document.body.classList.toggle("is-modal-open", lightboxIndex !== null);
@@ -139,120 +66,110 @@ export function ProjectPage({
     const onKey = (event: KeyboardEvent) => {
       if (lightboxIndex === null) return;
       if (event.key === "Escape") setLightboxIndex(null);
-      if (event.key === "ArrowRight") next();
-      if (event.key === "ArrowLeft") prev();
+      if (event.key === "ArrowRight") setLightboxIndex((lightboxIndex + 1) % media.length);
+      if (event.key === "ArrowLeft") setLightboxIndex((lightboxIndex - 1 + media.length) % media.length);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxIndex, media.length]);
 
-  const sectionCards = useMemo(
-    () => project.sections.map((section, index) => ({ section, index, title: text(section.title, t, `Project ${index + 1}`) })),
-    [project.sections, t],
-  );
-
   return (
-    <main className="creatie-case-page">
-      <SiteHeader name={site.name} />
-      <section className="creatie-case-hero">
-        <Link className="creatie-back" href="/#work">
-          ← {language === "zh" ? "全部作品" : "All work"}
-        </Link>
+    <main className="creatie-v2 case">
+      <header className="creatie-v2-nav">
+        <Link href="/" className="creatie-v2-logo">CREATIE®</Link>
+        <nav>
+          <Link href="/#work">WORK</Link>
+          <Link href="/#about">ABOUT</Link>
+          <a href={`mailto:${site.email}`}>CONTACT</a>
+        </nav>
+      </header>
+
+      <section className="case-v2-hero">
+        <Link href="/#work" className="case-v2-back">‹ All work</Link>
         <div>
-          <p>
-            {t(project.category)} · {project.year || "2026"}
-          </p>
-          <h1>{projectTitle}</h1>
-          <span>{t(project.summary)}</span>
+          <small>{safe(t(project.category), "Design")} · {project.year || "2026"}</small>
+          <h1>{title}</h1>
+          <p>{summary}</p>
         </div>
       </section>
 
-      <section className="creatie-project-index">
-        <div className="creatie-index-head">
-          <small>PROJECT LIST</small>
-          <h2>{projectTitle}</h2>
-          <p>{t(project.summary)}</p>
-        </div>
-        <div className="creatie-case-card-grid">
-          {sectionCards.map(({ section, index }) => (
-            <ProjectIndexCard
-              key={`${text(section.title, t)}-${index}`}
-              section={section}
-              index={index}
-              t={t}
-              onSelect={() => {
-                setActiveSectionIndex(index);
-                document.getElementById("case-detail")?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="creatie-case-detail" id="case-detail">
-        <button className="creatie-back-button" type="button" onClick={() => document.querySelector(".creatie-project-index")?.scrollIntoView({ behavior: "smooth" })}>
-          ← {language === "zh" ? "返回项目列表" : "Back to projects"}
-        </button>
-        <div className="creatie-detail-head">
-          <small>{String(activeSectionIndex + 1).padStart(2, "0")} / {language === "zh" ? "项目" : "Project"}</small>
-          <h2 style={{ textAlign: activeSection?.titleAlign || "left" } as CSSProperties}>{sectionTitle}</h2>
-          <p style={{ textAlign: activeSection?.bodyAlign || "left" } as CSSProperties}>{sectionBody}</p>
-        </div>
-        {media.length ? (
-          <div className="creatie-masonry">
-            {media.map((item, index) => (
-              <MediaTile
-                key={`${item.url}-${index}`}
-                media={item}
-                index={index}
-                title={text(item.title, t, item.originalFilename || `File ${index + 1}`)}
-                onOpen={() => setLightboxIndex(index)}
-              />
+      {activeSectionIndex === null ? (
+        <section className="case-v2-project-list">
+          <div className="case-v2-head">
+            <small>PROJECT LIST</small>
+            <h2>{title}</h2>
+            <p>{summary}</p>
+          </div>
+          <div className="case-v2-card-grid">
+            {sectionCards.map((card) => (
+              <button key={`${card.index}-${card.title}`} type="button" className="case-v2-card" onClick={() => setActiveSectionIndex(card.index)}>
+                <div className="case-v2-card-media">
+                  <MediaPreview media={card.cover} title={card.title} />
+                  <i>+</i>
+                </div>
+                <small>{String(card.index + 1).padStart(2, "0")}</small>
+                <h3>{card.title}</h3>
+                <p>{card.section.media?.length || 0} files</p>
+              </button>
             ))}
           </div>
-        ) : (
-          <p className="creatie-empty">{language === "zh" ? "这个项目还没有上传素材。" : "No media uploaded yet."}</p>
-        )}
-      </section>
-
-      {nextProject && (
-        <section className="creatie-next">
-          <small>{language === "zh" ? "下一个分类" : "Next category"}</small>
-          <Link href={`/projects/${nextProject.slug}`}>{t(nextProject.title)} →</Link>
+        </section>
+      ) : (
+        <section className="case-v2-detail">
+          <button type="button" className="case-v2-back-button" onClick={() => setActiveSectionIndex(null)}>
+            ← Back to project list
+          </button>
+          <div className="case-v2-detail-head">
+            <small>{String(activeSectionIndex + 1).padStart(2, "0")} / PROJECT</small>
+            <h2>{safe(t(activeSection?.title || project.title), title)}</h2>
+            <p>{safe(t(activeSection?.body || project.summary), summary)}</p>
+          </div>
+          {media.length ? (
+            <div className="case-v2-masonry">
+              {media.map((item, index) => {
+                const mediaTitle = safe(t(item.title || { zh: "", en: "" }), item.originalFilename || `File ${index + 1}`);
+                return (
+                  <button className="case-v2-masonry-item" key={`${item.url}-${index}`} type="button" onClick={() => setLightboxIndex(index)}>
+                    <MediaPreview media={item} title={mediaTitle} />
+                    <span />
+                    <small>{String(index + 1).padStart(2, "0")}</small>
+                    <strong>{mediaTitle}</strong>
+                    <i>+</i>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="case-v2-empty">No files uploaded yet.</p>
+          )}
         </section>
       )}
 
-      {activeMedia && (
-        <div className="creatie-lightbox" role="dialog" aria-modal="true">
-          <button className="creatie-lightbox-close" type="button" aria-label="关闭" onClick={() => setLightboxIndex(null)}>
-            ×
-          </button>
+      {nextProject && activeSectionIndex === null && (
+        <Link className="case-v2-next" href={`/projects/${nextProject.slug}`}>
+          <small>Next category</small>
+          <strong>{safe(t(nextProject.title), "Next project")} →</strong>
+        </Link>
+      )}
+
+      {activeMedia && lightboxIndex !== null && (
+        <div className="case-v2-lightbox" role="dialog" aria-modal="true">
+          <button className="close" type="button" onClick={() => setLightboxIndex(null)}>×</button>
           {media.length > 1 && (
             <>
-              <button className="creatie-lightbox-nav prev" type="button" onClick={prev} aria-label="上一张">
-                ‹
-              </button>
-              <button className="creatie-lightbox-nav next" type="button" onClick={next} aria-label="下一张">
-                ›
-              </button>
+              <button className="prev" type="button" onClick={() => setLightboxIndex((lightboxIndex - 1 + media.length) % media.length)}>‹</button>
+              <button className="next" type="button" onClick={() => setLightboxIndex((lightboxIndex + 1) % media.length)}>›</button>
             </>
           )}
-          <article className="creatie-lightbox-card">
-            <header>
-              <small>{String((lightboxIndex || 0) + 1).padStart(2, "0")} / {media.length}</small>
-              <h2>{text(activeMedia.title, t, activeMedia.originalFilename || sectionTitle)}</h2>
-              {activeMedia.caption && <p>{t(activeMedia.caption)}</p>}
-            </header>
-            <div className="creatie-lightbox-viewer">
-              {isPdf(activeMedia) ? (
-                <iframe title={activeMedia.originalFilename || "PDF"} src={assetPath(activeMedia.url)} />
-              ) : isVideo(activeMedia) ? (
-                <video src={assetPath(activeMedia.url)} controls playsInline />
-              ) : (
-                <ResilientImage src={activeMedia.url} fallbackSrc={activeMedia.url} alt={text(activeMedia.alt, t, "")} />
-              )}
-            </div>
-          </article>
+          <div className="case-v2-lightbox-stage">
+            {isPdf(activeMedia) ? (
+              <iframe src={assetPath(activeMedia.url)} title={activeMedia.originalFilename || "PDF preview"} />
+            ) : isVideo(activeMedia) ? (
+              <video src={assetPath(activeMedia.url)} controls playsInline />
+            ) : (
+              <ResilientImage src={activeMedia.url} fallbackSrc={activeMedia.thumbnailUrl || activeMedia.url} alt={activeMedia.originalFilename || "Preview"} />
+            )}
+          </div>
         </div>
       )}
     </main>
