@@ -7,8 +7,7 @@ type Language = "zh" | "en";
 
 function looksGarbled(value: string) {
   if (!value) return false;
-  const suspicious = ["�", "鈥", "鉁", "涓", "鏉", "绔", "鍥", "鐢", "椤", "杩", "锛", "銆", "€"];
-  return suspicious.some((token) => value.includes(token));
+  return /锟|閳|閴|娑|閺|缁|閸|閻|妞|鏉|閿|閵|鈧|�/.test(value);
 }
 
 function pickText(value: LocalizedText, language: Language) {
@@ -33,11 +32,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("zh");
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const saved = window.localStorage.getItem("portfolio-language");
-      if (saved === "zh" || saved === "en") setLanguage(saved);
-    }, 0);
-    return () => window.clearTimeout(timer);
+    const saved = window.localStorage.getItem("portfolio-language");
+    if (saved === "zh" || saved === "en") setLanguage(saved);
   }, []);
 
   useEffect(() => {

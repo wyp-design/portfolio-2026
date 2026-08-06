@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n";
 
-export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
+export function SiteHeader({ name = "PENN.W" }: { name?: string }) {
   const { language, setLanguage } = useLanguage();
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
   const [sound, setSound] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -28,9 +28,13 @@ export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
     };
   }, [open]);
 
+  const nav = language === "zh"
+    ? { work: "作品", about: "关于", contact: "联系", lang: "EN" }
+    : { work: "Work", about: "About", contact: "Contact", lang: "中" };
+
   return (
     <header className={open ? "site-header menu-open" : "site-header"}>
-      <Link className="wordmark" href="/" aria-label="Home">
+      <Link className="wordmark" href="/" aria-label="Home" onClick={() => setOpen(false)}>
         {name}
       </Link>
       <button
@@ -38,6 +42,7 @@ export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label={open ? "Close menu" : "Open menu"}
+        type="button"
       >
         <span />
         <span />
@@ -45,22 +50,22 @@ export function SiteHeader({ name = "YOUR.NAME" }: { name?: string }) {
       </button>
       <nav className={open ? "nav-links is-open" : "nav-links"}>
         <Link href="/#work" onClick={() => setOpen(false)}>
-          {language === "zh" ? "作品" : "Work"}
+          {nav.work}
         </Link>
         <Link href="/#about" onClick={() => setOpen(false)}>
-          {language === "zh" ? "关于" : "About"}
+          {nav.about}
         </Link>
         <Link href="/#contact" onClick={() => setOpen(false)}>
-          {language === "zh" ? "联系" : "Contact"}
+          {nav.contact}
         </Link>
-        <button onClick={() => setLanguage(language === "zh" ? "en" : "zh")}>
-          {language === "zh" ? "EN" : "中"}
+        <button type="button" onClick={() => setLanguage(language === "zh" ? "en" : "zh")}>
+          {nav.lang}
         </button>
-        <button onClick={() => setDark((value) => !value)} aria-label="Toggle theme">
+        <button type="button" onClick={() => setDark((value) => !value)} aria-label="Toggle theme">
           THEME[{dark ? "B" : "A"}]
         </button>
-        <button onClick={() => setSound((value) => !value)} aria-label="Toggle sound">
-          SOUND[{sound ? "∿" : "–"}]
+        <button type="button" onClick={() => setSound((value) => !value)} aria-label="Toggle sound">
+          SOUND[{sound ? "ON" : "OFF"}]
         </button>
       </nav>
     </header>

@@ -1,19 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import type { EducationItem, Project, SiteContent, UploadedMedia } from "@/content/types";
 import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
-import { CinematicHero } from "./cinematic-hero";
-import { SiteHeader } from "./site-header";
 import { ResilientImage } from "./resilient-image";
+import { SiteHeader } from "./site-header";
 
-const HeroScene = dynamic(() => import("./hero-scene").then((module) => module.HeroScene), {
-  ssr: false,
-  loading: () => null,
-});
+const folderColors = ["#b9ff55", "#ff756b", "#8780ff", "#ffd84a", "#4ed0e9", "#a579ff"];
+const tags = ["UI/UX", "AI Design", "Product System", "Web / App", "Visual"];
 
 function isPdf(media?: UploadedMedia) {
   return media?.mimeType === "application/pdf";
@@ -23,359 +19,294 @@ function isVideo(media?: UploadedMedia) {
   return Boolean(media?.mimeType?.startsWith("video/"));
 }
 
-function previewProjectMedia(project: Project) {
-  return project.sections
-    .flatMap((section) => section.media || [])
-    .filter((media) => !isPdf(media))
-    .slice(0, 3);
+function allMedia(project: Project) {
+  return project.sections.flatMap((section) => section.media || []);
 }
 
-function projectMediaCount(project: Project) {
-  return project.sections.flatMap((section) => section.media || []).length;
+function previewMedia(project: Project) {
+  return allMedia(project).filter((media) => !isPdf(media)).slice(0, 3);
 }
 
-function splitBio(value: string) {
-  const blocks = value
+function splitParagraphs(value: string) {
+  return value
     .split(/\n{2,}/)
-    .map((block) => block.trim())
+    .map((item) => item.trim())
     .filter(Boolean);
-  const firstPointIndex = blocks.findIndex((block) => /^\s*(\d+[.、]|[-*])/.test(block));
-  return {
-    intro: firstPointIndex >= 0 ? blocks.slice(0, firstPointIndex).join("\n\n") : value,
-    points: firstPointIndex >= 0 ? blocks.slice(firstPointIndex) : [],
-  };
+}
+
+function educationVisible(item?: EducationItem) {
+  if (!item) return false;
+  return Boolean(item.school.zh || item.school.en || item.degree.zh || item.degree.en || item.time.zh || item.time.en);
+}
+
+function SectionLabel({ children }: { children: string }) {
+  return <p className="creatie-section-label">{children}</p>;
+}
+
+function ProjectFolderCard({
+  project,
+  index,
+  title,
+  summary,
+}: {
+  project: Project;
+  index: number;
+  title: string;
+  summary: string;
+}) {
+  const assetPath = useAssetPath();
+  const previews = previewMedia(project);
+  const color = project.accent || folderColors[index % folderColors.length];
+  const count = allMedia(project).length;
+
+  return (
+    <Link className="creatie-folder-card" href={`/projects/${project.slug}`} style={{ "--folder": color } as CSSProperties}>
+      <div className="creatie-folder-art" aria-hidden="true">
+        <span className="creatie-folder-back" />
+        <span className="creatie-folder-pocket" />
+        <div className="creatie-folder-stack">
+          {[0, 1, 2].map((slot) => {
+            const media = previews[slot];
+            return (
+              <span className={`creatie-folder-sheet sheet-${slot + 1}`} key={slot}>
+                {media ? (
+                  isVideo(media) ? (
+                    <video src={assetPath(media.url)} muted playsInline preload="metadata" />
+                  ) : (
+                    <ResilientImage
+                      src={media.thumbnailUrl || media.url}
+                      fallbackSrc={media.url}
+                      alt=""
+                      loading={index < 3 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                  )
+                ) : (
+                  <b>{title}</b>
+                )}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+      <span className="creatie-folder-index">{String(index + 1).padStart(2, "0")}</span>
+      <h3>{title}</h3>
+      <p>{count ? `${count} 个素材` : summary}</p>
+    </Link>
+  );
 }
 
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
-  const assetPath = useAssetPath();
-  const root = useRef<HTMLElement>(null);
   const { language, t } = useLanguage();
-  const [activeExperienceIndex, setActiveExperienceIndex] = useState<number | null>(null);
-  const [isPortraitOpen, setIsPortraitOpen] = useState(false);
-  const sections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
-  const sectionNumber = (id: string) =>
-    `${String(sections.findIndex((section) => section.id === id) + 1).padStart(2, "0")} —`;
-  const activeExperience =
-    activeExperienceIndex === null ? null : site.experiences[activeExperienceIndex] || null;
-  const heroStyle = site.heroStyle || "cinematic";
-  const educationItems = [site.education, site.education2].filter((education): education is EducationItem => {
-    if (!education) return false;
-    return Boolean(t(education.school).trim() || t(education.degree).trim() || t(education.time).trim());
-  });
-  const { intro: bioIntro, points: bioPoints } = splitBio(t(site.bio));
+  const assetPath = useAssetPath();
+  const [activeExperience, setActiveExperience] = useState<number | null>(null);
+  const [portraitOpen, setPortraitOpen] = useState(false);
+  const orderedSections = [...site.sections].filter((section) => section.visible).sort((a, b) => a.order - b.order);
+  const visible = (id: string) => orderedSections.some((section) => section.id === id);
+  const label = (id: string, fallback: string) => {
+    const index = orderedSections.findIndex((section) => section.id === id);
+    const section = orderedSections[index];
+    return `${String(index + 1).padStart(2, "0")} — ${section ? t(section.label) : fallback}`;
+  };
+  const bioBlocks = splitParagraphs(t(site.bio));
+  const education = [site.education, site.education2].filter(educationVisible) as EducationItem[];
+  const active = activeExperience === null ? null : site.experiences[activeExperience];
 
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-    const scope = root.current;
-    if (!scope) return;
-    const animations: Animation[] = [];
-    scope.querySelectorAll<HTMLElement>(".hero-kicker, .hero-title-line, .hero-copy").forEach((element, index) => {
-      animations.push(element.animate(
-        [{ transform: "translateY(40px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }],
-        { duration: 900, delay: index * 80, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" },
-      ));
-    });
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const element = entry.target as HTMLElement;
-        animations.push(element.animate(
-          [{ transform: "translateY(64px)", opacity: 0 }, { transform: "translateY(0)", opacity: 1 }],
-          { duration: 850, easing: "cubic-bezier(.2,.8,.2,1)", fill: "both" },
-        ));
-        observer.unobserve(element);
-      });
-    }, { rootMargin: "0px 0px -15% 0px" });
-    scope.querySelectorAll<HTMLElement>(".reveal").forEach((element) => observer.observe(element));
-    return () => {
-      observer.disconnect();
-      animations.forEach((animation) => animation.cancel());
-    };
-  }, []);
+    document.body.classList.toggle("is-modal-open", activeExperience !== null || portraitOpen);
+    return () => document.body.classList.remove("is-modal-open");
+  }, [activeExperience, portraitOpen]);
 
-  useEffect(() => {
-    if (activeExperienceIndex === null && !isPortraitOpen) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setActiveExperienceIndex(null);
-        setIsPortraitOpen(false);
-      }
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [activeExperienceIndex, isPortraitOpen]);
+  const heroTitle = useMemo(() => {
+    const line1 = t(site.heroTitle.line1) || "让复杂变清晰";
+    const line2 = t(site.heroTitle.line2) || "让体验有感觉";
+    return `${line1} ${line2}`;
+  }, [site.heroTitle.line1, site.heroTitle.line2, t]);
 
   return (
-    <main ref={root} id="top">
-      {sections.map((section) => {
-        if (section.id === "hero") {
-          return (
-            <section className="hero grid-surface" key={section.id}>
-              <SiteHeader name={site.name} />
-              <div className="hero-art">
-                {heroStyle === "cinematic" ? (
-                  <CinematicHero />
-                ) : (
-                  <>
-                    <div className="hero-image" style={{ backgroundImage: `url(${assetPath("/images/hero-atmosphere.png")})` }} />
-                    <HeroScene />
-                  </>
-                )}
+    <main className="creatie-site">
+      {visible("hero") && (
+        <section className="creatie-hero" id="top">
+          <SiteHeader name={site.name} />
+          <div className="creatie-sky" />
+          <span className="creatie-cloud cloud-a" />
+          <span className="creatie-cloud cloud-b" />
+          <span className="creatie-cloud cloud-c" />
+          <span className="creatie-orb orb-a">UI</span>
+          <span className="creatie-orb orb-b">AI</span>
+          <span className="creatie-orb orb-c">UX</span>
+          <div className="creatie-hero-inner">
+            <div className="creatie-profile-pill">
+              {site.aboutPhoto?.url ? (
+                <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} />
+              ) : (
+                <span>{site.name.slice(0, 1)}</span>
+              )}
+              <div>
+                <strong>{site.name}</strong>
+                <small>{t(site.shortRole)}</small>
               </div>
-              <div className="hero-kicker">
-                <span>{t(site.shortRole)}</span>
-                <span>{t(site.location)}</span>
-              </div>
-              <h1 className="hero-title">
-                <span className="hero-title-line">{t(site.heroTitle.line1)}</span>
-                <span className="hero-title-line outline">{t(site.heroTitle.line2)}</span>
-              </h1>
-              <p className="hero-copy rich-text rich-size-small rich-weight-regular">{t(site.intro)}</p>
-              <div className="sticker sticker-one">✦</div>
-              <div className="sticker sticker-two">UX↗</div>
-              <div className="sticker sticker-three">GOOD<br />SYSTEMS</div>
-              <div className="hero-index">{site.heroIndex}</div>
-              <a className="scroll-cue" href="#work">{t(site.scrollLabel)} ↓</a>
-            </section>
-          );
-        }
+              <em>Available for work</em>
+            </div>
+            <p className="creatie-hero-kicker">{t(site.location)} · Portfolio 2026</p>
+            <h1 className="creatie-hero-title">{heroTitle}</h1>
+            <p className="creatie-hero-copy">{t(site.intro)}</p>
+            <div className="creatie-tags">
+              {tags.map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </div>
+            <Link className="creatie-hero-cta" href="#work">
+              查看精选作品
+              <span>↗</span>
+            </Link>
+          </div>
+          <div className="creatie-hill" />
+        </section>
+      )}
 
-        if (section.id === "manifesto") {
-          return (
-            <section className="manifesto grid-surface reveal" key={section.id}>
-              <p className="rich-text">{t(site.manifestoIntro)}</p>
-              <h2>
-                {t(site.manifestoLine1)}
-                <br />
-                <span>{t(site.manifestoLine2)}</span>
-              </h2>
-            </section>
-          );
-        }
-
-        if (section.id === "work") {
-          return (
-            <section className="work-section creatie-work-section" id="work" key={section.id}>
-              <div className="section-heading reveal creatie-section-heading">
-                <span>{sectionNumber("work")} {t(site.workLabel)}</span>
-                <p className="rich-text">{t(site.workIntro)}</p>
-              </div>
-              <div className="work-folder-grid creatie-folder-grid">
-                {projects.map((project, index) => {
-                  const previews = previewProjectMedia(project);
-                  const mediaCount = projectMediaCount(project);
-                  const folderColor = project.accent || ["#c5ff55", "#ff6f69", "#7d77ff", "#f7d449", "#56c8df"][index % 5];
-                  const previewItems = previews.length ? previews : [undefined];
-                  return (
-                    <Link
-                      className="work-folder-card creatie-folder-card reveal"
-                      href={`/projects/${project.slug}`}
-                      key={project.slug}
-                      style={{ "--folder-color": folderColor } as CSSProperties}
-                    >
-                      <div className="work-folder-art" aria-hidden="true">
-                        <span className="work-folder-back" />
-                        <span className="work-folder-pocket" />
-                        <div className="work-folder-stack">
-                          {previewItems.map((media, previewIndex) => {
-                            const src = media?.thumbnailUrl || media?.url;
-                            return (
-                              <span className="work-folder-sheet" key={`${project.slug}-${media?.url || "empty"}-${previewIndex}`}>
-                                {src && !isVideo(media) ? (
-                                  <ResilientImage
-                                    src={src}
-                                    alt={media?.alt ? t(media.alt) : t(project.title)}
-                                    loading={index < 3 ? "eager" : "lazy"}
-                                    decoding="async"
-                                  />
-                                ) : src && isVideo(media) ? (
-                                  <video src={assetPath(src)} muted playsInline preload="metadata" />
-                                ) : (
-                                  <span className="work-folder-empty">{t(project.title)}</span>
-                                )}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </div>
-                      <div className="work-folder-copy">
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <h3>{t(project.title)}</h3>
-                        <p>{mediaCount || project.sections.length} {language === "zh" ? "个素材" : mediaCount === 1 ? "file" : "files"}</p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        }
-
-        if (section.id === "about") {
-          return (
-            <section className="about-section about-profile-section creatie-about-section" id="about" key={section.id}>
-              <div className="about-profile-shell">
-                <div className="about-label reveal">{sectionNumber("about")} {t(site.aboutLabel)}</div>
-                <div className="about-profile-head reveal">
-                  <button
-                    className="about-profile-photo"
-                    type="button"
-                    onClick={() => site.aboutPhoto?.url && setIsPortraitOpen(true)}
-                    disabled={!site.aboutPhoto?.url}
-                    aria-label={language === "zh" ? "放大查看头像" : "Open portrait"}
-                  >
-                    {site.aboutPhoto?.url ? (
-                      <ResilientImage
-                        src={site.aboutPhoto.url}
-                        alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
-                      <span>{language === "zh" ? "上传头像" : "Upload portrait"}</span>
-                    )}
-                  </button>
-                  <div className="about-profile-identity">
-                    <h2 className={`rich-size-${site.aboutHeadlineStyle?.fontSize || "large"} rich-weight-${site.aboutHeadlineStyle?.fontWeight || "bold"}`}>
-                      {t(site.aboutHeadline) || site.name}
-                    </h2>
-                    <p>{t(site.shortRole)}</p>
-                    <div className="about-profile-links">
-                      {site.phone ? <a href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone}</a> : null}
-                      <a href={`mailto:${site.email}`}>{site.email}</a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`about-profile-bio reveal rich-size-${site.bioStyle?.fontSize || "medium"} rich-weight-${site.bioStyle?.fontWeight || "regular"}`}>
-                  <p className="about-bio-intro rich-text">{bioIntro}</p>
-                  {bioPoints.length ? (
-                    <div className="about-bio-points">
-                      {bioPoints.map((point, index) => (
-                        <p className="rich-text" key={`${point}-${index}`}>{point}</p>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-
-                {educationItems.length ? (
-                  <div className="about-profile-education reveal">
-                    <div className="about-profile-subtitle">{language === "zh" ? "教育经历" : "Education"}</div>
-                    <div className="about-profile-education-list">
-                      {educationItems.map((education, index) => (
-                        <article className="education-card" key={`${education.school.en}-${index}`}>
-                          <span>{index === 0 ? "EDU" : "EDU 02"}</span>
-                          <h3 className={`rich-size-${education.titleStyle?.fontSize || "medium"} rich-weight-${education.titleStyle?.fontWeight || "bold"}`}>
-                            {t(education.school)}
-                          </h3>
-                          <strong>{t(education.degree)} / {t(education.time)}</strong>
-                          {education.link ? <a href={education.link} target="_blank" rel="noreferrer">Link ↗</a> : null}
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                <div className="about-profile-experiences reveal">
-                  <div className="about-profile-subtitle">{language === "zh" ? "工作经历" : "Experience"}</div>
-                  <div className="about-profile-experience-list">
-                    {site.experiences.map((experience, index) => (
-                      <article key={`${experience.company.en}-${index}`}>
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <button
-                          className={`experience-trigger rich-size-${experience.titleStyle?.fontSize || "medium"} rich-weight-${experience.titleStyle?.fontWeight || "bold"}`}
-                          type="button"
-                          onClick={() => setActiveExperienceIndex(index)}
-                        >
-                          {t(experience.company)}
-                        </button>
-                        <strong>{t(experience.position)} / {t(experience.time)}</strong>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-          );
-        }
-
-        if (section.id === "contact") {
-          return (
-            <footer className="contact-section" id="contact" key={section.id}>
-              <div className="contact-top reveal">
-                <span>{sectionNumber("contact")} {t(site.contactLabel)}</span>
-                <h2>{t(site.contactHeadline)}</h2>
-              </div>
-              <div className="contact-links reveal">
-                <a className="email-link" href={`mailto:${site.email}`}>{site.email} ↗</a>
-                {site.phone ? <a className="phone-link" href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone} ↗</a> : null}
-              </div>
-              <div className="footer-row">
-                <span>© 2026 {site.name}</span>
-                <div>{site.social.map((item) => <a href={item.href} key={item.label}>{item.label}</a>)}</div>
-                <a href="#top">{language === "zh" ? "回到顶部" : "Back to top"} ↑</a>
-              </div>
-            </footer>
-          );
-        }
-
-        return null;
-      })}
-
-      {activeExperience ? (
-        <div className="experience-modal" role="dialog" aria-modal="true" aria-labelledby="experience-modal-title">
-          <button className="experience-modal-backdrop" type="button" onClick={() => setActiveExperienceIndex(null)}>
-            <span>Close</span>
-          </button>
-          <div className="experience-modal-card">
-            <button className="experience-modal-close" type="button" onClick={() => setActiveExperienceIndex(null)}>
-              ×
+      {visible("about") && (
+        <section className="creatie-about" id="about">
+          <SectionLabel>{label("about", language === "zh" ? "关于我" : "About")}</SectionLabel>
+          <div className="creatie-about-card">
+            <button className="creatie-avatar" type="button" onClick={() => setPortraitOpen(true)} aria-label="放大头像">
+              {site.aboutPhoto?.url ? (
+                <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} />
+              ) : (
+                <span>{site.name.slice(0, 1)}</span>
+              )}
             </button>
-            <span className="experience-modal-kicker">
-              {activeExperienceIndex !== null ? String(activeExperienceIndex + 1).padStart(2, "0") : "01"} / EXPERIENCE
-            </span>
-            <h2
-              id="experience-modal-title"
-              className={`rich-size-${activeExperience.modalTitleStyle?.fontSize || "medium"} rich-weight-${activeExperience.modalTitleStyle?.fontWeight || "bold"}`}
-            >
-              {t(activeExperience.company)}
-            </h2>
-            <strong>{t(activeExperience.position)} / {t(activeExperience.time)}</strong>
-            <p className={`rich-text rich-size-${activeExperience.style?.fontSize || "medium"} rich-weight-${activeExperience.style?.fontWeight || "regular"}`}>
-              {t(activeExperience.description)}
-            </p>
-            {activeExperience.link ? (
-              <a href={activeExperience.link} target="_blank" rel="noreferrer">
-                {language === "zh" ? "查看项目链接" : "View project"} ↗
+            <div className="creatie-about-head">
+              <h2>{site.name}</h2>
+              <p>{t(site.shortRole)}</p>
+              <div className="creatie-contact-mini">
+                {site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+              </div>
+            </div>
+          </div>
+          <div className="creatie-about-copy">
+            {bioBlocks.map((block) => (
+              <p key={block}>{block}</p>
+            ))}
+          </div>
+          {education.length > 0 && (
+            <div className="creatie-education">
+              {education.map((item, index) => (
+                <article key={`${t(item.school)}-${index}`}>
+                  <small>EDU {String(index + 1).padStart(2, "0")}</small>
+                  <h3>{t(item.school)}</h3>
+                  <p>
+                    {t(item.degree)}
+                    {t(item.time) ? ` · ${t(item.time)}` : ""}
+                  </p>
+                </article>
+              ))}
+            </div>
+          )}
+          <div className="creatie-experience-grid">
+            {site.experiences.map((item, index) => (
+              <button key={`${t(item.company)}-${index}`} type="button" onClick={() => setActiveExperience(index)}>
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                <h3>{t(item.company)}</h3>
+                <p>
+                  {t(item.position)} · {t(item.time)}
+                </p>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {visible("manifesto") && (
+        <section className="creatie-manifesto">
+          <SectionLabel>{label("manifesto", language === "zh" ? "设计宣言" : "Manifesto")}</SectionLabel>
+          <h2>
+            {t(site.manifestoLine1)}
+            <br />
+            {t(site.manifestoLine2)}
+          </h2>
+          <p>{t(site.manifestoIntro)}</p>
+          <div className="creatie-stat-row">
+            <span>9+ years</span>
+            <span>AI / UX</span>
+            <span>Web / App</span>
+            <span>Design System</span>
+          </div>
+        </section>
+      )}
+
+      {visible("work") && (
+        <section className="creatie-work" id="work">
+          <div className="creatie-section-head">
+            <SectionLabel>{label("work", language === "zh" ? "精选作品" : "Work")}</SectionLabel>
+            <p>{t(site.workIntro)}</p>
+          </div>
+          <div className="creatie-folder-grid">
+            {projects.map((project, index) => (
+              <ProjectFolderCard
+                key={project.slug}
+                project={project}
+                index={index}
+                title={t(project.title)}
+                summary={t(project.summary)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {visible("contact") && (
+        <section className="creatie-contact" id="contact">
+          <SectionLabel>{label("contact", language === "zh" ? "联系我" : "Contact")}</SectionLabel>
+          <h2>{t(site.contactHeadline) || "有意思的东西。"}</h2>
+          <div className="creatie-contact-links">
+            <a href={`mailto:${site.email}`}>{site.email} ↗</a>
+            {site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}
+            {site.social.map((item) => (
+              <a href={item.href} key={item.href} target="_blank" rel="noreferrer">
+                {item.label}
               </a>
-            ) : null}
+            ))}
           </div>
-        </div>
-      ) : null}
+        </section>
+      )}
 
-      {isPortraitOpen && site.aboutPhoto?.url ? (
-        <div className="portrait-modal" role="dialog" aria-modal="true" aria-label={language === "zh" ? "个人照片" : "Portrait"}>
-          <button className="portrait-modal-backdrop" type="button" onClick={() => setIsPortraitOpen(false)}>
-            <span>Close</span>
+      {portraitOpen && site.aboutPhoto?.url && (
+        <div className="creatie-modal" role="dialog" aria-modal="true" onClick={() => setPortraitOpen(false)}>
+          <button className="creatie-modal-close" type="button" aria-label="关闭" onClick={() => setPortraitOpen(false)}>
+            ×
           </button>
-          <div className="portrait-modal-card">
-            <button className="portrait-modal-close" type="button" onClick={() => setIsPortraitOpen(false)}>
+          <ResilientImage
+            className="creatie-portrait-large"
+            src={assetPath(site.aboutPhoto.url)}
+            fallbackSrc={site.aboutPhoto.url}
+            alt={site.name}
+            onClick={(event) => event.stopPropagation()}
+          />
+        </div>
+      )}
+
+      {active && (
+        <div className="creatie-modal" role="dialog" aria-modal="true" onClick={() => setActiveExperience(null)}>
+          <article className="creatie-experience-modal" onClick={(event) => event.stopPropagation()}>
+            <button className="creatie-modal-close" type="button" aria-label="关闭" onClick={() => setActiveExperience(null)}>
               ×
             </button>
-            <ResilientImage
-              src={site.aboutPhoto.url}
-              alt={site.aboutPhoto.alt ? t(site.aboutPhoto.alt) : site.name}
-              loading="eager"
-              decoding="async"
-            />
-          </div>
+            <small>{t(active.time)}</small>
+            <h2>{t(active.company)}</h2>
+            <h3>{t(active.position)}</h3>
+            {splitParagraphs(t(active.description)).map((block) => (
+              <p key={block}>{block}</p>
+            ))}
+            {active.link && (
+              <a href={active.link} target="_blank" rel="noreferrer">
+                项目链接 ↗
+              </a>
+            )}
+          </article>
         </div>
-      ) : null}
+      )}
     </main>
   );
 }
