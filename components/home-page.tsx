@@ -7,21 +7,19 @@ import { looksGarbled, useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
 import { ResilientImage } from "./resilient-image";
 
-const meadowImage =
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2400&q=85";
+const meadowImage = "/images/creatie-bg.avif";
 
-const folderColors = ["#b7ff4f", "#ff6f61", "#7b72f2", "#f7d33b", "#54c7e8"];
+type Lang = "zh" | "en";
+type GooglyEyesMode = "watch" | "cursor";
 
 function cleanText(value?: string, fallback = "") {
   if (!value || looksGarbled(value)) return fallback;
   return value;
 }
 
-function textOf(value: { zh: string; en: string } | undefined, lang: "zh" | "en", fallback = "") {
+function textOf(value: { zh: string; en: string } | undefined, lang: Lang, fallback = "") {
   if (!value) return fallback;
-  const primary = cleanText(value[lang]);
-  const secondary = cleanText(value[lang === "zh" ? "en" : "zh"]);
-  return primary || secondary || fallback;
+  return cleanText(value[lang]) || cleanText(value[lang === "zh" ? "en" : "zh"]) || fallback;
 }
 
 function firstMedia(project: Project) {
@@ -29,27 +27,37 @@ function firstMedia(project: Project) {
 }
 
 function mediaCount(project: Project) {
-  return project.sections.reduce((count, section) => count + (section.media?.length || 0), 0);
+  return project.sections.reduce((total, section) => total + (section.media?.length || 0), 0);
 }
 
-function GooglyEyes({ className = "" }: { className?: string }) {
-  const [point, setPoint] = useState({ x: 0, y: 0 });
+function GooglyEyes({ className = "", mode = "watch" }: { className?: string; mode?: GooglyEyesMode }) {
+  const [point, setPoint] = useState({ x: 0, y: 0, cursorX: -120, cursorY: -120 });
 
   useEffect(() => {
-    const move = (event: PointerEvent) => {
-      setPoint({
-        x: (event.clientX / window.innerWidth - 0.5) * 10,
-        y: (event.clientY / window.innerHeight - 0.5) * 10,
-      });
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+    const handlePointerMove = (event: PointerEvent) => {
+      const x = clamp((event.clientX / window.innerWidth - 0.5) * 14, -7, 7);
+      const y = clamp((event.clientY / window.innerHeight - 0.5) * 12, -6, 6);
+      setPoint({ x, y, cursorX: event.clientX, cursorY: event.clientY });
     };
-    window.addEventListener("pointermove", move);
-    return () => window.removeEventListener("pointermove", move);
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    return () => window.removeEventListener("pointermove", handlePointerMove);
   }, []);
+
+  const style =
+    mode === "cursor"
+      ? ({
+          "--cursor-x": `${point.cursorX}px`,
+          "--cursor-y": `${point.cursorY}px`,
+          "--eye-x": `${point.x}px`,
+          "--eye-y": `${point.y}px`,
+        } as CSSProperties)
+      : ({ "--eye-x": `${point.x}px`, "--eye-y": `${point.y}px` } as CSSProperties);
 
   return (
     <span
-      className={`creatie-eyes ${className}`}
-      style={{ "--eye-x": `${point.x}px`, "--eye-y": `${point.y}px` } as CSSProperties}
+      className={`creatie-eyes ${mode === "cursor" ? "creatie-eyes-cursor" : ""} ${className}`}
+      style={style}
       aria-hidden="true"
     >
       <i />
@@ -58,77 +66,79 @@ function GooglyEyes({ className = "" }: { className?: string }) {
   );
 }
 
-type DockIconType = "notes" | "photos" | "finder" | "mail";
+function StickyLabel({ label, className = "" }: { label: string; className?: string }) {
+  return (
+    <span className={`sticky-label ${className}`}>
+      <b>✓</b>
+      {label}
+      <i />
+    </span>
+  );
+}
 
-function DockIcon({ type }: { type: DockIconType }) {
+function DockIcon({ type }: { type: "notes" | "photos" | "finder" | "mail" }) {
   if (type === "notes") {
     return (
-      <svg className="dock-icon dock-icon-notes" viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="15" fill="#fffdf4" />
-        <path d="M0 15C0 6.7 6.7 0 15 0h34c8.3 0 15 6.7 15 15v8H0z" fill="#ffd331" />
-        <path d="M0 20h64v5H0z" fill="#f3b90b" opacity=".55" />
-        <path d="M13 35h38M13 43h38M13 51h30" stroke="#d7d2c3" strokeWidth="2.5" strokeLinecap="round" />
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#fff7d1" />
+        <path d="M0 14h64v12H0z" fill="#ffcb22" />
+        <path d="M12 34h40M12 44h34" stroke="#b8b0a2" strokeWidth="3" strokeLinecap="round" />
       </svg>
     );
   }
 
   if (type === "photos") {
-    const petals = ["#ff3b30", "#ff9500", "#ffcc00", "#34c759", "#5ac8fa", "#007aff", "#af52de", "#ff2d55"];
     return (
-      <svg className="dock-icon dock-icon-photos" viewBox="0 0 64 64" aria-hidden="true">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
         <rect width="64" height="64" rx="15" fill="#fff" />
-        {petals.map((color, index) => (
+        {["#ff5b60", "#ff9c38", "#ffd23f", "#39c66a", "#34b8ff", "#5d6cff", "#b45cff", "#ff68ba"].map((color, index) => (
           <ellipse
             key={color}
             cx="32"
-            cy="18"
+            cy="20"
             rx="8"
-            ry="16"
+            ry="15"
             fill={color}
-            opacity=".88"
+            opacity=".9"
             transform={`rotate(${index * 45} 32 32)`}
           />
         ))}
-        <circle cx="32" cy="32" r="7" fill="#fff" opacity=".9" />
+        <circle cx="32" cy="32" r="8" fill="#fff" />
       </svg>
     );
   }
 
   if (type === "finder") {
     return (
-      <svg className="dock-icon dock-icon-finder" viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="15" fill="#59b9ff" />
-        <path d="M31 0h18c8.3 0 15 6.7 15 15v34c0 8.3-6.7 15-15 15H31z" fill="#1687ee" />
-        <path d="M31 7c-8 7.6-11.2 16.4-11 28" stroke="#0b1f35" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        <circle cx="23" cy="27" r="2.3" fill="#0b1f35" />
-        <circle cx="43" cy="27" r="2.3" fill="#0b1f35" />
-        <path d="M23 44c6 4.2 12 4.2 18 0" stroke="#0b1f35" strokeWidth="2.7" fill="none" strokeLinecap="round" />
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#3ab8ff" />
+        <path
+          d="M32 0v64M18 24c3 3 7 3 10 0M42 24c3 3 7 3 10 0M18 43c8 7 20 7 28 0"
+          stroke="#10141a"
+          strokeWidth="3"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path d="M32 0v64" stroke="#0c6ed0" strokeWidth="3" />
       </svg>
     );
   }
 
   return (
-    <svg className="dock-icon dock-icon-mail" viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <linearGradient id="mailDockGradient" x1="0" x2="1" y1="0" y2="1">
-          <stop stopColor="#8ee8ff" />
-          <stop offset="1" stopColor="#1288ff" />
-        </linearGradient>
-      </defs>
-      <rect width="64" height="64" rx="15" fill="url(#mailDockGradient)" />
-      <rect x="10" y="16" width="44" height="32" rx="6" fill="#f7fbff" />
-      <path d="M12 20l20 16 20-16" stroke="#70aeea" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M13 45l15-14M51 45L36 31" stroke="#b8dcff" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <rect width="64" height="64" rx="15" fill="#7ed1ff" />
+      <rect x="10" y="16" width="44" height="32" rx="5" fill="#f4fbff" />
+      <path d="m12 20 20 16 20-16M12 46l15-14M52 46 37 32" stroke="#5c8eb0" strokeWidth="3" fill="none" strokeLinecap="round" />
     </svg>
   );
 }
 
 function MacDock({ email }: { email: string }) {
   const items = [
-    { label: "About", icon: "notes" as const, href: "#about" },
-    { label: "Projects", icon: "photos" as const, href: "#projects" },
-    { label: "Services", icon: "finder" as const, href: "#services" },
-    { label: "Mail", icon: "mail" as const, href: `mailto:${email}` },
+    { label: "About", href: "#about", icon: "notes" as const },
+    { label: "Work", href: "#projects", icon: "photos" as const },
+    { label: "Home", href: "#hero", icon: "finder" as const },
+    { label: "Mail", href: `mailto:${email}`, icon: "mail" as const },
   ];
 
   return (
@@ -143,109 +153,79 @@ function MacDock({ email }: { email: string }) {
   );
 }
 
-function StickyLabel({ label, tone = "blue" }: { label: string; tone?: "blue" | "pink" | "lime" }) {
-  return (
-    <span className={`sticky-label sticky-label-${tone}`}>
-      <b>✓</b>
-      {label}
-      <em />
-    </span>
-  );
-}
-
-function MediaPreview({ media, alt }: { media?: UploadedMedia; alt: string }) {
+function MediaPreview({ media, alt, className = "" }: { media?: UploadedMedia; alt: string; className?: string }) {
   const resolveAssetPath = useAssetPath();
-  const src = resolveAssetPath(media?.thumbnailUrl || media?.url || "");
+  const mediaUrl = media?.thumbnailUrl || media?.url || "";
 
-  if (!src) {
+  if (!mediaUrl) {
     return (
-      <div className="project-card-placeholder">
+      <div className={`project-card-placeholder ${className}`}>
         <span>{alt}</span>
       </div>
     );
   }
 
   if (media?.mimeType?.startsWith("video/")) {
-    return <video src={src} muted playsInline preload="metadata" />;
+    return <video className={className} src={resolveAssetPath(mediaUrl)} muted playsInline preload="metadata" />;
   }
 
-  return <ResilientImage src={src} alt={alt} />;
+  if (media?.mimeType === "application/pdf" || mediaUrl.toLowerCase().endsWith(".pdf")) {
+    return (
+      <div className={`project-card-placeholder ${className}`}>
+        <span>PDF</span>
+      </div>
+    );
+  }
+
+  return <ResilientImage className={className} src={mediaUrl} fallbackSrc={media?.url} alt={alt} loading="lazy" />;
 }
 
-function BrowserProjectCard({ project, index, lang }: { project: Project; index: number; lang: "zh" | "en" }) {
+function BrowserProjectCard({ project, index, lang }: { project: Project; index: number; lang: Lang }) {
   const title = textOf(project.title, lang, `Project ${index + 1}`);
-  const role = textOf(project.role, lang, "UI/UX");
-  const cover = firstMedia(project);
+  const role = textOf(project.role, lang, "UI Design");
+  const media = firstMedia(project);
 
   return (
     <Link href={`/projects/${project.slug}`} className={`browser-project-card card-tilt-${(index % 5) + 1}`}>
-      <div className="browser-dots" aria-hidden="true">
-        <span />
-        <span />
-        <span />
+      <div className="browser-dots">
+        <i />
+        <i />
+        <i />
       </div>
       <div className="browser-project-media">
-        <MediaPreview media={cover} alt={title} />
+        <MediaPreview media={media} alt={title} />
       </div>
-      <div className="browser-project-footer">
+      <footer>
         <strong>{title}</strong>
-        <span>
-          {role} · {project.year || "2026"}
-        </span>
-      </div>
+        <span>{role}</span>
+        <span>{project.year || "2026"}</span>
+      </footer>
     </Link>
   );
 }
 
-function FolderCard({ project, index, lang }: { project: Project; index: number; lang: "zh" | "en" }) {
-  const title = textOf(project.title, lang, `Project ${index + 1}`);
-  const cover = firstMedia(project);
-  const resolveAssetPath = useAssetPath();
-  const src = resolveAssetPath(cover?.thumbnailUrl || cover?.url || "");
-  const count = mediaCount(project);
-  const color = folderColors[index % folderColors.length];
+function ServiceRow({ title, index }: { title: string; index: number }) {
+  const colors = ["#ffe6e6", "#dfeeff", "#fff7bd", "#dff7e6", "#eee8ff"];
+  const icons = ["↗", "✦", "▣", "→", "◌"];
 
   return (
-    <Link href={`/projects/${project.slug}`} className="creatie-folder-card">
-      <div className="folder-stack" style={{ "--folder-color": color } as CSSProperties}>
-        <span className="folder-back" />
-        <span className="folder-pocket" />
-        <div className="folder-sheets" aria-hidden="true">
-          <span className="folder-sheet sheet-one">
-            {src ? <ResilientImage src={src} alt="" /> : <b>{title}</b>}
-          </span>
-          <span className="folder-sheet sheet-two">
-            {src ? <ResilientImage src={src} alt="" /> : <b>{title}</b>}
-          </span>
-          <span className="folder-sheet sheet-three">
-            <b>{title}</b>
-          </span>
-        </div>
-      </div>
-      <small>{String(index + 1).padStart(2, "0")}</small>
-      <h3>{title}</h3>
-      <p>{count || 1} 个素材</p>
-    </Link>
-  );
-}
-
-function ServiceRow({ label, index }: { label: string; index: number }) {
-  const colors = ["pink", "blue", "yellow", "green", "violet"];
-  return (
-    <div className={`service-row service-row-${colors[index % colors.length]}`}>
-      <span>{label}</span>
-      <b>{["▣", "✦", "●", "→", "◇"][index % 5]}</b>
+    <div className="service-row" style={{ "--service-color": colors[index % colors.length] } as CSSProperties}>
+      <strong>{title}</strong>
+      <span>{icons[index % icons.length]}</span>
     </div>
   );
 }
 
-function ReviewCard({ quote, name, role, rotate }: { quote: string; name: string; role: string; rotate: number }) {
+function ReviewCard({ quote, name, role, index }: { quote: string; name: string; role: string; index: number }) {
   return (
-    <article className="review-card" style={{ "--rotate": `${rotate}deg` } as CSSProperties}>
-      <span className="pin-dot" />
+    <article className={`review-card review-${["one", "two", "three"][index] || "one"}`}>
+      <i />
       <header>
-        <b>{name}</b>
-        <small>{role}</small>
+        <span>{name.slice(0, 1)}</span>
+        <div>
+          <strong>{name}</strong>
+          <small>{role}</small>
+        </div>
       </header>
       <h3>“{quote}”</h3>
       <p>★★★★★</p>
@@ -255,197 +235,204 @@ function ReviewCard({ quote, name, role, rotate }: { quote: string; name: string
 
 export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
   const { language, setLanguage } = useLanguage();
-  const lang = language;
+  const lang = language as Lang;
   const orderedProjects = useMemo(() => [...projects].sort((a, b) => a.order - b.order), [projects]);
-  const featured = orderedProjects[0];
-  const visibleSections = useMemo(
-    () => [...(site.sections || [])].filter((section) => section.visible).sort((a, b) => a.order - b.order),
-    [site.sections],
-  );
-  const sectionIsVisible = (id: string) => !visibleSections.length || visibleSections.some((section) => section.id === id);
+  const featuredProjects = orderedProjects.slice(0, 5);
+  const totalMedia = orderedProjects.reduce((total, project) => total + mediaCount(project), 0);
 
-  const name = cleanText(site.name, "Penn.W");
-  const role = textOf(site.shortRole, lang, "UI/UX Designer");
-  const intro = textOf(site.intro, lang, "I turn complex systems into clear, human digital experiences.");
-  const location = textOf(site.location, lang, "深圳 · 面向世界");
-  const featuredTitle = featured ? textOf(featured.title, lang, "Portfolio") : "Portfolio";
-  const featuredMedia = featured ? firstMedia(featured) : undefined;
+  const intro = textOf(
+    site.intro,
+    lang,
+    lang === "zh" ? "我把复杂系统变成清晰、有人情味的数字体验。" : "I turn complex systems into clear, human digital experiences.",
+  );
 
   return (
     <main className="creatie-page-v3">
-      <GooglyEyes className="site-googly-eyes" />
+      <GooglyEyes className="site-googly-eyes" mode="cursor" />
       <MacDock email={site.email} />
-      {sectionIsVisible("hero") && (
-        <section className="creatie-hero-v3" id="hero" style={{ "--hero-bg": `url(${meadowImage})` } as CSSProperties}>
-          <div className="hero-overlay" />
-          <header className="creatie-topbar">
-            <strong>{name}</strong>
-            <nav>
-              <a href="#projects">{lang === "zh" ? "作品" : "Work"}</a>
-              <a href="#about">{lang === "zh" ? "关于" : "About"}</a>
-              <a href="#contact">{lang === "zh" ? "联系" : "Contact"}</a>
-              <button type="button" onClick={() => setLanguage(lang === "zh" ? "en" : "zh")}>
-                {lang === "zh" ? "EN" : "中文"}
-              </button>
-            </nav>
-          </header>
 
-          <div className="availability-pill">
-            <span className="avatar-dot">{name.slice(0, 1).toUpperCase()}</span>
-            <div>
-              <small>● {lang === "zh" ? "可接项目" : "Available for work"}</small>
-              <b>
-                {name} · {role}
-              </b>
-            </div>
+      <header className="creatie-topbar">
+        <Link href="#hero" className="brand-mark">
+          {cleanText(site.name, "Penn.W")}
+        </Link>
+        <nav>
+          <Link href="#about">{lang === "zh" ? "关于" : "About"}</Link>
+          <Link href="#projects">{lang === "zh" ? "作品" : "Projects"}</Link>
+          <Link href="#contact">{lang === "zh" ? "联系" : "Contact"}</Link>
+          <button type="button" onClick={() => setLanguage(lang === "zh" ? "en" : "zh")}>
+            {lang === "zh" ? "EN" : "中文"}
+          </button>
+        </nav>
+      </header>
+
+      <section className="creatie-hero-v3" id="hero" style={{ "--hero-bg": `url(${meadowImage})` } as CSSProperties}>
+        <div className="availability-pill">
+          <span className="avatar-dot">{cleanText(site.name, "P").slice(0, 1)}</span>
+          <div>
+            <small>{lang === "zh" ? "可合作" : "Available for work"}</small>
+            <strong>{textOf(site.shortRole, lang, "UI/UX Designer")}</strong>
           </div>
+        </div>
+        <GooglyEyes className="hero-eyes" />
+        <div className="hero-title-card">
+          <StickyLabel label="UI/UX Design" className="label-ui" />
+          <StickyLabel label="Illustration" className="label-ill" />
+          <StickyLabel label="3D Design" className="label-3d" />
+          <h1>{lang === "zh" ? <>设计让<br />人多看一眼</> : <>Design that<br />makes people<br />look twice</>}</h1>
+        </div>
+        <p className="hero-note">— {lang === "zh" ? "不只是视觉，我让数字体验有生命力。" : "Not just visuals, I make digital things look alive."}</p>
+        <Link href={featuredProjects[0] ? `/projects/${featuredProjects[0].slug}` : "#projects"} className="hero-case">
+          <span className="case-thumb">
+            <MediaPreview media={featuredProjects[0] ? firstMedia(featuredProjects[0]) : undefined} alt="Featured project" />
+          </span>
+          <span>
+            <small>{featuredProjects[0] ? textOf(featuredProjects[0].role, lang, "Case Study") : "Case Study"}</small>
+            <strong>{featuredProjects[0] ? textOf(featuredProjects[0].title, lang, "Featured") : "Featured"}</strong>
+            <em>{lang === "zh" ? "查看案例" : "View case study"}</em>
+          </span>
+        </Link>
+      </section>
 
-          <GooglyEyes className="hero-eyes" />
-          <StickyLabel label="UI/UX Design" tone="lime" />
-          <StickyLabel label="Illustration" tone="pink" />
-          <StickyLabel label="3D Design" tone="blue" />
-
-          <div className="hero-center-copy">
-            <h1>
-              DESIGN THAT
-              <br />
-              MAKES PEOPLE
-              <br />
-              LOOK TWICE
-            </h1>
-          </div>
-
-          <p className="hero-note">— {intro}</p>
-          <p className="hero-location">{location}</p>
-
-          {featured && (
-            <Link href={`/projects/${featured.slug}`} className="hero-mini-card">
-              <div className="mini-thumb">
-                <MediaPreview media={featuredMedia} alt={featuredTitle} />
-              </div>
-              <div>
-                <small>{textOf(featured.category, lang, "Case Study")}</small>
-                <b>{featuredTitle}</b>
-                <span>{lang === "zh" ? "查看案例" : "View case study"} →</span>
-              </div>
-            </Link>
-          )}
-
-        </section>
-      )}
-
-      {sectionIsVisible("about") && (
-        <section className="creatie-about-v3 grid-paper" id="about">
-          <GooglyEyes />
-          <div className="about-container-v3">
-            <p className="section-label">02 — {textOf(site.aboutLabel, lang, lang === "zh" ? "关于我" : "About")}</p>
-            <div className="about-profile-row">
-              <button className="about-avatar-button" type="button" aria-label={lang === "zh" ? "查看头像" : "View avatar"}>
-                <MediaPreview media={site.aboutPhoto} alt={name} />
-              </button>
-              <div>
-                <h2>{name}</h2>
-                <p>{role}</p>
-                <div className="about-contact-line">
-                  {site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}
-                  <a href={`mailto:${site.email}`}>{site.email}</a>
-                </div>
-              </div>
-            </div>
-            <div className="about-lead">
-              <h3>{textOf(site.aboutHeadline, lang, "I make designs people remember")}</h3>
-              <p>{textOf(site.bio, lang, intro)}</p>
-            </div>
-            <div className="about-experience-list">
-              {site.experiences.slice(0, 4).map((item, index) => (
-                <article key={`${item.company.zh}-${index}`}>
-                  <small>{String(index + 1).padStart(2, "0")}</small>
-                  <h4>{textOf(item.company, lang, "Company")}</h4>
-                  <b>
-                    {textOf(item.position, lang, "Designer")} · {textOf(item.time, lang, "Now")}
-                  </b>
-                  <p>{textOf(item.description, lang, "")}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {sectionIsVisible("work") && (
-        <section className="creatie-projects-v3" id="projects" style={{ "--project-bg": `url(${meadowImage})` } as CSSProperties}>
-          <GooglyEyes />
-          <div className="section-heading-sticker">
-            <StickyLabel label="Projects" tone="blue" />
-            <h2>{lang === "zh" ? "会讲故事的项目" : "Projects that tell stories"}</h2>
-          </div>
-          <div className="floating-browser-cards">
-            {orderedProjects.slice(0, 5).map((project, index) => (
-              <BrowserProjectCard key={project.slug} project={project} index={index} lang={lang} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {sectionIsVisible("work") && (
-        <section className="creatie-folders-v3" id="folders">
-          <div className="folders-heading">
-            <p>04 — {textOf(site.workLabel, lang, lang === "zh" ? "精选作品" : "Selected work")}</p>
-            <span>{textOf(site.workIntro, lang, "横跨 AI、移动产品、设计系统与数据体验。")}</span>
-          </div>
-          <div className="folder-gallery-v3">
-            {orderedProjects.map((project, index) => (
-              <FolderCard key={project.slug} project={project} index={index} lang={lang} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {sectionIsVisible("manifesto") && (
-        <section className="creatie-services-v3 grid-paper" id="services">
-          <StickyLabel label="Services" tone="blue" />
-          <h2>{lang === "zh" ? "我能帮你做什么" : "Where I can help you"}</h2>
-          <div className="service-list">
-            {[
-              lang === "zh" ? "网站与落地页设计" : "Website Design",
-              "UI/UX Design",
-              lang === "zh" ? "品牌视觉与海报" : "Brand Identity",
-              lang === "zh" ? "AI 产品体验探索" : "AI Exploration",
-              lang === "zh" ? "设计系统搭建" : "Design Systems",
-            ].map((label, index) => (
-              <ServiceRow key={label} label={label} index={index} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="creatie-reviews-v3 grid-paper">
-        <h2>{lang === "zh" ? "像素背后的反馈" : "Reviews behind the pixels"}</h2>
-        <div className="review-cloud">
-          <ReviewCard quote="The site finally feels like our brand." name="Client A" role="Founder" rotate={-4} />
-          <ReviewCard quote="The flow became much easier to use." name="Client B" role="Product Lead" rotate={3} />
-          <ReviewCard quote="Sharp design without overcomplicating it." name="Client C" role="Director" rotate={-2} />
+      <section className="creatie-about-v3 grid-paper" id="about">
+        <StickyLabel label="About" className="section-label" />
+        <GooglyEyes className="about-eyes" />
+        <h2>{lang === "zh" ? "我让设计被记住" : "I make designs people remember"}</h2>
+        <p className="about-lead">{intro}</p>
+        <a className="pin-button" href={`mailto:${site.email}`}>
+          {lang === "zh" ? "开始一个项目" : "Start a project"}
+        </a>
+        <div className="about-metrics">
+          {(site.experiences || []).slice(0, 4).map((item, index) => (
+            <article key={`${textOf(item.company, lang, "Company")}-${index}`} className={`metric-card metric-${index + 1}`}>
+              <b>{String(index + 1).padStart(2, "0")}</b>
+              <strong>{textOf(item.company, lang, "Company")}</strong>
+              <span>{textOf(item.position, lang, "Designer")} · {textOf(item.time, lang, "Now")}</span>
+            </article>
+          ))}
         </div>
       </section>
 
-      {sectionIsVisible("contact") && (
-        <section className="creatie-contact-v3" id="contact" style={{ "--contact-bg": `url(${meadowImage})` } as CSSProperties}>
-          <div className="social-bubbles">
-            {site.social.map((item) => (
-              <a key={item.label} href={item.href} target="_blank" rel="noreferrer">
-                {item.label.slice(0, 1).toUpperCase()}
-              </a>
-            ))}
-            <a href={`mailto:${site.email}`}>@</a>
-          </div>
-          <GooglyEyes />
-          <p className="contact-idea">— Have an idea? Let’s turn it into a sharp digital experience.</p>
-          <h2 className="contact-big">LET’S BUILD SOMETHING MEMORABLE</h2>
-          <a className="chat-button" href={`mailto:${site.email}`}>
-            {lang === "zh" ? "聊聊项目" : "Let’s chat"}
-          </a>
-        </section>
-      )}
+      <section className="creatie-projects-v3" id="projects" style={{ "--project-bg": `url(${meadowImage})` } as CSSProperties}>
+        <GooglyEyes className="projects-eyes" />
+        <div className="section-heading-sticker">
+          <StickyLabel label="Projects" className="section-label" />
+          <h2>{lang === "zh" ? "会讲故事的项目" : "Projects that tell stories"}</h2>
+        </div>
+        <div className="floating-browser-cards">
+          {featuredProjects.map((project, index) => (
+            <BrowserProjectCard key={project.slug} project={project} index={index} lang={lang} />
+          ))}
+        </div>
+      </section>
+
+      <section className="creatie-folders-v3">
+        <div className="folders-heading">
+          <span>04 — {lang === "zh" ? "精选作品" : "Selected work"}</span>
+          <span>
+            {totalMedia} {lang === "zh" ? "个素材" : "assets"}
+          </span>
+        </div>
+        <div className="folder-gallery-v3">
+          {featuredProjects.map((project, index) => {
+            const media = project.sections.flatMap((section) => section.media || []).slice(0, 3);
+            const colors = ["#b8ff58", "#ff7269", "#8580ff", "#f6cf3d", "#58c9e8"];
+            return (
+              <Link
+                key={project.slug}
+                href={`/projects/${project.slug}`}
+                className="creatie-folder-card"
+                style={{ "--folder-color": colors[index % colors.length] } as CSSProperties}
+              >
+                <div className="folder-stack">
+                  <span className="folder-back" />
+                  <span className="folder-sheets">
+                    {[0, 1, 2].map((slot) => (
+                      <span key={slot} className={`folder-sheet sheet-${slot + 1}`}>
+                        <MediaPreview media={media[slot]} alt={textOf(project.title, lang, "Project")} />
+                      </span>
+                    ))}
+                  </span>
+                  <span className="folder-pocket" />
+                </div>
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                <h3>{textOf(project.title, lang, `Project ${index + 1}`)}</h3>
+                <p>
+                  {mediaCount(project)} {lang === "zh" ? "个素材" : "assets"}
+                </p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="creatie-services-v3 grid-paper">
+        <StickyLabel label="Services" className="section-label" />
+        <h2>{lang === "zh" ? "我能帮你做什么" : "Where I can help you"}</h2>
+        <div className="service-list">
+          {[
+            lang === "zh" ? "网站与落地页设计" : "Website Design",
+            "UI/UX Design",
+            lang === "zh" ? "品牌视觉系统" : "Brand Identity",
+            lang === "zh" ? "AI 视觉探索" : "AI Exploration",
+            lang === "zh" ? "产品体验优化" : "Product Experience",
+          ].map((item, index) => (
+            <ServiceRow key={item} title={item} index={index} />
+          ))}
+        </div>
+      </section>
+
+      <section className="creatie-reviews-v3 grid-paper">
+        <StickyLabel label="Proof" className="section-label" />
+        <h2>{lang === "zh" ? "把想法变成可感知的体验" : "Design that turns ideas into experiences"}</h2>
+        <div className="review-cloud">
+          <ReviewCard
+            index={0}
+            name="Product Team"
+            role="Workflow"
+            quote={lang === "zh" ? "信息结构终于清晰了，团队协作更顺了。" : "The information structure finally feels clear."}
+          />
+          <ReviewCard
+            index={1}
+            name="AI Project"
+            role="Prototype"
+            quote={lang === "zh" ? "复杂流程被拆成了可复用的系统。" : "Complex workflows became reusable systems."}
+          />
+          <ReviewCard
+            index={2}
+            name="Visual System"
+            role="Launch"
+            quote={lang === "zh" ? "视觉更完整，交付也更稳定。" : "The visual system feels sharper and easier to ship."}
+          />
+        </div>
+      </section>
+
+      <section className="creatie-contact-v3" id="contact" style={{ "--contact-bg": `url(${meadowImage})` } as CSSProperties}>
+        <GooglyEyes className="contact-eyes" />
+        <div className="social-bubbles">
+          {site.social?.map((item) => (
+            <a key={item.label} href={item.href} target="_blank" rel="noreferrer">
+              {item.label.slice(0, 1).toUpperCase()}
+            </a>
+          ))}
+          <a href={`mailto:${site.email}`}>✉</a>
+        </div>
+        <p className="contact-idea">— {lang === "zh" ? "有想法？我们把它变成清晰的数字体验。" : "Have an idea? Let’s turn it into a sharp digital experience."}</p>
+        <div className="contact-big">
+          <StickyLabel label="UI/UX Design" />
+          <h2>{lang === "zh" ? <>一起做点<br />有意思的东西</> : <>Let’s build<br />something<br />memorable</>}</h2>
+        </div>
+        <a className="chat-button" href={`mailto:${site.email}`}>
+          {lang === "zh" ? "聊一聊" : "Let’s chat"}
+        </a>
+        <footer>
+          <strong>{cleanText(site.name, "Penn.W")}</strong>
+          <nav>
+            <Link href="#about">{lang === "zh" ? "关于" : "About"}</Link>
+            <Link href="#projects">{lang === "zh" ? "作品" : "Projects"}</Link>
+            <Link href="#contact">{lang === "zh" ? "联系" : "Contact"}</Link>
+          </nav>
+        </footer>
+      </section>
     </main>
   );
 }
