@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import type { Project, SiteContent, UploadedMedia } from "@/content/types";
 import { looksGarbled, useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
@@ -10,7 +10,6 @@ import { ResilientImage } from "./resilient-image";
 const meadowImage = "/images/creatie-bg.avif";
 
 type Lang = "zh" | "en";
-type GooglyEyesMode = "watch" | "cursor";
 
 function cleanText(value?: string, fallback = "") {
   if (!value || looksGarbled(value)) return fallback;
@@ -30,38 +29,65 @@ function mediaCount(project: Project) {
   return project.sections.reduce((total, section) => total + (section.media?.length || 0), 0);
 }
 
-function GooglyEyes({ className = "", mode = "watch" }: { className?: string; mode?: GooglyEyesMode }) {
-  const [point, setPoint] = useState({ x: 0, y: 0, cursorX: -120, cursorY: -120 });
+function CursorGooglyEyes() {
+  const [point, setPoint] = useState({ x: -120, y: -120, dx: 0, dy: 0, visible: false });
+  const lastPoint = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
+    const finePointer = window.matchMedia("(pointer: fine)");
+    if (!finePointer.matches) return;
+
     const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+    let frame = 0;
+
     const handlePointerMove = (event: PointerEvent) => {
-      const x = clamp((event.clientX / window.innerWidth - 0.5) * 14, -7, 7);
-      const y = clamp((event.clientY / window.innerHeight - 0.5) * 12, -6, 6);
-      setPoint({ x, y, cursorX: event.clientX, cursorY: event.clientY });
+      if (event.pointerType && event.pointerType !== "mouse") return;
+
+      const previous = lastPoint.current ?? { x: event.clientX, y: event.clientY };
+      const dx = clamp((event.clientX - previous.x) / 18, -1, 1);
+      const dy = clamp((event.clientY - previous.y) / 18, -1, 1);
+      lastPoint.current = { x: event.clientX, y: event.clientY };
+
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        setPoint({ x: event.clientX, y: event.clientY, dx, dy, visible: true });
+      });
     };
+
+    const hide = () => {
+      setPoint((current) => ({ ...current, visible: false }));
+    };
+
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", handlePointerMove);
+    document.addEventListener("mouseleave", hide);
+    window.addEventListener("blur", hide);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("mouseleave", hide);
+      window.removeEventListener("blur", hide);
+    };
   }, []);
 
-  const style =
-    mode === "cursor"
-      ? ({
-          "--cursor-x": `${point.cursorX}px`,
-          "--cursor-y": `${point.cursorY}px`,
-          "--eye-x": `${point.x}px`,
-          "--eye-y": `${point.y}px`,
-        } as CSSProperties)
-      : ({ "--eye-x": `${point.x}px`, "--eye-y": `${point.y}px` } as CSSProperties);
+  const pupilStyle = {
+    transform: `translate3d(${point.dx * 7}px, ${point.dy * 6}px, 0)`,
+  } as CSSProperties;
 
   return (
     <span
-      className={`creatie-eyes ${mode === "cursor" ? "creatie-eyes-cursor" : ""} ${className}`}
-      style={style}
+      className={`cursor-googly ${point.visible ? "is-visible" : ""}`}
+      style={{
+        transform: `translate3d(${point.x - 31}px, ${point.y - 20}px, 0) rotate(${point.dx * 5}deg)`,
+      }}
       aria-hidden="true"
     >
-      <i />
-      <i />
+      <i>
+        <b style={pupilStyle} />
+      </i>
+      <i>
+        <b style={pupilStyle} />
+      </i>
     </span>
   );
 }
@@ -248,7 +274,7 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
 
   return (
     <main className="creatie-page-v3">
-      <GooglyEyes className="site-googly-eyes" mode="cursor" />
+      <CursorGooglyEyes />
       <MacDock email={site.email} />
 
       <header className="creatie-topbar">
@@ -273,7 +299,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
             <strong>{textOf(site.shortRole, lang, "UI/UX Designer")}</strong>
           </div>
         </div>
-        <GooglyEyes className="hero-eyes" />
         <div className="hero-title-card">
           <StickyLabel label="UI/UX Design" className="label-ui" />
           <StickyLabel label="Illustration" className="label-ill" />
@@ -295,7 +320,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
 
       <section className="creatie-about-v3 grid-paper" id="about">
         <StickyLabel label="About" className="section-label" />
-        <GooglyEyes className="about-eyes" />
         <h2>{lang === "zh" ? "我让设计被记住" : "I make designs people remember"}</h2>
         <p className="about-lead">{intro}</p>
         <a className="pin-button" href={`mailto:${site.email}`}>
@@ -313,7 +337,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
       </section>
 
       <section className="creatie-projects-v3" id="projects" style={{ "--project-bg": `url(${meadowImage})` } as CSSProperties}>
-        <GooglyEyes className="projects-eyes" />
         <div className="section-heading-sticker">
           <StickyLabel label="Projects" className="section-label" />
           <h2>{lang === "zh" ? "会讲故事的项目" : "Projects that tell stories"}</h2>
@@ -407,7 +430,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
       </section>
 
       <section className="creatie-contact-v3" id="contact" style={{ "--contact-bg": `url(${meadowImage})` } as CSSProperties}>
-        <GooglyEyes className="contact-eyes" />
         <div className="social-bubbles">
           {site.social?.map((item) => (
             <a key={item.label} href={item.href} target="_blank" rel="noreferrer">

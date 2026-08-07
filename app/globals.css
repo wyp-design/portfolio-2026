@@ -3879,6 +3879,77 @@ button {
   }
 }
 
+/* Final cursor-googly override: real mouse-following eyes */
+@media (pointer: fine) {
+  .creatie-page-v3,
+  .creatie-page-v3 a,
+  .creatie-page-v3 button,
+  .creatie-page-v3 [role="button"] {
+    cursor: none !important;
+  }
+}
+
+.cursor-googly {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2147483000;
+  display: none;
+  gap: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-999px, -999px, 0);
+  transition: opacity 120ms ease;
+  will-change: transform;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.18));
+}
+
+.cursor-googly.is-visible {
+  opacity: 1;
+}
+
+.cursor-googly i {
+  width: 27px;
+  height: 35px;
+  border-radius: 999px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.cursor-googly b {
+  width: 11px;
+  height: 18px;
+  border-radius: 999px;
+  background: #050505;
+  display: block;
+  transition: transform 60ms linear;
+  will-change: transform;
+}
+
+@media (pointer: fine) {
+  .cursor-googly {
+    display: inline-flex;
+  }
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-googly {
+    display: none !important;
+  }
+
+  .creatie-page-v3,
+  .creatie-page-v3 * {
+    cursor: auto !important;
+  }
+}
+
+/* User requested removing the selected-work folder block from homepage */
+.creatie-folders-v3 {
+  display: none !important;
+}
+
 /* Creatie-inspired portfolio rebuild */
 body.is-modal-open {
   overflow: hidden;
