@@ -7983,6 +7983,14 @@ body.is-modal-open {
   transition: transform 120ms ease-out;
 }
 
+.site-googly-eyes {
+  position: fixed;
+  left: clamp(118px, 34vw, 720px);
+  top: clamp(96px, 23vh, 260px);
+  z-index: 9985;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.16));
+}
+
 .hero-eyes {
   position: absolute;
   left: 42%;
@@ -8036,18 +8044,18 @@ body.is-modal-open {
 .sticky-label-blue b { background: #7967ff; }
 
 .mac-dock {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: 26px;
-  z-index: 20;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 9990;
   display: flex;
   gap: 10px;
   padding: 9px;
-  border: 1px solid rgba(255,255,255,.35);
+  border: 1px solid rgba(255,255,255,.5);
   border-radius: 20px;
-  background: rgba(255,255,255,.45);
-  box-shadow: 0 12px 38px rgba(0,0,0,.2);
-  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.24));
+  box-shadow: 0 14px 42px rgba(0,0,0,.26), inset 0 1px rgba(255,255,255,.58);
+  backdrop-filter: blur(22px) saturate(1.25);
   transform: translateX(-50%);
 }
 
@@ -8058,11 +8066,11 @@ body.is-modal-open {
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  color: #152038;
   text-decoration: none;
-  background: linear-gradient(180deg, #fff, #dfe9ff);
+  background: transparent;
   box-shadow: inset 0 1px rgba(255,255,255,.8), 0 8px 20px rgba(0,0,0,.12);
   transition: transform 180ms ease, box-shadow 180ms ease;
+  overflow: visible;
 }
 
 .mac-dock a:hover {
@@ -8070,7 +8078,14 @@ body.is-modal-open {
   box-shadow: inset 0 1px rgba(255,255,255,.9), 0 16px 34px rgba(0,0,0,.22);
 }
 
-.mac-dock a span { font-size: 20px; font-weight: 950; }
+.dock-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
 .mac-dock a em {
   position: absolute;
   bottom: calc(100% + 8px);

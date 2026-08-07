@@ -58,19 +58,84 @@ function GooglyEyes({ className = "" }: { className?: string }) {
   );
 }
 
+type DockIconType = "notes" | "photos" | "finder" | "mail";
+
+function DockIcon({ type }: { type: DockIconType }) {
+  if (type === "notes") {
+    return (
+      <svg className="dock-icon dock-icon-notes" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#fffdf4" />
+        <path d="M0 15C0 6.7 6.7 0 15 0h34c8.3 0 15 6.7 15 15v8H0z" fill="#ffd331" />
+        <path d="M0 20h64v5H0z" fill="#f3b90b" opacity=".55" />
+        <path d="M13 35h38M13 43h38M13 51h30" stroke="#d7d2c3" strokeWidth="2.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (type === "photos") {
+    const petals = ["#ff3b30", "#ff9500", "#ffcc00", "#34c759", "#5ac8fa", "#007aff", "#af52de", "#ff2d55"];
+    return (
+      <svg className="dock-icon dock-icon-photos" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#fff" />
+        {petals.map((color, index) => (
+          <ellipse
+            key={color}
+            cx="32"
+            cy="18"
+            rx="8"
+            ry="16"
+            fill={color}
+            opacity=".88"
+            transform={`rotate(${index * 45} 32 32)`}
+          />
+        ))}
+        <circle cx="32" cy="32" r="7" fill="#fff" opacity=".9" />
+      </svg>
+    );
+  }
+
+  if (type === "finder") {
+    return (
+      <svg className="dock-icon dock-icon-finder" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#59b9ff" />
+        <path d="M31 0h18c8.3 0 15 6.7 15 15v34c0 8.3-6.7 15-15 15H31z" fill="#1687ee" />
+        <path d="M31 7c-8 7.6-11.2 16.4-11 28" stroke="#0b1f35" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+        <circle cx="23" cy="27" r="2.3" fill="#0b1f35" />
+        <circle cx="43" cy="27" r="2.3" fill="#0b1f35" />
+        <path d="M23 44c6 4.2 12 4.2 18 0" stroke="#0b1f35" strokeWidth="2.7" fill="none" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="dock-icon dock-icon-mail" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="mailDockGradient" x1="0" x2="1" y1="0" y2="1">
+          <stop stopColor="#8ee8ff" />
+          <stop offset="1" stopColor="#1288ff" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="15" fill="url(#mailDockGradient)" />
+      <rect x="10" y="16" width="44" height="32" rx="6" fill="#f7fbff" />
+      <path d="M12 20l20 16 20-16" stroke="#70aeea" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13 45l15-14M51 45L36 31" stroke="#b8dcff" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function MacDock({ email }: { email: string }) {
   const items = [
-    { label: "About", icon: "A", href: "#about" },
-    { label: "Projects", icon: "P", href: "#projects" },
-    { label: "Services", icon: "S", href: "#services" },
-    { label: "Mail", icon: "M", href: `mailto:${email}` },
+    { label: "About", icon: "notes" as const, href: "#about" },
+    { label: "Projects", icon: "photos" as const, href: "#projects" },
+    { label: "Services", icon: "finder" as const, href: "#services" },
+    { label: "Mail", icon: "mail" as const, href: `mailto:${email}` },
   ];
 
   return (
     <nav className="mac-dock" aria-label="Quick navigation">
       {items.map((item) => (
         <a key={item.label} href={item.href} aria-label={item.label}>
-          <span>{item.icon}</span>
+          <DockIcon type={item.icon} />
           <em>{item.label}</em>
         </a>
       ))}
@@ -208,6 +273,8 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
 
   return (
     <main className="creatie-page-v3">
+      <GooglyEyes className="site-googly-eyes" />
+      <MacDock email={site.email} />
       {sectionIsVisible("hero") && (
         <section className="creatie-hero-v3" id="hero" style={{ "--hero-bg": `url(${meadowImage})` } as CSSProperties}>
           <div className="hero-overlay" />
@@ -264,7 +331,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
             </Link>
           )}
 
-          <MacDock email={site.email} />
         </section>
       )}
 
@@ -360,7 +426,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
           <ReviewCard quote="The flow became much easier to use." name="Client B" role="Product Lead" rotate={3} />
           <ReviewCard quote="Sharp design without overcomplicating it." name="Client C" role="Director" rotate={-2} />
         </div>
-        <MacDock email={site.email} />
       </section>
 
       {sectionIsVisible("contact") && (
@@ -379,7 +444,6 @@ export function HomePage({ projects, site }: { projects: Project[]; site: SiteCo
           <a className="chat-button" href={`mailto:${site.email}`}>
             {lang === "zh" ? "聊聊项目" : "Let’s chat"}
           </a>
-          <MacDock email={site.email} />
         </section>
       )}
     </main>
