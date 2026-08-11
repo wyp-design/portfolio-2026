@@ -9,9 +9,21 @@ const GITHUB_CDN_ORIGIN = "https://cdn.jsdelivr.net/gh/wyp-design/portfolio-2026
 type ResilientImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   fallbackSrc?: string;
+  fill?: boolean;
+  priority?: boolean;
 };
 
-export function ResilientImage({ src, fallbackSrc, alt, onError, ...props }: ResilientImageProps) {
+export function ResilientImage({
+  src,
+  fallbackSrc,
+  alt,
+  onError,
+  fill,
+  priority,
+  style,
+  loading,
+  ...props
+}: ResilientImageProps) {
   const resolveAssetPath = useAssetPath();
   const candidates = useMemo(() => {
     const sources = [resolveAssetPath(src)];
@@ -34,6 +46,19 @@ export function ResilientImage({ src, fallbackSrc, alt, onError, ...props }: Res
       {...props}
       src={candidates[Math.min(sourceIndex, candidates.length - 1)]}
       alt={alt}
+      loading={priority ? "eager" : loading}
+      fetchPriority={priority ? "high" : props.fetchPriority}
+      style={
+        fill
+          ? {
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              ...style,
+            }
+          : style
+      }
       onError={(event) => {
         if (sourceIndex < candidates.length - 1) {
           setSourceIndex((current) => current + 1);

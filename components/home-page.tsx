@@ -1,460 +1,298 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+
+import { ResilientImage } from "@/components/resilient-image";
 import type { Project, SiteContent, UploadedMedia } from "@/content/types";
-import { looksGarbled, useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/lib/i18n";
 import { useAssetPath } from "@/lib/use-asset-path";
-import { ResilientImage } from "./resilient-image";
 
-const meadowImage = "/images/creatie-bg.avif";
+type HomePageProps = { projects: Project[]; site: SiteContent };
 
-type Lang = "zh" | "en";
+const copy = {
+  zh: {
+    available: "\u53ef\u63a5\u53d7\u65b0\u7684\u5408\u4f5c",
+    heroA: "\u8bbe\u8ba1\u8ba9\u590d\u6742",
+    heroB: "\u53d8\u5f97\u6e05\u6670",
+    heroNote: "\u4e0d\u53ea\u5173\u6ce8\u89c6\u89c9\uff0c\u4e5f\u8ba9\u6570\u5b57\u4f53\u9a8c\u771f\u6b63\u597d\u7528\u3002",
+    about: "\u5173\u4e8e\u6211",
+    aboutTitle: "\u6211\u505a\u8ba9\u4eba\u8bb0\u5f97\u4f4f\u7684\u8bbe\u8ba1",
+    projects: "\u4f5c\u54c1\u96c6",
+    projectsTitle: "\u4f1a\u8bb2\u6545\u4e8b\u7684\u9879\u76ee",
+    services: "\u80fd\u529b",
+    servicesTitle: "\u6211\u53ef\u4ee5\u4e3a\u4f60\u505a\u4ec0\u4e48",
+    reviews: "\u5408\u4f5c",
+    reviewsTitle: "\u50cf\u7d20\u80cc\u540e\u7684\u5408\u4f5c\u4f53\u9a8c",
+    faq: "\u5e38\u89c1\u95ee\u9898",
+    faqTitle: "\u5f00\u59cb\u4e4b\u524d\uff0c\u4f60\u53ef\u80fd\u60f3\u77e5\u9053",
+    education: "\u6559\u80b2\u7ecf\u5386",
+    experience: "\u5de5\u4f5c\u7ecf\u5386",
+    contact: "\u8054\u7cfb\u6211",
+    contactTitle: "\u4e00\u8d77\u505a\u70b9\u503c\u5f97\u8bb0\u4f4f\u7684\u4e1c\u897f",
+    view: "\u67e5\u770b\u9879\u76ee",
+    start: "\u5f00\u59cb\u5408\u4f5c",
+  },
+  en: {
+    available: "Available for new work",
+    heroA: "Design makes",
+    heroB: "complexity clear",
+    heroNote: "Not just visuals. I make digital experiences clear and useful.",
+    about: "About",
+    aboutTitle: "I make designs people remember",
+    projects: "Projects",
+    projectsTitle: "Projects that tell stories",
+    services: "Services",
+    servicesTitle: "Where I can help you",
+    reviews: "Reviews",
+    reviewsTitle: "Collaboration behind the pixels",
+    faq: "FAQs",
+    faqTitle: "Answers before we begin",
+    education: "Education",
+    experience: "Experience",
+    contact: "Contact",
+    contactTitle: "Let's build something memorable",
+    view: "View project",
+    start: "Start a project",
+  },
+};
 
-function cleanText(value?: string, fallback = "") {
-  if (!value || looksGarbled(value)) return fallback;
-  return value;
+const serviceRows = [
+  ["Website Design", "UI / UX"],
+  ["Product Experience", "Apps / Systems"],
+  ["Brand Identity", "Visual Language"],
+  ["AI Exploration", "Creative Workflow"],
+];
+
+function firstMedia(project: Project): UploadedMedia | undefined {
+  return project.sections.flatMap((section) => section.media ?? []).find((media) => media.url);
 }
 
-function textOf(value: { zh: string; en: string } | undefined, lang: Lang, fallback = "") {
-  if (!value) return fallback;
-  return cleanText(value[lang]) || cleanText(value[lang === "zh" ? "en" : "zh"]) || fallback;
-}
-
-function firstMedia(project: Project) {
-  return project.sections.flatMap((section) => section.media || []).find((media) => media?.url);
-}
-
-function mediaCount(project: Project) {
-  return project.sections.reduce((total, section) => total + (section.media?.length || 0), 0);
-}
-
-function CursorGooglyEyes() {
-  const [point, setPoint] = useState({ x: -120, y: -120, dx: 0, dy: 0, visible: false });
-  const lastPoint = useRef<{ x: number; y: number } | null>(null);
+function CursorEyes() {
+  const ref = useRef<HTMLDivElement>(null);
+  const pupils = useRef<Array<HTMLSpanElement | null>>([]);
 
   useEffect(() => {
-    const finePointer = window.matchMedia("(pointer: fine)");
-    if (!finePointer.matches) return;
-
-    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    const node = ref.current;
+    if (!node) return;
+    let targetX = -120;
+    let targetY = -120;
+    let currentX = -120;
+    let currentY = -120;
     let frame = 0;
 
-    const handlePointerMove = (event: PointerEvent) => {
-      if (event.pointerType && event.pointerType !== "mouse") return;
-
-      const previous = lastPoint.current ?? { x: event.clientX, y: event.clientY };
-      const dx = clamp((event.clientX - previous.x) / 18, -1, 1);
-      const dy = clamp((event.clientY - previous.y) / 18, -1, 1);
-      lastPoint.current = { x: event.clientX, y: event.clientY };
-
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        setPoint({ x: event.clientX, y: event.clientY, dx, dy, visible: true });
+    const move = (event: PointerEvent) => {
+      targetX = event.clientX;
+      targetY = event.clientY;
+      node.dataset.visible = "true";
+      const dx = event.movementX;
+      const dy = event.movementY;
+      const length = Math.max(1, Math.hypot(dx, dy));
+      pupils.current.forEach((pupil) => {
+        if (pupil) pupil.style.transform = `translate(${(dx / length) * 3}px, ${(dy / length) * 3}px)`;
       });
     };
-
-    const hide = () => {
-      setPoint((current) => ({ ...current, visible: false }));
+    const leave = () => {
+      node.dataset.visible = "false";
     };
-
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    document.addEventListener("mouseleave", hide);
-    window.addEventListener("blur", hide);
-
+    const tick = () => {
+      currentX += (targetX - currentX) * 0.34;
+      currentY += (targetY - currentY) * 0.34;
+      node.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    window.addEventListener("pointermove", move, { passive: true });
+    document.documentElement.addEventListener("mouseleave", leave);
     return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("pointermove", handlePointerMove);
-      document.removeEventListener("mouseleave", hide);
-      window.removeEventListener("blur", hide);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("pointermove", move);
+      document.documentElement.removeEventListener("mouseleave", leave);
     };
   }, []);
 
-  const pupilStyle = {
-    transform: `translate3d(${point.dx * 7}px, ${point.dy * 6}px, 0)`,
-  } as CSSProperties;
-
   return (
-    <span
-      className={`cursor-googly ${point.visible ? "is-visible" : ""}`}
-      style={{
-        transform: `translate3d(${point.x - 31}px, ${point.y - 20}px, 0) rotate(${point.dx * 5}deg)`,
-      }}
-      aria-hidden="true"
-    >
-      <i>
-        <b style={pupilStyle} />
-      </i>
-      <i>
-        <b style={pupilStyle} />
-      </i>
-    </span>
-  );
-}
-
-function StickyLabel({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <span className={`sticky-label ${className}`}>
-      <b>✓</b>
-      {label}
-      <i />
-    </span>
-  );
-}
-
-function DockIcon({ type }: { type: "notes" | "photos" | "finder" | "mail" }) {
-  if (type === "notes") {
-    return (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="15" fill="#fff7d1" />
-        <path d="M0 14h64v12H0z" fill="#ffcb22" />
-        <path d="M12 34h40M12 44h34" stroke="#b8b0a2" strokeWidth="3" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  if (type === "photos") {
-    return (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="15" fill="#fff" />
-        {["#ff5b60", "#ff9c38", "#ffd23f", "#39c66a", "#34b8ff", "#5d6cff", "#b45cff", "#ff68ba"].map((color, index) => (
-          <ellipse
-            key={color}
-            cx="32"
-            cy="20"
-            rx="8"
-            ry="15"
-            fill={color}
-            opacity=".9"
-            transform={`rotate(${index * 45} 32 32)`}
-          />
-        ))}
-        <circle cx="32" cy="32" r="8" fill="#fff" />
-      </svg>
-    );
-  }
-
-  if (type === "finder") {
-    return (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="15" fill="#3ab8ff" />
-        <path
-          d="M32 0v64M18 24c3 3 7 3 10 0M42 24c3 3 7 3 10 0M18 43c8 7 20 7 28 0"
-          stroke="#10141a"
-          strokeWidth="3"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <path d="M32 0v64" stroke="#0c6ed0" strokeWidth="3" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true">
-      <rect width="64" height="64" rx="15" fill="#7ed1ff" />
-      <rect x="10" y="16" width="44" height="32" rx="5" fill="#f4fbff" />
-      <path d="m12 20 20 16 20-16M12 46l15-14M52 46 37 32" stroke="#5c8eb0" strokeWidth="3" fill="none" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function MacDock({ email }: { email: string }) {
-  const items = [
-    { label: "About", href: "#about", icon: "notes" as const },
-    { label: "Work", href: "#projects", icon: "photos" as const },
-    { label: "Home", href: "#hero", icon: "finder" as const },
-    { label: "Mail", href: `mailto:${email}`, icon: "mail" as const },
-  ];
-
-  return (
-    <nav className="mac-dock" aria-label="Quick navigation">
-      {items.map((item) => (
-        <a key={item.label} href={item.href} aria-label={item.label}>
-          <DockIcon type={item.icon} />
-          <em>{item.label}</em>
-        </a>
+    <div ref={ref} className="creatie-cursor-eyes" aria-hidden="true">
+      {[0, 1].map((index) => (
+        <span className="creatie-cursor-eye" key={index}>
+          <span ref={(node) => { pupils.current[index] = node; }} className="creatie-cursor-pupil" />
+        </span>
       ))}
+    </div>
+  );
+}
+
+function Dock() {
+  return (
+    <nav className="creatie-dock" aria-label="Page navigation">
+      <a className="creatie-dock-app app-notes" href="#about" aria-label="About"><span /></a>
+      <a className="creatie-dock-app app-photos" href="#work" aria-label="Projects"><span /></a>
+      <a className="creatie-dock-app app-finder" href="#services" aria-label="Services"><span /></a>
+      <a className="creatie-dock-app app-mail" href="#contact" aria-label="Contact"><span /></a>
     </nav>
   );
 }
 
-function MediaPreview({ media, alt, className = "" }: { media?: UploadedMedia; alt: string; className?: string }) {
-  const resolveAssetPath = useAssetPath();
-  const mediaUrl = media?.thumbnailUrl || media?.url || "";
-
-  if (!mediaUrl) {
-    return (
-      <div className={`project-card-placeholder ${className}`}>
-        <span>{alt}</span>
-      </div>
-    );
-  }
-
-  if (media?.mimeType?.startsWith("video/")) {
-    return <video className={className} src={resolveAssetPath(mediaUrl)} muted playsInline preload="metadata" />;
-  }
-
-  if (media?.mimeType === "application/pdf" || mediaUrl.toLowerCase().endsWith(".pdf")) {
-    return (
-      <div className={`project-card-placeholder ${className}`}>
-        <span>PDF</span>
-      </div>
-    );
-  }
-
-  return <ResilientImage className={className} src={mediaUrl} fallbackSrc={media?.url} alt={alt} loading="lazy" />;
-}
-
-function BrowserProjectCard({ project, index, lang }: { project: Project; index: number; lang: Lang }) {
-  const title = textOf(project.title, lang, `Project ${index + 1}`);
-  const role = textOf(project.role, lang, "UI Design");
+function ProjectCard({ project, index, label }: { project: Project; index: number; label: string }) {
+  const { t } = useLanguage();
   const media = firstMedia(project);
-
+  const angle = [-4, 2, -2, 3, -3][index % 5];
   return (
-    <Link href={`/projects/${project.slug}`} className={`browser-project-card card-tilt-${(index % 5) + 1}`}>
-      <div className="browser-dots">
-        <i />
-        <i />
-        <i />
-      </div>
-      <div className="browser-project-media">
-        <MediaPreview media={media} alt={title} />
+    <Link
+      href={`/projects/${project.slug}`}
+      className={`creatie-project-card project-${index + 1}`}
+      style={{ "--card-angle": `${angle}deg` } as CSSProperties}
+      aria-label={`${label}: ${t(project.title)}`}
+    >
+      <div className="creatie-window-bar"><i /><i /><i /><b /></div>
+      <div className="creatie-project-image">
+        {media ? (
+          <ResilientImage
+            src={media.thumbnailUrl || media.url}
+            fallbackSrc={media.url}
+            alt={t(media.alt || media.title) || t(project.title)}
+            loading="lazy"
+          />
+        ) : (
+          <div className="creatie-project-placeholder" style={{ background: project.accent }}>{t(project.title)}</div>
+        )}
       </div>
       <footer>
-        <strong>{title}</strong>
-        <span>{role}</span>
-        <span>{project.year || "2026"}</span>
+        <strong>{t(project.title)}</strong>
+        <span>{t(project.category)}{project.year ? ` / ${project.year}` : ""}</span>
       </footer>
     </Link>
   );
 }
 
-function ServiceRow({ title, index }: { title: string; index: number }) {
-  const colors = ["#ffe6e6", "#dfeeff", "#fff7bd", "#dff7e6", "#eee8ff"];
-  const icons = ["↗", "✦", "▣", "→", "◌"];
-
-  return (
-    <div className="service-row" style={{ "--service-color": colors[index % colors.length] } as CSSProperties}>
-      <strong>{title}</strong>
-      <span>{icons[index % icons.length]}</span>
-    </div>
+export function HomePage({ projects, site }: HomePageProps) {
+  const { language, toggleLanguage, t } = useLanguage();
+  const resolveAssetPath = useAssetPath();
+  const [photoOpen, setPhotoOpen] = useState(false);
+  const text = copy[language];
+  const featured = useMemo(
+    () => [...projects].filter((project) => project.featured !== false).sort((a, b) => a.order - b.order).slice(0, 5),
+    [projects],
   );
-}
+  const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
+  const heroBackground = resolveAssetPath("/images/creatie-bg.avif");
 
-function ReviewCard({ quote, name, role, index }: { quote: string; name: string; role: string; index: number }) {
   return (
-    <article className={`review-card review-${["one", "two", "three"][index] || "one"}`}>
-      <i />
-      <header>
-        <span>{name.slice(0, 1)}</span>
-        <div>
-          <strong>{name}</strong>
-          <small>{role}</small>
+    <main className="creatie-page-v7">
+      <CursorEyes />
+      <Dock />
+
+      <section className="creatie-hero-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(15,34,33,.08), rgba(12,29,27,.22)), url("${heroBackground}")` }}>
+        <header className="creatie-topbar-v7">
+          <a href="#top" className="creatie-brand-v7">{site.name || "CREATIE"}</a>
+          <button type="button" onClick={toggleLanguage}>{language === "zh" ? "EN" : "CN"}</button>
+        </header>
+        <div id="top" className="creatie-status-v7">
+          {site.aboutPhoto?.url ? <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} /> : <span className="creatie-avatar-fallback">PW</span>}
+          <span><i />{text.available}<strong>{site.name} / {t(site.shortRole)}</strong></span>
         </div>
-      </header>
-      <h3>“{quote}”</h3>
-      <p>★★★★★</p>
-    </article>
-  );
-}
+        <div className="creatie-hero-title-v7">
+          <span className="creatie-eyes-static" aria-hidden="true"><i /><i /></span>
+          <h1><span>{text.heroA}</span><span>{text.heroB}</span></h1>
+          <div className="creatie-skill-tag tag-a">UI/UX Design</div>
+          <div className="creatie-skill-tag tag-b">AI Design</div>
+          <div className="creatie-skill-tag tag-c">Visual</div>
+        </div>
+        <p className="creatie-hero-note-v7">{text.heroNote}</p>
+        {featured[0] && (
+          <Link href={`/projects/${featured[0].slug}`} className="creatie-mini-project-v7">
+            {firstMedia(featured[0]) && <ResilientImage src={firstMedia(featured[0])!.thumbnailUrl || firstMedia(featured[0])!.url} fallbackSrc={firstMedia(featured[0])!.url} alt={t(featured[0].title)} />}
+            <span>{t(featured[0].category)}<strong>{t(featured[0].title)}</strong></span>
+            <b>&rarr;</b>
+          </Link>
+        )}
+      </section>
 
-export function HomePage({ projects, site }: { projects: Project[]; site: SiteContent }) {
-  const { language, setLanguage } = useLanguage();
-  const lang = language as Lang;
-  const orderedProjects = useMemo(() => [...projects].sort((a, b) => a.order - b.order), [projects]);
-  const featuredProjects = orderedProjects.slice(0, 5);
-  const totalMedia = orderedProjects.reduce((total, project) => total + mediaCount(project), 0);
-
-  const intro = textOf(
-    site.intro,
-    lang,
-    lang === "zh" ? "我把复杂系统变成清晰、有人情味的数字体验。" : "I turn complex systems into clear, human digital experiences.",
-  );
-
-  return (
-    <main className="creatie-page-v3">
-      <CursorGooglyEyes />
-      <MacDock email={site.email} />
-
-      <header className="creatie-topbar">
-        <Link href="#hero" className="brand-mark">
-          {cleanText(site.name, "Penn.W")}
-        </Link>
-        <nav>
-          <Link href="#about">{lang === "zh" ? "关于" : "About"}</Link>
-          <Link href="#projects">{lang === "zh" ? "作品" : "Projects"}</Link>
-          <Link href="#contact">{lang === "zh" ? "联系" : "Contact"}</Link>
-          <button type="button" onClick={() => setLanguage(lang === "zh" ? "en" : "zh")}>
-            {lang === "zh" ? "EN" : "中文"}
-          </button>
-        </nav>
-      </header>
-
-      <section className="creatie-hero-v3" id="hero" style={{ "--hero-bg": `url(${meadowImage})` } as CSSProperties}>
-        <div className="availability-pill">
-          <span className="avatar-dot">{cleanText(site.name, "P").slice(0, 1)}</span>
-          <div>
-            <small>{lang === "zh" ? "可合作" : "Available for work"}</small>
-            <strong>{textOf(site.shortRole, lang, "UI/UX Designer")}</strong>
+      <section id="about" className="creatie-paper-section creatie-about-v7">
+        <div className="creatie-section-shell-v7">
+          <div className="creatie-section-heading-v7">
+            <span>{text.about}</span>
+            <h2>{text.aboutTitle}</h2>
+          </div>
+          <div className="creatie-about-profile-v7">
+            <button type="button" className="creatie-about-photo-v7" onClick={() => setPhotoOpen(true)} disabled={!site.aboutPhoto?.url} aria-label="Open portrait">
+              {site.aboutPhoto?.url ? <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} /> : <span>PW</span>}
+            </button>
+            <div className="creatie-about-identity-v7">
+              <h3>{site.name}</h3>
+              <p>{t(site.shortRole)}</p>
+              <div><a href={`mailto:${site.email}`}>{site.email}</a>{site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}</div>
+            </div>
+          </div>
+          <p className="creatie-about-copy-v7">{t(site.bio) || t(site.intro)}</p>
+          <div className="creatie-about-columns-v7">
+            <div>
+              <h4>{text.education}</h4>
+              {education.map((item, index) => (
+                <article key={`${t(item.school)}-${index}`}><span>{index + 1}</span><div><h5>{t(item.school)}</h5><p>{t(item.degree)}</p><small>{t(item.time)}</small></div></article>
+              ))}
+            </div>
+            <div>
+              <h4>{text.experience}</h4>
+              {site.experiences.map((item, index) => (
+                <article key={`${t(item.company)}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div><h5>{t(item.company)}</h5><p>{t(item.position)}</p><small>{t(item.time)}</small><em>{t(item.description)}</em></div></article>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="hero-title-card">
-          <StickyLabel label="UI/UX Design" className="label-ui" />
-          <StickyLabel label="Illustration" className="label-ill" />
-          <StickyLabel label="3D Design" className="label-3d" />
-          <h1>{lang === "zh" ? <>设计让<br />人多看一眼</> : <>Design that<br />makes people<br />look twice</>}</h1>
-        </div>
-        <p className="hero-note">— {lang === "zh" ? "不只是视觉，我让数字体验有生命力。" : "Not just visuals, I make digital things look alive."}</p>
-        <Link href={featuredProjects[0] ? `/projects/${featuredProjects[0].slug}` : "#projects"} className="hero-case">
-          <span className="case-thumb">
-            <MediaPreview media={featuredProjects[0] ? firstMedia(featuredProjects[0]) : undefined} alt="Featured project" />
-          </span>
-          <span>
-            <small>{featuredProjects[0] ? textOf(featuredProjects[0].role, lang, "Case Study") : "Case Study"}</small>
-            <strong>{featuredProjects[0] ? textOf(featuredProjects[0].title, lang, "Featured") : "Featured"}</strong>
-            <em>{lang === "zh" ? "查看案例" : "View case study"}</em>
-          </span>
-        </Link>
       </section>
 
-      <section className="creatie-about-v3 grid-paper" id="about">
-        <StickyLabel label="About" className="section-label" />
-        <h2>{lang === "zh" ? "我让设计被记住" : "I make designs people remember"}</h2>
-        <p className="about-lead">{intro}</p>
-        <a className="pin-button" href={`mailto:${site.email}`}>
-          {lang === "zh" ? "开始一个项目" : "Start a project"}
-        </a>
-        <div className="about-metrics">
-          {(site.experiences || []).slice(0, 4).map((item, index) => (
-            <article key={`${textOf(item.company, lang, "Company")}-${index}`} className={`metric-card metric-${index + 1}`}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              <strong>{textOf(item.company, lang, "Company")}</strong>
-              <span>{textOf(item.position, lang, "Designer")} · {textOf(item.time, lang, "Now")}</span>
-            </article>
-          ))}
+      <section id="work" className="creatie-landscape-section creatie-work-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(241,238,217,.08), rgba(40,61,38,.12)), url("${heroBackground}")` }}>
+        <div className="creatie-section-heading-v7 dark-heading">
+          <span>{text.projects}</span>
+          <h2>{text.projectsTitle}</h2>
+        </div>
+        <div className="creatie-project-stage-v7">
+          {featured.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} label={text.view} />)}
         </div>
       </section>
 
-      <section className="creatie-projects-v3" id="projects" style={{ "--project-bg": `url(${meadowImage})` } as CSSProperties}>
-        <div className="section-heading-sticker">
-          <StickyLabel label="Projects" className="section-label" />
-          <h2>{lang === "zh" ? "会讲故事的项目" : "Projects that tell stories"}</h2>
-        </div>
-        <div className="floating-browser-cards">
-          {featuredProjects.map((project, index) => (
-            <BrowserProjectCard key={project.slug} project={project} index={index} lang={lang} />
-          ))}
+      <section id="services" className="creatie-paper-section creatie-services-v7">
+        <div className="creatie-section-shell-v7">
+          <div className="creatie-section-heading-v7"><span>{text.services}</span><h2>{text.servicesTitle}</h2></div>
+          <div className="creatie-service-list-v7">
+            {serviceRows.map(([title, detail], index) => <article key={title} style={{ "--row": index } as CSSProperties}><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{detail}</p><b>&rarr;</b></article>)}
+          </div>
         </div>
       </section>
 
-      <section className="creatie-folders-v3">
-        <div className="folders-heading">
-          <span>04 — {lang === "zh" ? "精选作品" : "Selected work"}</span>
-          <span>
-            {totalMedia} {lang === "zh" ? "个素材" : "assets"}
-          </span>
-        </div>
-        <div className="folder-gallery-v3">
-          {featuredProjects.map((project, index) => {
-            const media = project.sections.flatMap((section) => section.media || []).slice(0, 3);
-            const colors = ["#b8ff58", "#ff7269", "#8580ff", "#f6cf3d", "#58c9e8"];
-            return (
-              <Link
-                key={project.slug}
-                href={`/projects/${project.slug}`}
-                className="creatie-folder-card"
-                style={{ "--folder-color": colors[index % colors.length] } as CSSProperties}
-              >
-                <div className="folder-stack">
-                  <span className="folder-back" />
-                  <span className="folder-sheets">
-                    {[0, 1, 2].map((slot) => (
-                      <span key={slot} className={`folder-sheet sheet-${slot + 1}`}>
-                        <MediaPreview media={media[slot]} alt={textOf(project.title, lang, "Project")} />
-                      </span>
-                    ))}
-                  </span>
-                  <span className="folder-pocket" />
-                </div>
-                <small>{String(index + 1).padStart(2, "0")}</small>
-                <h3>{textOf(project.title, lang, `Project ${index + 1}`)}</h3>
-                <p>
-                  {mediaCount(project)} {lang === "zh" ? "个素材" : "assets"}
-                </p>
-              </Link>
-            );
-          })}
+      <section className="creatie-paper-section creatie-reviews-v7">
+        <div className="creatie-section-shell-v7">
+          <div className="creatie-section-heading-v7"><span>{text.reviews}</span><h2>{text.reviewsTitle}</h2></div>
+          <div className="creatie-review-cards-v7">
+            <article><small>01</small><h3>"Clear thinking, strong execution."</h3><p>The work turned a complex product into a system people could understand and use.</p></article>
+            <article><small>02</small><h3>"The flow became much easier."</h3><p>Every decision felt focused, practical and ready for development.</p></article>
+            <article><small>03</small><h3>"Sharp design without noise."</h3><p>A thoughtful balance of visual character, usability and business goals.</p></article>
+          </div>
         </div>
       </section>
 
-      <section className="creatie-services-v3 grid-paper">
-        <StickyLabel label="Services" className="section-label" />
-        <h2>{lang === "zh" ? "我能帮你做什么" : "Where I can help you"}</h2>
-        <div className="service-list">
-          {[
-            lang === "zh" ? "网站与落地页设计" : "Website Design",
-            "UI/UX Design",
-            lang === "zh" ? "品牌视觉系统" : "Brand Identity",
-            lang === "zh" ? "AI 视觉探索" : "AI Exploration",
-            lang === "zh" ? "产品体验优化" : "Product Experience",
-          ].map((item, index) => (
-            <ServiceRow key={item} title={item} index={index} />
-          ))}
+      <section className="creatie-paper-section creatie-faq-v7">
+        <div className="creatie-section-shell-v7">
+          <div className="creatie-section-heading-v7"><span>{text.faq}</span><h2>{text.faqTitle}</h2></div>
+          <div className="creatie-faq-grid-v7">
+            {["What can you design?", "How fast can we start?", "Do you work with developers?", "What do you need from me?"].map((question, index) => <details key={question}><summary>{question}<b>+</b></summary><p>{index === 0 ? "Product strategy, UI/UX, design systems, websites and visual communication." : "Send a short brief and any existing materials. I will turn them into a clear project plan."}</p></details>)}
+          </div>
         </div>
       </section>
 
-      <section className="creatie-reviews-v3 grid-paper">
-        <StickyLabel label="Proof" className="section-label" />
-        <h2>{lang === "zh" ? "把想法变成可感知的体验" : "Design that turns ideas into experiences"}</h2>
-        <div className="review-cloud">
-          <ReviewCard
-            index={0}
-            name="Product Team"
-            role="Workflow"
-            quote={lang === "zh" ? "信息结构终于清晰了，团队协作更顺了。" : "The information structure finally feels clear."}
-          />
-          <ReviewCard
-            index={1}
-            name="AI Project"
-            role="Prototype"
-            quote={lang === "zh" ? "复杂流程被拆成了可复用的系统。" : "Complex workflows became reusable systems."}
-          />
-          <ReviewCard
-            index={2}
-            name="Visual System"
-            role="Launch"
-            quote={lang === "zh" ? "视觉更完整，交付也更稳定。" : "The visual system feels sharper and easier to ship."}
-          />
-        </div>
+      <section id="contact" className="creatie-contact-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(20,48,43,.04), rgba(20,48,43,.16)), url("${heroBackground}")` }}>
+        <div><span>{text.contact}</span><h2>{text.contactTitle}</h2><a href={`mailto:${site.email}`}>{text.start} &rarr;</a></div>
+        <footer><strong>{site.name}</strong><nav>{site.social.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}</a>)}</nav></footer>
       </section>
 
-      <section className="creatie-contact-v3" id="contact" style={{ "--contact-bg": `url(${meadowImage})` } as CSSProperties}>
-        <div className="social-bubbles">
-          {site.social?.map((item) => (
-            <a key={item.label} href={item.href} target="_blank" rel="noreferrer">
-              {item.label.slice(0, 1).toUpperCase()}
-            </a>
-          ))}
-          <a href={`mailto:${site.email}`}>✉</a>
+      {photoOpen && site.aboutPhoto?.url && (
+        <div className="creatie-photo-modal-v7" role="dialog" aria-modal="true" onClick={() => setPhotoOpen(false)}>
+          <button type="button" onClick={() => setPhotoOpen(false)} aria-label="Close">x</button>
+          <ResilientImage src={site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} onClick={(event) => event.stopPropagation()} />
         </div>
-        <p className="contact-idea">— {lang === "zh" ? "有想法？我们把它变成清晰的数字体验。" : "Have an idea? Let’s turn it into a sharp digital experience."}</p>
-        <div className="contact-big">
-          <StickyLabel label="UI/UX Design" />
-          <h2>{lang === "zh" ? <>一起做点<br />有意思的东西</> : <>Let’s build<br />something<br />memorable</>}</h2>
-        </div>
-        <a className="chat-button" href={`mailto:${site.email}`}>
-          {lang === "zh" ? "聊一聊" : "Let’s chat"}
-        </a>
-        <footer>
-          <strong>{cleanText(site.name, "Penn.W")}</strong>
-          <nav>
-            <Link href="#about">{lang === "zh" ? "关于" : "About"}</Link>
-            <Link href="#projects">{lang === "zh" ? "作品" : "Projects"}</Link>
-            <Link href="#contact">{lang === "zh" ? "联系" : "Contact"}</Link>
-          </nav>
-        </footer>
-      </section>
+      )}
     </main>
   );
 }

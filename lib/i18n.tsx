@@ -3,49 +3,50 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { LocalizedText } from "@/content/types";
 
-type Language = "zh" | "en";
+export type Language = "zh" | "en";
 
-export function looksGarbled(value?: string) {
-  if (!value) return false;
-  return /(?:�|锟|閿|闁|濞|缂|閺|鈥|涓|绫|鏉|楣|褰|赂|诲|€|熸|浣|椤|礌|搧|鍝|彉|湁|洖|圭|洰)/.test(value);
-}
-
-function pickText(value: LocalizedText, language: Language) {
-  const primary = value?.[language] || "";
-  const secondary = value?.[language === "zh" ? "en" : "zh"] || "";
-  if (primary.trim() && !looksGarbled(primary)) return primary;
-  if (secondary.trim() && !looksGarbled(secondary)) return secondary;
-  return primary || secondary || "";
-}
-
-const LanguageContext = createContext<{
+type LanguageContextValue = {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (value: LocalizedText) => string;
-}>({
-  language: "zh",
-  setLanguage: () => undefined,
-  t: (value) => value.zh,
-});
+  toggleLanguage: () => void;
+  t: (value: LocalizedText | string | undefined | null) => string;
+};
+
+const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
+const MOJIBAKE_MARKERS = ["\u951f\u65a4\u62f7", "\ufffd", "\u95c1", "\u9225", "\u93c8", "\u7eeb"];
+
+export function looksGarbled(value: string | undefined | null) {
+  return Boolean(value && MOJIBAKE_MARKERS.some((marker) => value.includes(marker)));
+}
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("zh");
+  const [language, setLanguageState] = useState<Language>("zh");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("portfolio-language");
-    if (saved === "zh" || saved === "en") setLanguage(saved);
+    if (saved === "zh" || saved === "en") setLanguageState(saved);
   }, []);
 
-  useEffect(() => {
-    document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-    window.localStorage.setItem("portfolio-language", language);
-  }, [language]);
+  const setLanguage = (next: Language) => {
+    setLanguageState(next);
+    window.localStorage.setItem("portfolio-language", next);
+    document.documentElement.lang = next === "zh" ? "zh-CN" : "en";
+  };
 
-  const value = useMemo(
+  const value = useMemo<LanguageContextValue>(
     () => ({
       language,
       setLanguage,
-      t: (value: LocalizedText) => pickText(value, language),
+      toggleLanguage: () => setLanguage(language === "zh" ? "en" : "zh"),
+      t: (input) => {
+        if (!input) return "";
+        if (typeof input === "string") return looksGarbled(input) ? "" : input;
+        const preferred = input[language];
+        const alternate = input[language === "zh" ? "en" : "zh"];
+        if (preferred && !looksGarbled(preferred)) return preferred;
+        if (alternate && !looksGarbled(alternate)) return alternate;
+        return "";
+      },
     }),
     [language],
   );
@@ -54,5 +55,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useLanguage() {
-  return useContext(LanguageContext);
+  const context = useContext(LanguageContext);
+  if (!context) throw new Error("useLanguage must be used inside LanguageProvider");
+  return context;
 }
