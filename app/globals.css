@@ -10083,3 +10083,190 @@ body.creatie-cursor-active-v6 * {
   .creatie-contact-v3 footer { padding: 10px 14px; font-size: 11px; }
   .creatie-contact-v3 footer nav { gap: 10px; }
 }
+.creatie-about-rail-head-v8 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1280px;
+  margin: 48px auto 12px;
+  padding: 0 8px;
+}
+
+.creatie-about-rail-head-v8 > span {
+  color: #666;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.creatie-about-rail-actions-v8 {
+  display: flex;
+  gap: 8px;
+}
+
+.creatie-about-rail-actions-v8 button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(0, 0, 0, .14);
+  border-radius: 50%;
+  color: #111;
+  background: #fff;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, .1);
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.creatie-about-rail-actions-v8 button:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 6px 0 rgba(0, 0, 0, .1);
+}
+
+.creatie-about-rail-v8 {
+  display: flex;
+  gap: 22px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 8px 30px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: #111 transparent;
+  touch-action: pan-x pan-y;
+}
+
+.creatie-about-rail-v8::-webkit-scrollbar {
+  height: 6px;
+}
+
+.creatie-about-rail-v8::-webkit-scrollbar-thumb {
+  background: #111;
+  border-radius: 999px;
+}
+
+.creatie-about-rail-v8.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.creatie-about-card-v8 {
+  position: relative;
+  flex: 0 0 clamp(340px, 36vw, 500px);
+  min-height: 390px;
+  padding: 30px;
+  border: 1px solid rgba(0, 0, 0, .12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 8px 9px 0 rgba(0, 0, 0, .09);
+  scroll-snap-align: start;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.creatie-about-card-v8:hover {
+  transform: translateY(-5px) rotate(-.4deg);
+  box-shadow: 12px 14px 0 rgba(0, 0, 0, .11);
+}
+
+.creatie-about-card-v8.is-skills {
+  flex-basis: min(560px, 82vw);
+}
+
+.creatie-about-card-v8.is-education {
+  flex-basis: 370px;
+}
+
+.creatie-about-card-v8.is-experience {
+  flex-basis: 460px;
+}
+
+.creatie-about-card-pin-v8 {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #f04b49;
+  box-shadow: 0 4px 0 #bb2525;
+}
+
+.creatie-about-card-v8 > small {
+  display: block;
+  margin-bottom: 42px;
+  color: #777;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.creatie-about-card-v8 h3 {
+  margin: 0 0 22px;
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+}
+
+.creatie-about-card-v8 p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.75;
+  white-space: pre-line;
+}
+
+.creatie-about-card-meta-v8 {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 22px;
+  color: #555;
+}
+
+.creatie-about-card-meta-v8 strong {
+  color: #111;
+  font-size: 16px;
+}
+
+.creatie-about-card-meta-v8 span {
+  font-size: 13px;
+}
+
+.creatie-about-card-v8.is-bio { background: #fff; }
+.creatie-about-card-v8.is-skills { background: #edf5ff; }
+.creatie-about-card-v8.is-education { background: #fff8d9; }
+.creatie-about-card-v8.is-experience:nth-of-type(4n + 1) { background: #fce7e9; }
+.creatie-about-card-v8.is-experience:nth-of-type(4n + 2) { background: #e9f7eb; }
+.creatie-about-card-v8.is-experience:nth-of-type(4n + 3) { background: #eee9ff; }
+.creatie-about-card-v8.is-experience:nth-of-type(4n) { background: #fff0df; }
+
+@media (max-width: 760px) {
+  .creatie-about-rail-head-v8 {
+    margin-top: 32px;
+    padding: 0;
+  }
+
+  .creatie-about-rail-actions-v8 button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .creatie-about-rail-v8 {
+    gap: 14px;
+    padding: 5px 2px 25px;
+  }
+
+  .creatie-about-card-v8,
+  .creatie-about-card-v8.is-skills,
+  .creatie-about-card-v8.is-education,
+  .creatie-about-card-v8.is-experience {
+    flex-basis: 86vw;
+    min-height: 410px;
+    padding: 24px;
+  }
+
+  .creatie-about-card-v8 h3 {
+    font-size: 24px;
+  }
+}

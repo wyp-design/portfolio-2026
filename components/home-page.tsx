@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
+} from "react";
 
 import { ResilientImage } from "@/components/resilient-image";
 import type { Project, SiteContent, UploadedMedia } from "@/content/types";
@@ -28,6 +36,11 @@ const copy = {
     faqTitle: "\u5f00\u59cb\u4e4b\u524d\uff0c\u4f60\u53ef\u80fd\u60f3\u77e5\u9053",
     education: "\u6559\u80b2\u7ecf\u5386",
     experience: "\u5de5\u4f5c\u7ecf\u5386",
+    profileSummary: "\u4e2a\u4eba\u7b80\u4ecb",
+    capabilities: "\u80fd\u529b\u4e0e\u5de5\u5177",
+    swipeHint: "\u5de6\u53f3\u6ed1\u52a8\u67e5\u770b",
+    previousCard: "\u4e0a\u4e00\u5f20\u5361\u7247",
+    nextCard: "\u4e0b\u4e00\u5f20\u5361\u7247",
     contact: "\u8054\u7cfb\u6211",
     contactTitle: "\u4e00\u8d77\u505a\u70b9\u503c\u5f97\u8bb0\u4f4f\u7684\u4e1c\u897f",
     view: "\u67e5\u770b\u9879\u76ee",
@@ -50,6 +63,11 @@ const copy = {
     faqTitle: "Answers before we begin",
     education: "Education",
     experience: "Experience",
+    profileSummary: "Profile",
+    capabilities: "Capabilities & tools",
+    swipeHint: "Swipe to explore",
+    previousCard: "Previous card",
+    nextCard: "Next card",
     contact: "Contact",
     contactTitle: "Let's build something memorable",
     view: "View project",
@@ -177,6 +195,47 @@ export function HomePage({ projects, site }: HomePageProps) {
   );
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
   const heroBackground = resolveAssetPath("/images/creatie-bg.avif");
+  const aboutRailRef = useRef<HTMLDivElement>(null);
+  const aboutDragRef = useRef({ active: false, startX: 0, scrollLeft: 0 });
+  const aboutSummary =
+    language === "zh"
+      ? "9 年设计工作经验，擅长 AI 设计、C 端、B 端 UI 与交互设计，熟悉多平台设计规范，能独立完成从前期规划到最终交付的全流程设计。精通 APP、小程序、H5、数据可视化及 B 端管理后台设计，拥有丰富的跨行业设计项目经验和开发协作能力。"
+      : t(site.bio) || t(site.intro);
+  const aboutSkills =
+    language === "zh"
+      ? "1、设计工具：Codex、Nanobanana、ChatGpt、Gemini、Sketch、Figma、Photoshop、Illustrator、Axure RP\n\n2、前端协作：熟悉HTML、CSS，掌握开发沟通流程\n\n3、丰富的C端与B端设计经验，覆盖互联网、移动通信、电商等领域\n\n4、精通跨部门协作与开发对接，具备优秀的执行力与团队合作能力。\n\n5、摄影、剪辑、灯光布置，懂点小红书、抖音、视频号运营"
+      : "1. Design tools: Codex, Nanobanana, ChatGPT, Gemini, Sketch, Figma, Photoshop, Illustrator and Axure RP.\n\n2. Front-end collaboration: familiar with HTML and CSS, with a clear development handoff workflow.\n\n3. Rich consumer and enterprise product experience across internet, telecom and commerce.\n\n4. Strong cross-functional collaboration, execution and development handoff skills.\n\n5. Photography, editing, lighting and social content operations.";
+  const scrollAboutRail = (direction: number) => {
+    const rail = aboutRailRef.current;
+    if (!rail) return;
+    rail.scrollBy({ left: direction * Math.min(520, rail.clientWidth * 0.82), behavior: "smooth" });
+  };
+  const handleAboutPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    aboutDragRef.current = { active: true, startX: event.clientX, scrollLeft: event.currentTarget.scrollLeft };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.currentTarget.classList.add("is-dragging");
+  };
+  const handleAboutPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!aboutDragRef.current.active) return;
+    event.currentTarget.scrollLeft = aboutDragRef.current.scrollLeft - (event.clientX - aboutDragRef.current.startX);
+  };
+  const stopAboutDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    aboutDragRef.current.active = false;
+    event.currentTarget.classList.remove("is-dragging");
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+  const handleAboutWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+    const rail = event.currentTarget;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const canScroll =
+      event.deltaY > 0
+        ? rail.scrollLeft + rail.clientWidth < rail.scrollWidth - 1
+        : rail.scrollLeft > 0;
+    if (!canScroll) return;
+    event.preventDefault();
+    rail.scrollLeft += event.deltaY;
+  };
 
   return (
     <main className="creatie-page-v7">
@@ -225,20 +284,60 @@ export function HomePage({ projects, site }: HomePageProps) {
               <div><a href={`mailto:${site.email}`}>{site.email}</a>{site.phone && <a href={`tel:${site.phone}`}>{site.phone}</a>}</div>
             </div>
           </div>
-          <p className="creatie-about-copy-v7">{t(site.bio) || t(site.intro)}</p>
-          <div className="creatie-about-columns-v7">
-            <div>
-              <h4>{text.education}</h4>
-              {education.map((item, index) => (
-                <article key={`${t(item.school)}-${index}`}><span>{index + 1}</span><div><h5>{t(item.school)}</h5><p>{t(item.degree)}</p><small>{t(item.time)}</small></div></article>
-              ))}
+          <div className="creatie-about-rail-head-v8">
+            <span>{text.swipeHint}</span>
+            <div className="creatie-about-rail-actions-v8">
+              <button type="button" onClick={() => scrollAboutRail(-1)} aria-label={text.previousCard}>&larr;</button>
+              <button type="button" onClick={() => scrollAboutRail(1)} aria-label={text.nextCard}>&rarr;</button>
             </div>
-            <div>
-              <h4>{text.experience}</h4>
-              {site.experiences.map((item, index) => (
-                <article key={`${t(item.company)}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div><h5>{t(item.company)}</h5><p>{t(item.position)}</p><small>{t(item.time)}</small><em>{t(item.description)}</em></div></article>
-              ))}
-            </div>
+          </div>
+          <div
+            ref={aboutRailRef}
+            className="creatie-about-rail-v8"
+            onPointerDown={handleAboutPointerDown}
+            onPointerMove={handleAboutPointerMove}
+            onPointerUp={stopAboutDrag}
+            onPointerCancel={stopAboutDrag}
+            onPointerLeave={(event) => {
+              if (aboutDragRef.current.active) stopAboutDrag(event);
+            }}
+            onWheel={handleAboutWheel}
+          >
+            <article className="creatie-about-card-v8 is-bio">
+              <i className="creatie-about-card-pin-v8" aria-hidden="true" />
+              <small>01 / {text.profileSummary}</small>
+              <h3>{text.profileSummary}</h3>
+              <p>{aboutSummary}</p>
+            </article>
+            <article className="creatie-about-card-v8 is-skills">
+              <i className="creatie-about-card-pin-v8" aria-hidden="true" />
+              <small>02 / {text.capabilities}</small>
+              <h3>{text.capabilities}</h3>
+              <p>{aboutSkills}</p>
+            </article>
+            {education.map((item, index) => (
+              <article className="creatie-about-card-v8 is-education" key={`${t(item.school)}-${index}`}>
+                <i className="creatie-about-card-pin-v8" aria-hidden="true" />
+                <small>{String(index + 3).padStart(2, "0")} / {text.education}</small>
+                <h3>{t(item.school)}</h3>
+                <div className="creatie-about-card-meta-v8">
+                  <strong>{t(item.degree)}</strong>
+                  <span>{t(item.time)}</span>
+                </div>
+              </article>
+            ))}
+            {site.experiences.map((item, index) => (
+              <article className="creatie-about-card-v8 is-experience" key={`${t(item.company)}-${index}`}>
+                <i className="creatie-about-card-pin-v8" aria-hidden="true" />
+                <small>{String(index + education.length + 3).padStart(2, "0")} / {text.experience}</small>
+                <h3>{t(item.company)}</h3>
+                <div className="creatie-about-card-meta-v8">
+                  <strong>{t(item.position)}</strong>
+                  <span>{t(item.time)}</span>
+                </div>
+                <p>{t(item.description)}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
