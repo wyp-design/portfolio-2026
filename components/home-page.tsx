@@ -315,21 +315,29 @@ export function HomePage({ projects, site }: HomePageProps) {
               <h3>{text.capabilities}</h3>
               <p>{aboutSkills}</p>
             </article>
-            {education.map((item, index) => (
-              <article className="creatie-about-card-v8 is-education" key={`${t(item.school)}-${index}`}>
-                <i className="creatie-about-card-pin-v8" aria-hidden="true" />
-                <small>{String(index + 3).padStart(2, "0")} / {text.education}</small>
-                <h3>{t(item.school)}</h3>
-                <div className="creatie-about-card-meta-v8">
-                  <strong>{t(item.degree)}</strong>
-                  <span>{t(item.time)}</span>
-                </div>
-              </article>
-            ))}
-            {site.experiences.map((item, index) => (
-              <article className="creatie-about-card-v8 is-experience" key={`${t(item.company)}-${index}`}>
-                <i className="creatie-about-card-pin-v8" aria-hidden="true" />
-                <small>{String(index + education.length + 3).padStart(2, "0")} / {text.experience}</small>
+              {education.length > 0 && (
+                <article className="creatie-about-card-v8 is-education">
+                  <i className="creatie-about-card-pin-v8" aria-hidden="true" />
+                  <small>03 / {text.education}</small>
+                  <h3>{text.education}</h3>
+                  <div className="creatie-about-education-stack-v8">
+                    {education.map((item, index) => (
+                      <div className="creatie-about-education-entry-v8" key={`${t(item.school)}-${index}`}>
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <div>
+                          <h4>{t(item.school)}</h4>
+                          <p>{t(item.degree)}</p>
+                          <time>{t(item.time)}</time>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              )}
+              {site.experiences.map((item, index) => (
+                <article className="creatie-about-card-v8 is-experience" key={`${t(item.company)}-${index}`}>
+                  <i className="creatie-about-card-pin-v8" aria-hidden="true" />
+                  <small>{String(index + (education.length > 0 ? 4 : 3)).padStart(2, "0")} / {text.experience}</small>
                 <h3>{t(item.company)}</h3>
                 <div className="creatie-about-card-meta-v8">
                   <strong>{t(item.position)}</strong>

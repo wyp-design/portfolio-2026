@@ -10176,7 +10176,7 @@ body.creatie-cursor-active-v6 * {
 }
 
 .creatie-about-card-v8.is-education {
-  flex-basis: 370px;
+  flex-basis: min(500px, 82vw);
 }
 
 .creatie-about-card-v8.is-experience {
@@ -10231,6 +10231,47 @@ body.creatie-cursor-active-v6 * {
 
 .creatie-about-card-meta-v8 span {
   font-size: 13px;
+}
+
+.creatie-about-education-stack-v8 {
+  display: grid;
+}
+
+.creatie-about-education-entry-v8 {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.creatie-about-education-entry-v8:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.creatie-about-education-entry-v8 > span {
+  color: #777;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.creatie-about-education-entry-v8 h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.creatie-about-education-entry-v8 p {
+  margin: 0 0 4px;
+  color: #333;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.creatie-about-education-entry-v8 time {
+  color: #666;
+  font-size: 12px;
 }
 
 .creatie-about-card-v8.is-bio { background: #fff; }
