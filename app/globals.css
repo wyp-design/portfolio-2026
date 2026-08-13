@@ -10175,6 +10175,24 @@ body.creatie-cursor-active-v6 * {
   flex-basis: min(560px, 82vw);
 }
 
+.creatie-about-card-v8.is-bio-skills {
+  flex-basis: min(760px, 88vw);
+  min-height: 470px;
+  background: linear-gradient(135deg, #fff 0%, #edf5ff 100%);
+}
+
+.creatie-about-card-divider-v8 {
+  margin: 26px 0 20px;
+  border-top: 1px solid rgba(0, 0, 0, .13);
+}
+
+.creatie-about-card-v8 h4 {
+  margin: 0 0 14px;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
 .creatie-about-card-v8.is-education {
   flex-basis: min(500px, 82vw);
 }
@@ -10299,6 +10317,7 @@ body.creatie-cursor-active-v6 * {
   }
 
   .creatie-about-card-v8,
+  .creatie-about-card-v8.is-bio-skills,
   .creatie-about-card-v8.is-skills,
   .creatie-about-card-v8.is-education,
   .creatie-about-card-v8.is-experience {
@@ -10309,5 +10328,11 @@ body.creatie-cursor-active-v6 * {
 
   .creatie-about-card-v8 h3 {
     font-size: 24px;
+  }
+
+  .creatie-about-card-v8.is-bio-skills {
+    flex-basis: 86vw;
+    min-height: 520px;
+    padding: 24px;
   }
 }

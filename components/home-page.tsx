@@ -189,10 +189,11 @@ export function HomePage({ projects, site }: HomePageProps) {
   const resolveAssetPath = useAssetPath();
   const [photoOpen, setPhotoOpen] = useState(false);
   const text = copy[language];
-  const featured = useMemo(
-    () => [...projects].filter((project) => project.featured !== false).sort((a, b) => a.order - b.order).slice(0, 5),
-    [projects],
-  );
+  const featured = useMemo(() => {
+    const ordered = [...projects].sort((a, b) => a.order - b.order);
+    const marked = ordered.filter((project) => project.featured !== false);
+    return (marked.length >= 5 ? marked : ordered).slice(0, 5);
+  }, [projects]);
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
   const heroBackground = resolveAssetPath("/images/creatie-bg.avif");
   const aboutRailRef = useRef<HTMLDivElement>(null);
@@ -303,22 +304,19 @@ export function HomePage({ projects, site }: HomePageProps) {
             }}
             onWheel={handleAboutWheel}
           >
-            <article className="creatie-about-card-v8 is-bio">
+            <article className="creatie-about-card-v8 is-bio-skills">
               <i className="creatie-about-card-pin-v8" aria-hidden="true" />
-              <small>01 / {text.profileSummary}</small>
+              <small>01 / {text.profileSummary} · {text.capabilities}</small>
               <h3>{text.profileSummary}</h3>
               <p>{aboutSummary}</p>
-            </article>
-            <article className="creatie-about-card-v8 is-skills">
-              <i className="creatie-about-card-pin-v8" aria-hidden="true" />
-              <small>02 / {text.capabilities}</small>
-              <h3>{text.capabilities}</h3>
+              <div className="creatie-about-card-divider-v8" aria-hidden="true" />
+              <h4>{text.capabilities}</h4>
               <p>{aboutSkills}</p>
             </article>
               {education.length > 0 && (
                 <article className="creatie-about-card-v8 is-education">
                   <i className="creatie-about-card-pin-v8" aria-hidden="true" />
-                  <small>03 / {text.education}</small>
+                  <small>02 / {text.education}</small>
                   <h3>{text.education}</h3>
                   <div className="creatie-about-education-stack-v8">
                     {education.map((item, index) => (
@@ -337,7 +335,7 @@ export function HomePage({ projects, site }: HomePageProps) {
               {site.experiences.map((item, index) => (
                 <article className="creatie-about-card-v8 is-experience" key={`${t(item.company)}-${index}`}>
                   <i className="creatie-about-card-pin-v8" aria-hidden="true" />
-                  <small>{String(index + (education.length > 0 ? 4 : 3)).padStart(2, "0")} / {text.experience}</small>
+                  <small>{String(index + (education.length > 0 ? 3 : 2)).padStart(2, "0")} / {text.experience}</small>
                 <h3>{t(item.company)}</h3>
                 <div className="creatie-about-card-meta-v8">
                   <strong>{t(item.position)}</strong>
