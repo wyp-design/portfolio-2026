@@ -36,6 +36,11 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".pnpm-store",
+    "m10-mobility-local",
+    "nova-motors",
+    "pixelshelf-store",
+    "portfolio-2026"
   ]
 }
