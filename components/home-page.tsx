@@ -99,6 +99,7 @@ function CursorEyes() {
     let currentX = -120;
     let currentY = -120;
     let frame = 0;
+    const heroEyes = document.querySelector<HTMLElement>(".creatie-eyes-static");
 
     const move = (event: PointerEvent) => {
       targetX = event.clientX;
@@ -110,7 +111,17 @@ function CursorEyes() {
       pupils.current.forEach((pupil) => {
         if (pupil) pupil.style.transform = `translate(${(dx / length) * 3}px, ${(dy / length) * 3}px)`;
       });
+      if (heroEyes) {
+        const bounds = heroEyes.getBoundingClientRect();
+        const lookX = Math.max(-5, Math.min(5, (event.clientX - (bounds.left + bounds.width / 2)) / 55));
+        const lookY = Math.max(-6, Math.min(6, (event.clientY - (bounds.top + bounds.height / 2)) / 55));
+        heroEyes.style.setProperty("--look-x", `${lookX}px`);
+        heroEyes.style.setProperty("--look-y", `${lookY}px`);
+      }
+      node.dataset.engaged = event.target instanceof Element && Boolean(event.target.closest("a, button, summary")) ? "true" : "false";
     };
+    const press = () => { node.dataset.pressed = "true"; };
+    const release = () => { node.dataset.pressed = "false"; };
     const leave = () => {
       node.dataset.visible = "false";
     };
@@ -122,10 +133,14 @@ function CursorEyes() {
     };
     frame = requestAnimationFrame(tick);
     window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", press, { passive: true });
+    window.addEventListener("pointerup", release, { passive: true });
     document.documentElement.addEventListener("mouseleave", leave);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", press);
+      window.removeEventListener("pointerup", release);
       document.documentElement.removeEventListener("mouseleave", leave);
     };
   }, []);
@@ -144,11 +159,30 @@ function CursorEyes() {
 function Dock() {
   return (
     <nav className="creatie-dock" aria-label="Page navigation">
-      <a className="creatie-dock-app app-notes" href="#about" aria-label="About"><span /></a>
-      <a className="creatie-dock-app app-photos" href="#work" aria-label="Projects"><span /></a>
-      <a className="creatie-dock-app app-finder" href="#services" aria-label="Services"><span /></a>
-      <a className="creatie-dock-app app-mail" href="#contact" aria-label="Contact"><span /></a>
+      <a className="creatie-dock-app app-notes" href="#about" aria-label="About" data-label="About">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 8h26v32H11z" /><path d="M11 8h26v9H11z" /><path d="M16 23h16M16 28h16M16 33h12" /></svg>
+      </a>
+      <a className="creatie-dock-app app-photos" href="#work" aria-label="Projects" data-label="Projects">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><g><ellipse cx="24" cy="13" rx="7" ry="11" /><ellipse cx="35" cy="20" rx="7" ry="11" transform="rotate(60 35 20)" /><ellipse cx="34" cy="32" rx="7" ry="11" transform="rotate(120 34 32)" /><ellipse cx="23" cy="35" rx="7" ry="11" /><ellipse cx="13" cy="29" rx="7" ry="11" transform="rotate(60 13 29)" /><ellipse cx="14" cy="18" rx="7" ry="11" transform="rotate(120 14 18)" /></g><circle cx="24" cy="24" r="6" /></svg>
+      </a>
+      <a className="creatie-dock-app app-finder" href="#services" aria-label="Services" data-label="Services">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6v36" /><path d="M17 18v4M32 18v4" /><path d="M17 31c4 4 10 4 14 0" /></svg>
+      </a>
+      <a className="creatie-dock-app app-mail" href="#contact" aria-label="Contact" data-label="Contact">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="11" width="34" height="26" rx="5" /><path d="m9 15 15 12 15-12" /></svg>
+      </a>
     </nav>
+  );
+}
+
+function PaperDecor({ variant }: { variant: "about" | "services" | "reviews" | "faq" }) {
+  return (
+    <div className={`creatie-paper-decor-v7 decor-${variant}`} aria-hidden="true">
+      <span className="decor-spark">✦</span>
+      <span className="decor-loop" />
+      <span className="decor-note">MAKE<br />IT CLEAR</span>
+      <span className="decor-smile">:)</span>
+    </div>
   );
 }
 
@@ -297,6 +331,7 @@ export function HomePage({ projects, site }: HomePageProps) {
   const [photoOpen, setPhotoOpen] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const text = copy[language];
   const featured = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order);
@@ -318,6 +353,19 @@ export function HomePage({ projects, site }: HomePageProps) {
     language === "zh"
       ? "1、设计工具：Codex、Nanobanana、ChatGpt、Gemini、Sketch、Figma、Photoshop、Illustrator、Axure RP\n\n2、前端协作：熟悉HTML、CSS，掌握开发沟通流程\n\n3、丰富的C端与B端设计经验，覆盖互联网、移动通信、电商等领域\n\n4、精通跨部门协作与开发对接，具备优秀的执行力与团队合作能力。\n\n5、摄影、剪辑、灯光布置，懂点小红书、抖音、视频号运营"
       : "1. Design tools: Codex, Nanobanana, ChatGPT, Gemini, Sketch, Figma, Photoshop, Illustrator and Axure RP.\n\n2. Front-end collaboration: familiar with HTML and CSS, with a clear development handoff workflow.\n\n3. Rich consumer and enterprise product experience across internet, telecom and commerce.\n\n4. Strong cross-functional collaboration, execution and development handoff skills.\n\n5. Photography, editing, lighting and social content operations.";
+  const faqItems = language === "zh"
+    ? [
+        ["你可以设计什么？", "产品策略、UI/UX、设计系统、网站、移动端产品与视觉传播。"],
+        ["最快多久可以开始？", "确认需求和时间后即可排期，通常会先用一个短会把目标与范围梳理清楚。"],
+        ["你会和开发协作吗？", "会。我熟悉设计交付、开发沟通、走查与上线验收，能持续跟进实现质量。"],
+        ["开始前需要我提供什么？", "一份简短需求、已有资料和期望时间即可，我会把它们整理成清晰的项目计划。"],
+      ]
+    : [
+        ["What can you design?", "Product strategy, UI/UX, design systems, websites, mobile products and visual communication."],
+        ["How fast can we start?", "Once scope and timing are aligned, we can schedule a short kickoff and turn the brief into a clear plan."],
+        ["Do you work with developers?", "Yes. I support handoff, implementation reviews and launch QA to protect the design quality."],
+        ["What do you need from me?", "A short brief, any existing materials and your ideal timeline are enough to get started."],
+      ];
   const scrollAboutRail = (direction: number) => {
     const rail = aboutRailRef.current;
     if (!rail) return;
@@ -419,6 +467,7 @@ export function HomePage({ projects, site }: HomePageProps) {
       </section>
 
       <section id="about" className="creatie-paper-section creatie-about-v7">
+        <PaperDecor variant="about" />
         <div className="creatie-section-shell-v7">
           <div className="creatie-section-heading-v7">
             <span>{text.about}</span>
@@ -508,6 +557,7 @@ export function HomePage({ projects, site }: HomePageProps) {
       </section>
 
       <section id="services" className="creatie-paper-section creatie-services-v7">
+        <PaperDecor variant="services" />
         <div className="creatie-section-shell-v7">
           <div className="creatie-section-heading-v7"><span>{text.services}</span><h2>{text.servicesTitle}</h2></div>
           <div className="creatie-service-list-v7">
@@ -517,6 +567,7 @@ export function HomePage({ projects, site }: HomePageProps) {
       </section>
 
       <section className="creatie-paper-section creatie-reviews-v7">
+        <PaperDecor variant="reviews" />
         <div className="creatie-section-shell-v7">
           <div className="creatie-section-heading-v7"><span>{text.reviews}</span><h2>{text.reviewsTitle}</h2></div>
           <div className="creatie-review-cards-v7">
@@ -528,10 +579,21 @@ export function HomePage({ projects, site }: HomePageProps) {
       </section>
 
       <section className="creatie-paper-section creatie-faq-v7">
+        <PaperDecor variant="faq" />
         <div className="creatie-section-shell-v7">
           <div className="creatie-section-heading-v7"><span>{text.faq}</span><h2>{text.faqTitle}</h2></div>
           <div className="creatie-faq-grid-v7">
-            {["What can you design?", "How fast can we start?", "Do you work with developers?", "What do you need from me?"].map((question, index) => <details key={question}><summary>{question}<b>+</b></summary><p>{index === 0 ? "Product strategy, UI/UX, design systems, websites and visual communication." : "Send a short brief and any existing materials. I will turn them into a clear project plan."}</p></details>)}
+            {faqItems.map(([question, answer], index) => {
+              const isOpen = openFaq === index;
+              return (
+                <article key={question} data-open={isOpen ? "true" : "false"}>
+                  <button type="button" onClick={() => setOpenFaq(isOpen ? null : index)} aria-expanded={isOpen} aria-controls={`faq-answer-${index}`}>
+                    <strong>{question}</strong><b aria-hidden="true">+</b>
+                  </button>
+                  <div id={`faq-answer-${index}`} className="creatie-faq-answer-v7"><div><p>{answer}</p></div></div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
