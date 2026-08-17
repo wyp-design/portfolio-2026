@@ -396,11 +396,25 @@ export function HomePage({ projects, site }: HomePageProps) {
         </div>
         <p className="creatie-hero-note-v7"><i />{text.heroNote}</p>
         {featured[0] && (
-          <button type="button" onClick={() => setActiveProject(featured[0])} className="creatie-mini-project-v7" aria-label={`${text.view}: ${t(featured[0].title)}`}>
-            {firstMedia(featured[0]) && <ResilientImage src={firstMedia(featured[0])!.thumbnailUrl || firstMedia(featured[0])!.url} fallbackSrc={firstMedia(featured[0])!.url} alt={t(featured[0].title)} />}
-            <span><small>{t(featured[0].category)} · {featured[0].year}</small><strong>{t(featured[0].title)}</strong><em>{language === "zh" ? "查看案例" : "View case study"}</em></span>
-            <b>&rarr;</b>
-          </button>
+          <div className="creatie-mini-project-stack-v7" aria-label={language === "zh" ? "精选作品" : "Featured projects"}>
+            {featured.slice(0, 3).map((project, index) => {
+              const media = firstMedia(project);
+              return (
+                <button
+                  type="button"
+                  key={project.slug}
+                  onClick={() => setActiveProject(project)}
+                  className="creatie-mini-project-v7"
+                  style={{ "--stack-depth": index } as CSSProperties}
+                  aria-label={`${text.view}: ${t(project.title)}`}
+                >
+                  {media && <ResilientImage src={media.thumbnailUrl || media.url} fallbackSrc={media.url} alt={t(project.title)} />}
+                  <span><small>{t(project.category)} · {project.year}</small><strong>{t(project.title)}</strong><em>{language === "zh" ? "查看案例" : "View case study"}</em></span>
+                  <b>&rarr;</b>
+                </button>
+              );
+            })}
+          </div>
         )}
       </section>
 
