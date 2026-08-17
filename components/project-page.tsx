@@ -153,15 +153,15 @@ export function ProjectPage({ project, nextProject, site }: { project: Project; 
       )}
 
       {activeMedia && lightboxIndex !== null && (
-        <div className="case-v2-lightbox" role="dialog" aria-modal="true">
-          <button className="close" type="button" onClick={() => setLightboxIndex(null)}>×</button>
+        <div className="case-v2-lightbox" role="dialog" aria-modal="true" aria-label="Media preview" onClick={() => setLightboxIndex(null)}>
+          <button className="close" type="button" aria-label="Close preview" onClick={() => setLightboxIndex(null)}>×</button>
           {media.length > 1 && (
             <>
-              <button className="prev" type="button" onClick={() => setLightboxIndex((lightboxIndex - 1 + media.length) % media.length)}>‹</button>
-              <button className="next" type="button" onClick={() => setLightboxIndex((lightboxIndex + 1) % media.length)}>›</button>
+              <button className="prev" type="button" aria-label="Previous media" onClick={(event) => { event.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + media.length) % media.length); }}>‹</button>
+              <button className="next" type="button" aria-label="Next media" onClick={(event) => { event.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % media.length); }}>›</button>
             </>
           )}
-          <div className="case-v2-lightbox-stage">
+          <div className="case-v2-lightbox-stage" onClick={(event) => event.stopPropagation()}>
             {isPdf(activeMedia) ? (
               <iframe src={assetPath(activeMedia.url)} title={activeMedia.originalFilename || "PDF preview"} />
             ) : isVideo(activeMedia) ? (

@@ -152,13 +152,14 @@ function Dock() {
   );
 }
 
-function ProjectCard({ project, index, label }: { project: Project; index: number; label: string }) {
+function ProjectCard({ project, index, label, onOpen }: { project: Project; index: number; label: string; onOpen: (project: Project) => void }) {
   const { t } = useLanguage();
   const media = firstMedia(project);
   const angle = [-4, 2, -2, 3, -3][index % 5];
   return (
-    <Link
-      href={`/projects/${project.slug}`}
+    <button
+      type="button"
+      onClick={() => onOpen(project)}
       className={`creatie-project-card project-${index + 1}`}
       style={{ "--card-angle": `${angle}deg` } as CSSProperties}
       aria-label={`${label}: ${t(project.title)}`}
@@ -180,7 +181,65 @@ function ProjectCard({ project, index, label }: { project: Project; index: numbe
         <strong>{t(project.title)}</strong>
         <span>{t(project.category)}{project.year ? ` / ${project.year}` : ""}</span>
       </footer>
-    </Link>
+    </button>
+  );
+}
+
+function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const { t } = useLanguage();
+  const resolveAssetPath = useAssetPath();
+  const media = project.sections.flatMap((section) => section.media ?? []);
+  const cover = media[0];
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.body.classList.add("is-modal-open");
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.classList.remove("is-modal-open");
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="creatie-project-modal-v7" role="dialog" aria-modal="true" aria-label={t(project.title)} onClick={onClose}>
+      <div className="creatie-project-modal-window-v7" onClick={(event) => event.stopPropagation()}>
+        <div className="creatie-project-modal-bar-v7">
+          <span><i /><i /><i /></span>
+          <small>Case Study / {t(project.category)}</small>
+          <button type="button" onClick={onClose} aria-label="Close project preview">×</button>
+        </div>
+        <div className="creatie-project-modal-body-v7">
+          {cover && <div className="creatie-project-modal-cover-v7"><ResilientImage src={cover.url} fallbackSrc={cover.thumbnailUrl || cover.url} alt={t(project.title)} priority /></div>}
+          <header>
+            <div>
+              <span>{t(project.category)} · {project.year}</span>
+              <h2>{t(project.title)}</h2>
+              <p>{t(project.summary)}</p>
+            </div>
+            <dl>
+              <div><dt>Role</dt><dd>{t(project.role)}</dd></div>
+              <div><dt>Project type</dt><dd>{t(project.category)}</dd></div>
+            </dl>
+          </header>
+          {media.length > 1 && <div className="creatie-project-modal-gallery-v7">
+            {media.slice(1).map((item, index) => item.mimeType?.startsWith("video/") ? (
+              <video key={`${item.url}-${index}`} src={resolveAssetPath(item.url)} controls playsInline />
+            ) : item.mimeType === "application/pdf" ? (
+              <a key={`${item.url}-${index}`} href={resolveAssetPath(item.url)} target="_blank" rel="noreferrer">Open PDF</a>
+            ) : (
+              <ResilientImage key={`${item.url}-${index}`} src={item.url} fallbackSrc={item.thumbnailUrl || item.url} alt={t(item.alt || item.title) || t(project.title)} loading="lazy" />
+            ))}
+          </div>}
+          <footer>
+            <Link href={`/projects/${project.slug}`}>View full project ↗</Link>
+            <button type="button" onClick={onClose}>Close</button>
+          </footer>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -188,6 +247,7 @@ export function HomePage({ projects, site }: HomePageProps) {
   const { language, toggleLanguage, t } = useLanguage();
   const resolveAssetPath = useAssetPath();
   const [photoOpen, setPhotoOpen] = useState(false);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
   const text = copy[language];
   const featured = useMemo(
     () => [...projects].filter((project) => project.featured !== false).sort((a, b) => a.order - b.order).slice(0, 5),
@@ -356,7 +416,7 @@ export function HomePage({ projects, site }: HomePageProps) {
           <h2>{text.projectsTitle}</h2>
         </div>
         <div className="creatie-project-stage-v7">
-          {featured.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} label={text.view} />)}
+          {featured.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} label={text.view} onOpen={setActiveProject} />)}
         </div>
       </section>
 
@@ -400,6 +460,7 @@ export function HomePage({ projects, site }: HomePageProps) {
           <ResilientImage src={site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} onClick={(event) => event.stopPropagation()} />
         </div>
       )}
+      {activeProject && <ProjectPreviewModal project={activeProject} onClose={() => setActiveProject(null)} />}
     </main>
   );
 }
