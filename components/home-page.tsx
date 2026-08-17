@@ -160,16 +160,16 @@ function Dock() {
   return (
     <nav className="creatie-dock" aria-label="Page navigation">
       <a className="creatie-dock-app app-notes" href="#about" aria-label="About" data-label="About">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 8h26v32H11z" /><path d="M11 8h26v9H11z" /><path d="M16 23h16M16 28h16M16 33h12" /></svg>
+        <ResilientImage src="/icons/mac/notes.svg" alt="" aria-hidden="true" />
       </a>
       <a className="creatie-dock-app app-photos" href="#work" aria-label="Projects" data-label="Projects">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><g><ellipse cx="24" cy="13" rx="7" ry="11" /><ellipse cx="35" cy="20" rx="7" ry="11" transform="rotate(60 35 20)" /><ellipse cx="34" cy="32" rx="7" ry="11" transform="rotate(120 34 32)" /><ellipse cx="23" cy="35" rx="7" ry="11" /><ellipse cx="13" cy="29" rx="7" ry="11" transform="rotate(60 13 29)" /><ellipse cx="14" cy="18" rx="7" ry="11" transform="rotate(120 14 18)" /></g><circle cx="24" cy="24" r="6" /></svg>
+        <ResilientImage src="/icons/mac/photos.svg" alt="" aria-hidden="true" />
       </a>
       <a className="creatie-dock-app app-finder" href="#services" aria-label="Services" data-label="Services">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6v36" /><path d="M17 18v4M32 18v4" /><path d="M17 31c4 4 10 4 14 0" /></svg>
+        <ResilientImage src="/icons/mac/finder.svg" alt="" aria-hidden="true" />
       </a>
       <a className="creatie-dock-app app-mail" href="#contact" aria-label="Contact" data-label="Contact">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="11" width="34" height="26" rx="5" /><path d="m9 15 15 12 15-12" /></svg>
+        <ResilientImage src="/icons/mac/mail.svg" alt="" aria-hidden="true" />
       </a>
     </nav>
   );
