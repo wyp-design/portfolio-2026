@@ -341,8 +341,8 @@ export function HomePage({ projects, site }: HomePageProps) {
     return (marked.length >= 5 ? marked : ordered).slice(0, 5);
   }, [projects]);
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
-  const heroBackground = resolveAssetPath("/images/hero-gradient-08.webp");
-  const landscapeBackground = resolveAssetPath("/images/creatie-bg.avif");
+  const heroBackground = resolveAssetPath("/images/ai-bg-081.webp");
+  const landscapeBackground = heroBackground;
   const contactBackground = resolveAssetPath("/images/contact-gradient-02.webp");
   const profileSummary = language === "zh"
     ? "9 年产品与体验设计经验，专注 UI/UX、AI 设计和跨端体验，让复杂业务变得清晰、可信且真正好用。"
