@@ -332,6 +332,8 @@ export function HomePage({ projects, site }: HomePageProps) {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [projectStackOpen, setProjectStackOpen] = useState(false);
+  const projectStackCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const text = copy[language];
   const featured = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order);
@@ -339,7 +341,9 @@ export function HomePage({ projects, site }: HomePageProps) {
     return (marked.length >= 5 ? marked : ordered).slice(0, 5);
   }, [projects]);
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
-  const heroBackground = resolveAssetPath("/images/creatie-bg.avif");
+  const heroBackground = resolveAssetPath("/images/hero-gradient-08.webp");
+  const landscapeBackground = resolveAssetPath("/images/creatie-bg.avif");
+  const contactBackground = resolveAssetPath("/images/contact-gradient-02.webp");
   const profileSummary = language === "zh"
     ? "9 年产品与体验设计经验，专注 UI/UX、AI 设计和跨端体验，让复杂业务变得清晰、可信且真正好用。"
     : "9 years shaping UI/UX, AI-assisted design and cross-platform products into clear, useful digital experiences.";
@@ -397,6 +401,18 @@ export function HomePage({ projects, site }: HomePageProps) {
     event.preventDefault();
     rail.scrollLeft += event.deltaY;
   };
+  const openProjectStack = () => {
+    if (projectStackCloseTimer.current) clearTimeout(projectStackCloseTimer.current);
+    setProjectStackOpen(true);
+  };
+  const scheduleProjectStackClose = () => {
+    if (projectStackCloseTimer.current) clearTimeout(projectStackCloseTimer.current);
+    projectStackCloseTimer.current = setTimeout(() => setProjectStackOpen(false), 180);
+  };
+
+  useEffect(() => () => {
+    if (projectStackCloseTimer.current) clearTimeout(projectStackCloseTimer.current);
+  }, []);
 
   return (
     <main className="creatie-page-v7">
@@ -444,7 +460,15 @@ export function HomePage({ projects, site }: HomePageProps) {
         </div>
         <p className="creatie-hero-note-v7"><i />{text.heroNote}</p>
         {featured[0] && (
-          <div className="creatie-mini-project-stack-v7" aria-label={language === "zh" ? "精选作品" : "Featured projects"}>
+          <div
+            className="creatie-mini-project-stack-v7"
+            data-open={projectStackOpen ? "true" : "false"}
+            onPointerEnter={openProjectStack}
+            onPointerLeave={scheduleProjectStackClose}
+            onFocus={openProjectStack}
+            onBlur={scheduleProjectStackClose}
+            aria-label={language === "zh" ? "精选作品" : "Featured projects"}
+          >
             {featured.slice(0, 3).map((project, index) => {
               const media = firstMedia(project);
               return (
@@ -546,7 +570,7 @@ export function HomePage({ projects, site }: HomePageProps) {
         </div>
       </section>
 
-      <section id="work" className="creatie-landscape-section creatie-work-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(241,238,217,.08), rgba(40,61,38,.12)), url("${heroBackground}")` }}>
+      <section id="work" className="creatie-landscape-section creatie-work-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(241,238,217,.08), rgba(40,61,38,.12)), url("${landscapeBackground}")` }}>
         <div className="creatie-section-heading-v7 dark-heading">
           <span>{text.projects}</span>
           <h2>{text.projectsTitle}</h2>
@@ -598,7 +622,7 @@ export function HomePage({ projects, site }: HomePageProps) {
         </div>
       </section>
 
-      <section id="contact" className="creatie-contact-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(20,48,43,.04), rgba(20,48,43,.16)), url("${heroBackground}")` }}>
+      <section id="contact" className="creatie-contact-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04)), url("${contactBackground}")` }}>
         <div><span>{text.contact}</span><h2>{text.contactTitle}</h2><a href={`mailto:${site.email}`}>{text.start} &rarr;</a></div>
         <footer><strong>{site.name}</strong><nav>{site.social.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}</a>)}</nav></footer>
       </section>
