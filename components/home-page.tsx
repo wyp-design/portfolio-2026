@@ -267,7 +267,16 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
         </div>
       </div>
       {zoomedMedia && (
-        <div className="creatie-project-image-lightbox-v7" role="dialog" aria-modal="true" aria-label="Image preview" onClick={() => setZoomedMedia(null)}>
+        <div
+          className="creatie-project-image-lightbox-v7"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview"
+          onClick={(event) => {
+            event.stopPropagation();
+            setZoomedMedia(null);
+          }}
+        >
           <button type="button" onClick={() => setZoomedMedia(null)} aria-label="Close image preview">×</button>
           <ResilientImage src={zoomedMedia.url} fallbackSrc={zoomedMedia.thumbnailUrl || zoomedMedia.url} alt={t(zoomedMedia.alt || zoomedMedia.title) || t(project.title)} onClick={(event) => event.stopPropagation()} />
         </div>
