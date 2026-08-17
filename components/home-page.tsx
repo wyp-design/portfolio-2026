@@ -23,7 +23,7 @@ const copy = {
     available: "\u53ef\u63a5\u53d7\u65b0\u7684\u5408\u4f5c",
     heroA: "\u8bbe\u8ba1\u8ba9\u590d\u6742",
     heroB: "\u53d8\u5f97\u6e05\u6670",
-    heroNote: "\u4e0d\u53ea\u5173\u6ce8\u89c6\u89c9\uff0c\u4e5f\u8ba9\u6570\u5b57\u4f53\u9a8c\u771f\u6b63\u597d\u7528\u3002",
+    heroNote: "\u4e0d\u53ea\u5173\u6ce8\u89c6\u89c9\uff0c\u4e5f\u8ba9\u6570\u5b57\u4f53\u9a8c\u6e05\u6670\u3001\u53ef\u4fe1\u3001\u771f\u6b63\u597d\u7528\u3002",
     about: "\u5173\u4e8e\u6211",
     aboutTitle: "\u6211\u505a\u8ba9\u4eba\u8bb0\u5f97\u4f4f\u7684\u8bbe\u8ba1",
     projects: "\u4f5c\u54c1\u96c6",
@@ -50,7 +50,7 @@ const copy = {
     available: "Available for new work",
     heroA: "Design makes",
     heroB: "complexity clear",
-    heroNote: "Not just visuals. I make digital experiences clear and useful.",
+    heroNote: "Not just visuals. I make digital experiences clear, trusted and genuinely useful.",
     about: "About",
     aboutTitle: "I make designs people remember",
     projects: "Projects",
@@ -296,6 +296,7 @@ export function HomePage({ projects, site }: HomePageProps) {
   const resolveAssetPath = useAssetPath();
   const [photoOpen, setPhotoOpen] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
   const text = copy[language];
   const featured = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order);
@@ -304,6 +305,9 @@ export function HomePage({ projects, site }: HomePageProps) {
   }, [projects]);
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
   const heroBackground = resolveAssetPath("/images/creatie-bg.avif");
+  const profileSummary = language === "zh"
+    ? "9 年产品与体验设计经验，专注 UI/UX、AI 设计和跨端体验，让复杂业务变得清晰、可信且真正好用。"
+    : "9 years shaping UI/UX, AI-assisted design and cross-platform products into clear, useful digital experiences.";
   const aboutRailRef = useRef<HTMLDivElement>(null);
   const aboutDragRef = useRef({ active: false, startX: 0, scrollLeft: 0 });
   const aboutSummary =
@@ -354,26 +358,49 @@ export function HomePage({ projects, site }: HomePageProps) {
       <section className="creatie-hero-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(15,34,33,.08), rgba(12,29,27,.22)), url("${heroBackground}")` }}>
         <header className="creatie-topbar-v7">
           <a href="#top" className="creatie-brand-v7">{site.name || "CREATIE"}</a>
-          <button type="button" onClick={toggleLanguage}>{language === "zh" ? "EN" : "CN"}</button>
+          <div className="creatie-language-v7">
+            <button type="button" className="creatie-language-trigger-v7" aria-label="Choose language">
+              {language === "zh" ? "CN" : "EN"}<i />
+            </button>
+            <div className="creatie-language-menu-v7" role="menu">
+              <span>LANGUAGE</span>
+              <button type="button" className={language === "zh" ? "is-active" : ""} onClick={() => language !== "zh" && toggleLanguage()}>中文 <b>CN</b></button>
+              <button type="button" className={language === "en" ? "is-active" : ""} onClick={() => language !== "en" && toggleLanguage()}>English <b>EN</b></button>
+            </div>
+          </div>
         </header>
-        <div id="top" className="creatie-status-v7">
-          {site.aboutPhoto?.url ? <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} /> : <span className="creatie-avatar-fallback">PW</span>}
-          <span><i />{text.available}<strong>{site.name} / {t(site.shortRole)}</strong></span>
-        </div>
+        <aside
+          id="top"
+          className="creatie-status-v7"
+          data-open={profileOpen ? "true" : "false"}
+          onMouseEnter={() => setProfileOpen(true)}
+          onMouseLeave={() => setProfileOpen(false)}
+        >
+          <button type="button" className="creatie-status-trigger-v7" onClick={() => setProfileOpen((open) => !open)} aria-expanded={profileOpen}>
+            {site.aboutPhoto?.url ? <ResilientImage src={site.aboutPhoto.thumbnailUrl || site.aboutPhoto.url} fallbackSrc={site.aboutPhoto.url} alt={site.name} /> : <span className="creatie-avatar-fallback">PW</span>}
+            <span><i />{text.available}<strong>{site.name} / {t(site.shortRole)}</strong></span>
+            <b className="creatie-status-toggle-v7">{profileOpen ? "−" : "+"}</b>
+          </button>
+          <div className="creatie-status-details-v7">
+            <p>{profileSummary}</p>
+            <div><span>UI/UX Design</span><span>AI Design</span><span>Product Experience</span></div>
+            <a href={`mailto:${site.email}`}>{language === "zh" ? "联系合作" : "Start a project"}<b>↗</b></a>
+          </div>
+        </aside>
         <div className="creatie-hero-title-v7">
           <span className="creatie-eyes-static" aria-hidden="true"><i /><i /></span>
           <h1><span>{text.heroA}</span><span>{text.heroB}</span></h1>
-          <div className="creatie-skill-tag tag-a">UI/UX Design</div>
-          <div className="creatie-skill-tag tag-b">AI Design</div>
-          <div className="creatie-skill-tag tag-c">Visual</div>
+          <div className="creatie-skill-tag tag-a"><i>✦</i>UI/UX Design<em /></div>
+          <div className="creatie-skill-tag tag-b"><i>⌁</i>AI Design<em /></div>
+          <div className="creatie-skill-tag tag-c"><i>◈</i>Visual Design<em /></div>
         </div>
-        <p className="creatie-hero-note-v7">{text.heroNote}</p>
+        <p className="creatie-hero-note-v7"><i />{text.heroNote}</p>
         {featured[0] && (
-          <Link href={`/projects/${featured[0].slug}`} className="creatie-mini-project-v7">
+          <button type="button" onClick={() => setActiveProject(featured[0])} className="creatie-mini-project-v7" aria-label={`${text.view}: ${t(featured[0].title)}`}>
             {firstMedia(featured[0]) && <ResilientImage src={firstMedia(featured[0])!.thumbnailUrl || firstMedia(featured[0])!.url} fallbackSrc={firstMedia(featured[0])!.url} alt={t(featured[0].title)} />}
-            <span>{t(featured[0].category)}<strong>{t(featured[0].title)}</strong></span>
+            <span><small>{t(featured[0].category)} · {featured[0].year}</small><strong>{t(featured[0].title)}</strong><em>{language === "zh" ? "查看案例" : "View case study"}</em></span>
             <b>&rarr;</b>
-          </Link>
+          </button>
         )}
       </section>
 
