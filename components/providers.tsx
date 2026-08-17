@@ -15,8 +15,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const lenis = new Lenis({
       duration: 1.1,
       smoothWheel: true,
-      prevent: (node) => Boolean(node.closest(".case-work-modal")),
+      prevent: (node) => Boolean(node.closest(".case-work-modal, .case-v2-lightbox, .creatie-photo-modal-v7, .creatie-project-modal-v7")),
     });
+    const stopForModal = () => lenis.stop();
+    const resumeAfterModal = () => lenis.start();
+    window.addEventListener("portfolio:modal-open", stopForModal);
+    window.addEventListener("portfolio:modal-close", resumeAfterModal);
     let frame = 0;
     const raf = (time: number) => {
       lenis.raf(time);
@@ -25,6 +29,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     frame = requestAnimationFrame(raf);
     return () => {
       cancelAnimationFrame(frame);
+      window.removeEventListener("portfolio:modal-open", stopForModal);
+      window.removeEventListener("portfolio:modal-close", resumeAfterModal);
       lenis.destroy();
     };
   }, []);

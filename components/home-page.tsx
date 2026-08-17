@@ -192,13 +192,32 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
   const cover = media[0];
 
   useEffect(() => {
+    const scrollY = window.scrollY;
+    const previousBodyStyles = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     document.body.classList.add("is-modal-open");
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    window.dispatchEvent(new Event("portfolio:modal-open"));
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.classList.remove("is-modal-open");
+      Object.assign(document.body.style, previousBodyStyles);
+      window.scrollTo(0, scrollY);
+      window.dispatchEvent(new Event("portfolio:modal-close"));
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [onClose]);
