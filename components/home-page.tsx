@@ -188,6 +188,7 @@ function ProjectCard({ project, index, label, onOpen }: { project: Project; inde
 function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: () => void }) {
   const { t } = useLanguage();
   const resolveAssetPath = useAssetPath();
+  const [zoomedMedia, setZoomedMedia] = useState<UploadedMedia | null>(null);
   const media = project.sections.flatMap((section) => section.media ?? []);
   const cover = media[0];
 
@@ -201,9 +202,6 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
       width: document.body.style.width,
       overflow: document.body.style.overflow,
     };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
     document.body.classList.add("is-modal-open");
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollY}px`;
@@ -212,15 +210,23 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
     document.body.style.width = "100%";
     document.body.style.overflow = "hidden";
     window.dispatchEvent(new Event("portfolio:modal-open"));
-    window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.classList.remove("is-modal-open");
       Object.assign(document.body.style, previousBodyStyles);
       window.scrollTo(0, scrollY);
       window.dispatchEvent(new Event("portfolio:modal-close"));
-      window.removeEventListener("keydown", onKeyDown);
     };
   }, [onClose]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (zoomedMedia) setZoomedMedia(null);
+      else onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose, zoomedMedia]);
 
   return (
     <div className="creatie-project-modal-v7" role="dialog" aria-modal="true" aria-label={t(project.title)} onClick={onClose}>
@@ -231,7 +237,7 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
           <button type="button" onClick={onClose} aria-label="Close project preview">×</button>
         </div>
         <div className="creatie-project-modal-body-v7">
-          {cover && <div className="creatie-project-modal-cover-v7"><ResilientImage src={cover.url} fallbackSrc={cover.thumbnailUrl || cover.url} alt={t(project.title)} priority /></div>}
+          {cover && <button type="button" className="creatie-project-modal-cover-v7 is-zoomable" onClick={() => setZoomedMedia(cover)} aria-label={`Enlarge ${t(project.title)}`}><ResilientImage src={cover.url} fallbackSrc={cover.thumbnailUrl || cover.url} alt={t(project.title)} priority /></button>}
           <header>
             <div>
               <span>{t(project.category)} · {project.year}</span>
@@ -249,7 +255,9 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
             ) : item.mimeType === "application/pdf" ? (
               <a key={`${item.url}-${index}`} href={resolveAssetPath(item.url)} target="_blank" rel="noreferrer">Open PDF</a>
             ) : (
-              <ResilientImage key={`${item.url}-${index}`} src={item.url} fallbackSrc={item.thumbnailUrl || item.url} alt={t(item.alt || item.title) || t(project.title)} loading="lazy" />
+              <button key={`${item.url}-${index}`} type="button" className="creatie-project-modal-gallery-image-v7" onClick={() => setZoomedMedia(item)} aria-label={`Enlarge ${t(item.alt || item.title) || t(project.title)}`}>
+                <ResilientImage src={item.url} fallbackSrc={item.thumbnailUrl || item.url} alt={t(item.alt || item.title) || t(project.title)} loading="lazy" />
+              </button>
             ))}
           </div>}
           <footer>
@@ -258,6 +266,12 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
           </footer>
         </div>
       </div>
+      {zoomedMedia && (
+        <div className="creatie-project-image-lightbox-v7" role="dialog" aria-modal="true" aria-label="Image preview" onClick={() => setZoomedMedia(null)}>
+          <button type="button" onClick={() => setZoomedMedia(null)} aria-label="Close image preview">×</button>
+          <ResilientImage src={zoomedMedia.url} fallbackSrc={zoomedMedia.thumbnailUrl || zoomedMedia.url} alt={t(zoomedMedia.alt || zoomedMedia.title) || t(project.title)} onClick={(event) => event.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }
