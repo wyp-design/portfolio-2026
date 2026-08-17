@@ -194,6 +194,7 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
 
   useEffect(() => {
     const scrollY = window.scrollY;
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior;
     const previousBodyStyles = {
       position: document.body.style.position,
       top: document.body.style.top,
@@ -212,9 +213,14 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
     window.dispatchEvent(new Event("portfolio:modal-open"));
     return () => {
       document.body.classList.remove("is-modal-open");
+      document.documentElement.style.scrollBehavior = "auto";
       Object.assign(document.body.style, previousBodyStyles);
-      window.scrollTo(0, scrollY);
-      window.dispatchEvent(new Event("portfolio:modal-close"));
+      window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+      window.dispatchEvent(new CustomEvent("portfolio:modal-close", { detail: { scrollY } }));
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      });
     };
   }, [onClose]);
 

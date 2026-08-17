@@ -18,7 +18,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
       prevent: (node) => Boolean(node.closest(".case-work-modal, .case-v2-lightbox, .creatie-photo-modal-v7, .creatie-project-modal-v7")),
     });
     const stopForModal = () => lenis.stop();
-    const resumeAfterModal = () => lenis.start();
+    const resumeAfterModal = (event: Event) => {
+      const restoredScrollY = (event as CustomEvent<{ scrollY?: number }>).detail?.scrollY;
+      if (typeof restoredScrollY === "number") {
+        lenis.scrollTo(restoredScrollY, { immediate: true, force: true });
+      }
+      lenis.start();
+    };
     window.addEventListener("portfolio:modal-open", stopForModal);
     window.addEventListener("portfolio:modal-close", resumeAfterModal);
     let frame = 0;
