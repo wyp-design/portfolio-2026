@@ -4059,6 +4059,9 @@ button {
 .creatie-section-shell-v7 { width: min(1400px, 100%); margin: 0 auto; padding: 108px 40px; }
 .creatie-section-heading-v7 { max-width: 590px; margin: 0 auto 64px; text-align: center; }
 .creatie-section-heading-v7 span { display: inline-block; margin-bottom: 14px; padding: 8px 15px; border-radius: 7px; background: white; box-shadow: 5px 6px 0 rgba(0,0,0,.1); font-size: 14px; transform: rotate(-3deg); }
+.creatie-section-heading-v7 > span.rich-size-small { font-size: 12px !important; }
+.creatie-section-heading-v7 > span.rich-size-medium { font-size: 14px !important; }
+.creatie-section-heading-v7 > span.rich-size-large { font-size: 16px !important; }
 .creatie-section-heading-v7 h2 { font-size: 48px; line-height: .95; letter-spacing: -.05em; text-transform: uppercase; }
 .dark-heading { color: white; }
 .dark-heading > span { color: #171a18; }
