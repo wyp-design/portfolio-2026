@@ -829,7 +829,28 @@
           "mediaLayout": "square-gallery",
           "tableAlign": "center"
         }
-      ]
+      ],
+      "cover": {
+        "_type": "image",
+        "url": "/uploads/1787042689608-ddb2b35a-6a4f-439d-968d-ea27df3fef07-Mask-group-1.jpg",
+        "thumbnailUrl": "/uploads/thumbnails/1787042691025-1e39e4c1-7ab6-44a0-ab12-cabc9ca82e55-Mask-group-1-thumbnail.jpg",
+        "mimeType": "image/jpeg",
+        "originalFilename": "Mask group-1.jpg",
+        "title": {
+          "zh": "Mask group-1",
+          "en": "Mask group-1"
+        },
+        "alt": {
+          "zh": "Mask group-1.jpg",
+          "en": "Mask group-1.jpg"
+        },
+        "caption": {
+          "zh": "",
+          "en": ""
+        },
+        "layout": "auto",
+        "textPosition": "right"
+      }
     },
     {
       "slug": "web",
@@ -855,17 +876,17 @@
       "featured": true,
       "cover": {
         "_type": "image",
-        "url": "/uploads/1782958477215-bb930001-68c5-4217-a1a1-d7a2a10c19a2-10.jpg",
-        "thumbnailUrl": "/uploads/thumbnails/1782958479589-8c1e6696-32b1-4f96-b76a-cbd0211820ac-10-thumbnail.jpg",
+        "url": "/uploads/1787042729730-79933e15-8d4d-42c3-ac6a-49a8e62dcd9a-Mask-group-2.jpg",
+        "thumbnailUrl": "/uploads/thumbnails/1787042731240-141041de-2aa0-4332-bdef-8716e41621de-Mask-group-2-thumbnail.jpg",
         "mimeType": "image/jpeg",
-        "originalFilename": "10.jpg",
+        "originalFilename": "Mask group-2.jpg",
         "title": {
-          "zh": "Web 类临时封面",
-          "en": "Temporary Web cover"
+          "zh": "Mask group-2",
+          "en": "Mask group-2"
         },
         "alt": {
-          "zh": "Web 类作品占位图",
-          "en": "Web portfolio placeholder"
+          "zh": "Mask group-2.jpg",
+          "en": "Mask group-2.jpg"
         },
         "caption": {
           "zh": "",
@@ -923,17 +944,17 @@
       "featured": true,
       "cover": {
         "_type": "image",
-        "url": "/uploads/1782889250481-3fc9b355-50c3-46ac-a8a3-c63b44331939-image-1.png",
-        "thumbnailUrl": "/uploads/thumbnails/1782889253057-28ff1664-43c7-498f-bda6-5c6c4fd710e8-image-1-thumbnail.jpg",
-        "mimeType": "image/png",
-        "originalFilename": "image-1.png",
+        "url": "/uploads/1787042866846-1bcb340f-b420-43a0-8718-43d9afa842fc-Mask-group-4.jpg",
+        "thumbnailUrl": "/uploads/thumbnails/1787042868240-f40ae1fc-4ae1-4b80-ada6-46a7312847ea-Mask-group-4-thumbnail.jpg",
+        "mimeType": "image/jpeg",
+        "originalFilename": "Mask group-4.jpg",
         "title": {
-          "zh": "App 类临时封面",
-          "en": "Temporary App cover"
+          "zh": "Mask group-4",
+          "en": "Mask group-4"
         },
         "alt": {
-          "zh": "App 类作品占位图",
-          "en": "App portfolio placeholder"
+          "zh": "Mask group-4.jpg",
+          "en": "Mask group-4.jpg"
         },
         "caption": {
           "zh": "",
@@ -1185,8 +1206,29 @@
           "tableAlign": "center",
           "mediaLayout": "square-gallery"
         }
-      ]
+      ],
+      "cover": {
+        "_type": "image",
+        "url": "/uploads/1787042909999-7790edbb-4c12-4a2e-9ce1-14f2a14e8972-Mask-group-3.jpg",
+        "thumbnailUrl": "/uploads/thumbnails/1787042911143-eee57c20-dee6-49bb-998c-3f73ce00040f-Mask-group-3-thumbnail.jpg",
+        "mimeType": "image/jpeg",
+        "originalFilename": "Mask group-3.jpg",
+        "title": {
+          "zh": "Mask group-3",
+          "en": "Mask group-3"
+        },
+        "alt": {
+          "zh": "Mask group-3.jpg",
+          "en": "Mask group-3.jpg"
+        },
+        "caption": {
+          "zh": "",
+          "en": ""
+        },
+        "layout": "auto",
+        "textPosition": "right"
+      }
     }
   ],
-  "updatedAt": "2026-08-18T08:41:09.014Z"
+  "updatedAt": "2026-08-18T08:48:41.228Z"
 }
