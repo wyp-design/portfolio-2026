@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   useEffect,
   useMemo,
@@ -233,8 +232,16 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
   const { t } = useLanguage();
   const resolveAssetPath = useAssetPath();
   const [zoomedMedia, setZoomedMedia] = useState<UploadedMedia | null>(null);
-  const media = project.sections.flatMap((section) => section.media ?? []);
-  const cover = media[0];
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const activeSection = project.sections[activeSectionIndex] ?? project.sections[0];
+  const activeMedia = activeSection?.media ?? [];
+  const cover = project.cover?.url ? project.cover : activeMedia[0];
+  const galleryMedia = activeMedia.filter((item) => item.url !== cover?.url);
+
+  useEffect(() => {
+    setActiveSectionIndex(0);
+    setZoomedMedia(null);
+  }, [project.slug]);
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -299,8 +306,30 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
               <div><dt>Project type</dt><dd>{t(project.category)}</dd></div>
             </dl>
           </header>
-          {media.length > 1 && <div className="creatie-project-modal-gallery-v7">
-            {media.slice(1).map((item, index) => item.mimeType?.startsWith("video/") ? (
+          {project.sections.length > 0 && (
+            <nav className="creatie-project-tabs-v7" aria-label={t(project.title)}>
+              {project.sections.map((section, index) => (
+                <button
+                  key={`${section.title.en}-${index}`}
+                  type="button"
+                  className={index === activeSectionIndex ? "is-active" : ""}
+                  onClick={() => setActiveSectionIndex(index)}
+                  aria-pressed={index === activeSectionIndex}
+                >
+                  {t(section.tabLabel || { zh: `项目${["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"][index] || index + 1}`, en: `Project ${index + 1}` })}
+                </button>
+              ))}
+            </nav>
+          )}
+          {activeSection && (
+            <section className="creatie-project-subproject-v7">
+              <span>{t(activeSection.eyebrow)}</span>
+              <h3 className={richStyleClass(activeSection.titleStyle)} style={{ textAlign: activeSection.titleAlign || "left" }}>{t(activeSection.title)}</h3>
+              <p className={richStyleClass(activeSection.bodyStyle)} style={{ textAlign: activeSection.bodyAlign || "left" }}>{t(activeSection.body)}</p>
+            </section>
+          )}
+          {galleryMedia.length > 0 && <div className="creatie-project-modal-gallery-v7">
+            {galleryMedia.map((item, index) => item.mimeType?.startsWith("video/") ? (
               <video key={`${item.url}-${index}`} src={resolveAssetPath(item.url)} controls playsInline />
             ) : item.mimeType === "application/pdf" ? (
               <a key={`${item.url}-${index}`} href={resolveAssetPath(item.url)} target="_blank" rel="noreferrer">Open PDF</a>
@@ -311,7 +340,6 @@ function ProjectPreviewModal({ project, onClose }: { project: Project; onClose: 
             ))}
           </div>}
           <footer>
-            <Link href={`/projects/${project.slug}`}>View full project ↗</Link>
             <button type="button" onClick={onClose}>Close</button>
           </footer>
         </div>

@@ -91,8 +91,10 @@ const emptySite: SiteContent = {
   social: [],
 };
 
-function createSection(): ProjectSection {
+function createSection(index = 0): ProjectSection {
+  const chineseNumber = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"][index] || String(index + 1);
   return {
+    tabLabel: { zh: `项目${chineseNumber}`, en: `Project ${index + 1}` },
     eyebrow: { zh: "背景", en: "Context" },
     title: { zh: "项目标题", en: "Project title" },
     body: { zh: "这里写项目详情。", en: "Write project details here." },
@@ -513,16 +515,26 @@ export function AdminPage() {
 
   function addSection() {
     if (!selectedProject) return;
-    updateSelectedProject({ ...selectedProject, sections: [...selectedProject.sections, createSection()] });
+    updateSelectedProject({ ...selectedProject, sections: [...selectedProject.sections, createSection(selectedProject.sections.length)] });
     setUploadSectionIndex(selectedProject.sections.length);
   }
 
   function removeSection(sectionIndex: number) {
     if (!selectedProject) return;
-    if (!confirm("确定要删除这个详情段落吗？")) return;
+    if (!confirm("确定要删除分类下的这个项目吗？")) return;
     const sections = selectedProject.sections.filter((_, index) => index !== sectionIndex);
     updateSelectedProject({ ...selectedProject, sections });
     setUploadSectionIndex(0);
+  }
+
+  function moveSection(sectionIndex: number, direction: -1 | 1) {
+    if (!selectedProject) return;
+    const nextIndex = sectionIndex + direction;
+    if (nextIndex < 0 || nextIndex >= selectedProject.sections.length) return;
+    const sections = [...selectedProject.sections];
+    [sections[sectionIndex], sections[nextIndex]] = [sections[nextIndex], sections[sectionIndex]];
+    updateSelectedProject({ ...selectedProject, sections });
+    setUploadSectionIndex(nextIndex);
   }
 
   function removeMedia(sectionIndex: number, mediaIndex: number) {
@@ -1256,8 +1268,8 @@ export function AdminPage() {
 
         <section className="admin-panel admin-projects">
           <div className="admin-panel-heading">
-            <h2>项目列表</h2>
-            <button onClick={addProject}>新增项目</button>
+            <h2>分类卡片列表</h2>
+            <button onClick={addProject}>新增分类</button>
           </div>
 
           <div className="admin-project-list">
@@ -1291,7 +1303,7 @@ export function AdminPage() {
         {selectedProject ? (
           <section className="admin-panel admin-editor">
             <div className="admin-panel-heading">
-              <h2>编辑项目</h2>
+              <h2>编辑分类卡片</h2>
               <div>
                 <button onClick={() => moveProject(selectedIndex, -1)}>上移</button>
                 <button onClick={() => moveProject(selectedIndex, 1)}>下移</button>
@@ -1301,7 +1313,7 @@ export function AdminPage() {
 
             <div className="admin-form-grid">
               <label>
-                页面地址 Slug（内部链接用，不是外部链接）
+                分类标识 Slug
                 <input
                   value={selectedProject.slug}
                   onChange={(event) => updateSelectedProject({ ...selectedProject, slug: slugify(event.target.value) })}
@@ -1339,10 +1351,10 @@ export function AdminPage() {
                 />
                 是否精选
               </label>
-              {renderLocalized("项目标题", selectedProject.title, (value) =>
+              {renderLocalized("分类标题", selectedProject.title, (value) =>
                 updateSelectedProject({ ...selectedProject, title: value }),
               )}
-              {renderLocalized("项目摘要", selectedProject.summary, (value) =>
+              {renderLocalized("分类摘要", selectedProject.summary, (value) =>
                 updateSelectedProject({ ...selectedProject, summary: value }),
                 true,
               )}
@@ -1406,14 +1418,18 @@ export function AdminPage() {
 
             <div className="admin-subsection">
               <div className="admin-panel-heading">
-                <h3>项目详情段落</h3>
-                <button type="button" onClick={addSection}>新增段落</button>
+                <h3>分类下项目</h3>
+                <button type="button" onClick={addSection}>新增项目</button>
               </div>
               {selectedProject.sections.map((section, sectionIndex) => (
                 <div className="admin-section-card" key={`${section.title.en}-${sectionIndex}`}>
                   <div className="admin-panel-heading">
-                    <h4>段落 {sectionIndex + 1}</h4>
-                    <button type="button" className="danger" onClick={() => removeSection(sectionIndex)}>删除段落</button>
+                    <h4>项目 {sectionIndex + 1}</h4>
+                    <div>
+                      <button type="button" onClick={() => moveSection(sectionIndex, -1)} disabled={sectionIndex === 0}>上移</button>
+                      <button type="button" onClick={() => moveSection(sectionIndex, 1)} disabled={sectionIndex === selectedProject.sections.length - 1}>下移</button>
+                      <button type="button" className="danger" onClick={() => removeSection(sectionIndex)}>删除项目</button>
+                    </div>
                   </div>
                   <label>
                     背景色
@@ -1427,13 +1443,14 @@ export function AdminPage() {
                       <option value="lime">绿色</option>
                     </select>
                   </label>
-                  {renderLocalized("段落眉题", section.eyebrow, (value) => updateSection(sectionIndex, { ...section, eyebrow: value }))}
-                  {renderLocalized("段落标题", section.title, (value) => updateSection(sectionIndex, { ...section, title: value }))}
-                  {renderStyleControls("段落标题字体", section.titleStyle, (value) => updateSection(sectionIndex, { ...section, titleStyle: value }))}
-                  {renderAlignControls("段落标题对齐", section.titleAlign, (value) => updateSection(sectionIndex, { ...section, titleAlign: value }))}
-                  {renderLocalized("段落正文", section.body, (value) => updateSection(sectionIndex, { ...section, body: value }), true)}
-                  {renderStyleControls("段落正文字体", section.bodyStyle, (value) => updateSection(sectionIndex, { ...section, bodyStyle: value }))}
-                  {renderAlignControls("段落正文对齐", section.bodyAlign, (value) => updateSection(sectionIndex, { ...section, bodyAlign: value }))}
+                  {renderLocalized("项目 Tab 名称", section.tabLabel || { zh: `项目${sectionIndex + 1}`, en: `Project ${sectionIndex + 1}` }, (value) => updateSection(sectionIndex, { ...section, tabLabel: value }))}
+                  {renderLocalized("项目眉题", section.eyebrow, (value) => updateSection(sectionIndex, { ...section, eyebrow: value }))}
+                  {renderLocalized("项目标题", section.title, (value) => updateSection(sectionIndex, { ...section, title: value }))}
+                  {renderStyleControls("项目标题字体", section.titleStyle, (value) => updateSection(sectionIndex, { ...section, titleStyle: value }))}
+                  {renderAlignControls("项目标题对齐", section.titleAlign, (value) => updateSection(sectionIndex, { ...section, titleAlign: value }))}
+                  {renderLocalized("项目说明", section.body, (value) => updateSection(sectionIndex, { ...section, body: value }), true)}
+                  {renderStyleControls("项目说明字体", section.bodyStyle, (value) => updateSection(sectionIndex, { ...section, bodyStyle: value }))}
+                  {renderAlignControls("项目说明对齐", section.bodyAlign, (value) => updateSection(sectionIndex, { ...section, bodyAlign: value }))}
                   {renderAlignControls("表格内容对齐", section.tableAlign, (value) => updateSection(sectionIndex, { ...section, tableAlign: value }))}
                   <label>
                     媒体展示方式
@@ -1519,11 +1536,11 @@ export function AdminPage() {
 
             <div className="admin-upload">
               <label>
-                上传到哪个详情段落
+                上传到哪个项目
                 <select value={uploadSectionIndex} onChange={(event) => setUploadSectionIndex(Number(event.target.value))}>
                   {selectedProject.sections.map((section, index) => (
                     <option key={`${section.title.en}-${index}`} value={index}>
-                      段落 {index + 1}：{section.title.zh || section.title.en}
+                      {section.tabLabel?.zh || section.tabLabel?.en || `项目 ${index + 1}`}：{section.title.zh || section.title.en}
                     </option>
                   ))}
                 </select>

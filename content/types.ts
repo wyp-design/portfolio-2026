@@ -111,6 +111,7 @@ export type Project = {
   externalUrl?: string;
   metrics?: Array<{ value: string; label: LocalizedText }>;
   sections: Array<{
+    tabLabel?: LocalizedText;
     eyebrow: LocalizedText;
     title: LocalizedText;
     body: LocalizedText;

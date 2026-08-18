@@ -4146,13 +4146,21 @@ button {
 .creatie-project-modal-body-v7 header p { margin: 0; color: #4f534e; line-height: 1.55; }
 .creatie-project-modal-body-v7 dl { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 0; }
 .creatie-project-modal-body-v7 dd { margin: 5px 0 0; font-size: 14px; line-height: 1.35; }
+.creatie-project-tabs-v7 { display: flex; gap: 8px; margin: 0 0 20px; padding: 4px 2px 10px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.creatie-project-tabs-v7 button { flex: 0 0 auto; scroll-snap-align: start; padding: 10px 18px; border: 1px solid rgba(23,26,24,.14); border-radius: 999px; background: #efeee8; color: #555954; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease; }
+.creatie-project-tabs-v7 button:hover { transform: translateY(-2px); border-color: rgba(23,26,24,.4); }
+.creatie-project-tabs-v7 button.is-active { border-color: #171a18; background: #171a18; color: #fff; }
+.creatie-project-subproject-v7 { margin: 0 0 20px; padding: 20px; border-radius: 16px; background: #f0efe9; }
+.creatie-project-subproject-v7 > span { color: #858780; font-size: 12px; font-weight: 800; }
+.creatie-project-subproject-v7 h3 { margin: 7px 0 8px; font-size: 24px; line-height: 1.1; }
+.creatie-project-subproject-v7 p { margin: 0; color: #4f534e; line-height: 1.55; white-space: pre-line; }
 .creatie-project-modal-gallery-v7 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .creatie-project-modal-gallery-v7 img, .creatie-project-modal-gallery-v7 video, .creatie-project-modal-gallery-v7 a { display: block; width: 100%; min-height: 140px; border-radius: 12px; background: #e9e6dc; object-fit: cover; }
 .creatie-project-modal-gallery-image-v7 { display: block; width: 100%; padding: 0; overflow: hidden; border: 0; border-radius: 12px; background: #e9e6dc; }
 .creatie-project-modal-gallery-image-v7 img { height: 100%; }
 .creatie-project-modal-gallery-v7 a { display: grid; place-items: center; color: #171a18; font-weight: 800; text-decoration: underline; }
-.creatie-project-modal-body-v7 footer { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding-top: 24px; }
-.creatie-project-modal-body-v7 footer a, .creatie-project-modal-body-v7 footer button { padding: 12px 18px; border: 0; border-radius: 999px; background: #181a18; color: #fff; font-weight: 800; cursor: pointer; }
+.creatie-project-modal-body-v7 footer { display: flex; justify-content: flex-end; gap: 12px; align-items: center; padding-top: 24px; }
+.creatie-project-modal-body-v7 footer button { padding: 12px 18px; border: 0; border-radius: 999px; background: #181a18; color: #fff; font-weight: 800; cursor: pointer; }
 .creatie-project-modal-body-v7 footer button { background: #e4e3dc; color: #171a18; }
 .creatie-project-image-lightbox-v7 { position: fixed; inset: 0; z-index: 10050; display: grid; place-items: center; padding: 72px; background: rgba(5,8,8,.9); backdrop-filter: blur(18px); }
 .creatie-project-image-lightbox-v7 > button { position: fixed; top: 24px; right: 24px; z-index: 2; width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; background: #151716; color: #fff; font-size: 28px; cursor: pointer; }
