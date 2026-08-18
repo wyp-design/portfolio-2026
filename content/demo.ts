@@ -26,9 +26,12 @@ export const siteCopy: SiteContent = {
   manifestoLine2: { zh: "也是对人的尊重。", en: "AND RESPECT FOR PEOPLE." },
   workLabel: { zh: "精选作品", en: "Selected work" },
   workIntro: {
-    zh: "横跨 AI、移动产品、设计系统与数据体验。",
-    en: "Across AI, mobile, design systems, and data experiences.",
+    zh: "会讲故事的项目",
+    en: "Projects that tell stories",
   },
+  workLabelStyle: { fontSize: "medium", fontWeight: "medium" },
+  workIntroStyle: { fontSize: "large", fontWeight: "bold" },
+  workCardStyle: { width: 500, height: 380, gap: 32, titleFontSize: 22, metaFontSize: 12 },
   bio: {
     zh: "专注 UI/UX、产品策略与设计系统。我喜欢在逻辑与感觉之间工作：让界面经得起推敲，也让使用它的人感到轻松。",
     en: "I work across UI/UX, product strategy, and design systems—balancing rigorous logic with experiences that feel effortless.",

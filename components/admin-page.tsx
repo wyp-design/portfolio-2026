@@ -57,6 +57,9 @@ const emptySite: SiteContent = {
   manifestoLine2: emptyLocalized,
   workLabel: emptyLocalized,
   workIntro: emptyLocalized,
+  workLabelStyle: { fontSize: "medium", fontWeight: "medium" },
+  workIntroStyle: { fontSize: "large", fontWeight: "bold" },
+  workCardStyle: { width: 500, height: 380, gap: 32, titleFontSize: 22, metaFontSize: 12 },
   bio: emptyLocalized,
   bioStyle: { fontSize: "medium", fontWeight: "regular" },
   aboutLabel: emptyLocalized,
@@ -115,7 +118,8 @@ function createProject(order: number): Project {
     category: { zh: "作品集", en: "Portfolio" },
     accent: "#285cff",
     order,
-    featured: false,
+    featured: true,
+    cover: undefined,
     externalUrl: "",
     metrics: [],
     sections: [createSection()],
@@ -261,6 +265,9 @@ export function AdminPage() {
   });
 
   const selectedProject = content.projects[selectedIndex];
+  const selectedProjectCover = selectedProject?.cover?.url
+    ? selectedProject.cover
+    : selectedProject?.sections.flatMap((section) => section.media || []).find((media) => media.url);
   const sortedProjects = useMemo(() => sortProjects(content.projects), [content.projects]);
 
   useEffect(() => {
@@ -694,6 +701,15 @@ export function AdminPage() {
     setMessage("个人照片已上传并加入关于我模块。请点击“保存发布”，前台才会正式更新。");
   }
 
+  async function uploadProjectCover(file: File) {
+    if (!selectedProject) return;
+    const media = await uploadToGithub(file, "project");
+    if (!media) return;
+    updateSelectedProject({ ...selectedProject, cover: media });
+    setState("idle");
+    setMessage("首页卡片封面已上传。请点击“保存发布”，前台才会正式更新。");
+  }
+
   async function uploadFiles(files: File[]) {
     if (!selectedProject || !files.length) return;
 
@@ -1051,8 +1067,33 @@ export function AdminPage() {
             {renderLocalized("宣言小字", content.site.manifestoIntro, (value) => updateSiteLocalized("manifestoIntro", value))}
             {renderLocalized("宣言大字第一行", content.site.manifestoLine1, (value) => updateSiteLocalized("manifestoLine1", value))}
             {renderLocalized("宣言大字第二行", content.site.manifestoLine2, (value) => updateSiteLocalized("manifestoLine2", value))}
-            {renderLocalized("作品区标题", content.site.workLabel, (value) => updateSiteLocalized("workLabel", value))}
-            {renderLocalized("作品区说明", content.site.workIntro, (value) => updateSiteLocalized("workIntro", value), true)}
+            {renderLocalized("作品区标签", content.site.workLabel, (value) => updateSiteLocalized("workLabel", value))}
+            {renderStyleControls("作品区标签字体", content.site.workLabelStyle, (value) => updateSite({ workLabelStyle: value }))}
+            {renderLocalized("作品区主标题", content.site.workIntro, (value) => updateSiteLocalized("workIntro", value), true)}
+            {renderStyleControls("作品区主标题字体", content.site.workIntroStyle, (value) => updateSite({ workIntroStyle: value }))}
+            <div className="admin-form-grid">
+              <label>
+                卡片宽度（px）
+                <input type="number" min="360" max="620" value={content.site.workCardStyle?.width || 500} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, width: Number(event.target.value) } })} />
+              </label>
+              <label>
+                卡片高度（px）
+                <input type="number" min="300" max="520" value={content.site.workCardStyle?.height || 380} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, height: Number(event.target.value) } })} />
+              </label>
+              <label>
+                卡片间距（px）
+                <input type="number" min="12" max="72" value={content.site.workCardStyle?.gap || 32} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, gap: Number(event.target.value) } })} />
+              </label>
+              <label>
+                卡片标题字号（px）
+                <input type="number" min="14" max="40" value={content.site.workCardStyle?.titleFontSize || 22} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, titleFontSize: Number(event.target.value) } })} />
+              </label>
+              <label>
+                卡片分类字号（px）
+                <input type="number" min="9" max="24" value={content.site.workCardStyle?.metaFontSize || 12} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, metaFontSize: Number(event.target.value) } })} />
+              </label>
+            </div>
+            <p className="admin-hint">默认采用约 500×380 的横向卡片。这里的尺寸、间距和字号会统一作用于首页全部作品卡片。</p>
           </div>
 
           <div className="admin-subsection">
@@ -1311,6 +1352,39 @@ export function AdminPage() {
               {renderLocalized("分类", selectedProject.category, (value) =>
                 updateSelectedProject({ ...selectedProject, category: value }),
               )}
+            </div>
+
+            <div className="admin-subsection">
+              <div className="admin-panel-heading">
+                <div>
+                  <h3>首页卡片封面</h3>
+                  <p className="admin-hint">可单独上传首页封面；未上传时会自动使用项目详情里的第一张旧作品图作为占位。</p>
+                </div>
+                {selectedProject.cover?.url ? (
+                  <button type="button" className="danger" onClick={() => updateSelectedProject({ ...selectedProject, cover: undefined })}>移除独立封面</button>
+                ) : null}
+              </div>
+              {selectedProjectCover ? (
+                <div className="admin-cover-preview">
+                  {renderMediaPreview(selectedProjectCover)}
+                  <span>{selectedProject.cover?.url ? "当前使用：独立封面" : "当前使用：详情第一张图（占位）"}</span>
+                </div>
+              ) : (
+                <p className="admin-hint">当前没有可用图片，前台会显示项目主题色占位。</p>
+              )}
+              <label className="admin-replace-file">
+                {selectedProject.cover?.url ? "上传并替换封面" : "上传独立封面"}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif,image/webp"
+                  disabled={uploadState.active}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) void uploadProjectCover(file);
+                    event.currentTarget.value = "";
+                  }}
+                />
+              </label>
             </div>
 
             <div className="admin-subsection">

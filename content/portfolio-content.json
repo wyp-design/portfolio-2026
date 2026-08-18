@@ -92,8 +92,23 @@
       "en": "Selected work"
     },
     "workIntro": {
-      "zh": "横跨 AI、移动产品、设计系统与数据体验。",
-      "en": "Across AI, mobile, design systems, and data experiences."
+      "zh": "会讲故事的项目",
+      "en": "Projects that tell stories"
+    },
+    "workLabelStyle": {
+      "fontSize": "medium",
+      "fontWeight": "medium"
+    },
+    "workIntroStyle": {
+      "fontSize": "large",
+      "fontWeight": "bold"
+    },
+    "workCardStyle": {
+      "width": 500,
+      "height": 380,
+      "gap": 32,
+      "titleFontSize": 22,
+      "metaFontSize": 12
     },
     "bio": {
       "zh": "9 年设计工作经验，擅长 AI 设计、C 端、B 端 UI 与交互设计，熟悉多平台设计规范，能独立完成从前期规划到最终交付的全流程设计。精通 APP、小程序、H5、数据可视化及 B 端管理后台设计，拥有丰富的跨行业设计项目经验和开发协作能力。\n\n1、设计工具：Codex、Nanobanana、ChatGpt、Gemini、Sketch、Figma、Photoshop、Illustrator、Axure RP\n\n2、前端协作：熟悉HTML、CSS，掌握开发沟通流程\n\n3、丰富的C端与B端设计经验，覆盖互联网、移动通信、电商等领域\n\n4、精通跨部门协作与开发对接，具备优秀的执行力与团队合作能力。\n\n5、摄影、剪辑、灯光布置，懂点小红书、抖音、视频号运营",
@@ -743,7 +758,7 @@
       },
       "accent": "#ff786b",
       "order": 2,
-      "featured": false,
+      "featured": true,
       "status": {
         "zh": "样板案例",
         "en": "Sample case"
@@ -816,7 +831,19 @@
       },
       "accent": "#7e7cff",
       "order": 3,
-      "featured": false,
+      "featured": true,
+      "cover": {
+        "_type": "image",
+        "url": "/uploads/1782958477215-bb930001-68c5-4217-a1a1-d7a2a10c19a2-10.jpg",
+        "thumbnailUrl": "/uploads/thumbnails/1782958479589-8c1e6696-32b1-4f96-b76a-cbd0211820ac-10-thumbnail.jpg",
+        "mimeType": "image/jpeg",
+        "originalFilename": "10.jpg",
+        "title": { "zh": "Web 类临时封面", "en": "Temporary Web cover" },
+        "alt": { "zh": "Web 类作品占位图", "en": "Web portfolio placeholder" },
+        "caption": { "zh": "", "en": "" },
+        "layout": "auto",
+        "textPosition": "right"
+      },
       "status": {
         "zh": "样板案例",
         "en": "Sample case"
@@ -863,7 +890,19 @@
       },
       "accent": "#ffda45",
       "order": 4,
-      "featured": false,
+      "featured": true,
+      "cover": {
+        "_type": "image",
+        "url": "/uploads/1782889250481-3fc9b355-50c3-46ac-a8a3-c63b44331939-image-1.png",
+        "thumbnailUrl": "/uploads/thumbnails/1782889253057-28ff1664-43c7-498f-bda6-5c6c4fd710e8-image-1-thumbnail.jpg",
+        "mimeType": "image/png",
+        "originalFilename": "image-1.png",
+        "title": { "zh": "App 类临时封面", "en": "Temporary App cover" },
+        "alt": { "zh": "App 类作品占位图", "en": "App portfolio placeholder" },
+        "caption": { "zh": "", "en": "" },
+        "layout": "auto",
+        "textPosition": "right"
+      },
       "status": {
         "zh": "样板案例",
         "en": "Sample case"
@@ -910,7 +949,7 @@
       },
       "accent": "#5dd8ff",
       "order": 5,
-      "featured": false,
+      "featured": true,
       "status": {
         "zh": "样板案例",
         "en": "Sample case"

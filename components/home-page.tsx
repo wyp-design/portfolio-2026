@@ -86,6 +86,16 @@ function firstMedia(project: Project): UploadedMedia | undefined {
   return project.sections.flatMap((section) => section.media ?? []).find((media) => media.url);
 }
 
+function richStyleClass(style: { fontSize?: string; fontWeight?: string } | undefined) {
+  return [style?.fontSize ? `rich-size-${style.fontSize}` : "", style?.fontWeight ? `rich-weight-${style.fontWeight}` : ""]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function boundedNumber(value: number | undefined, fallback: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, Number.isFinite(value) ? Number(value) : fallback));
+}
+
 function CursorEyes() {
   const ref = useRef<HTMLDivElement>(null);
   const pupils = useRef<Array<HTMLSpanElement | null>>([]);
@@ -188,7 +198,7 @@ function PaperDecor({ variant }: { variant: "about" | "services" | "reviews" | "
 
 function ProjectCard({ project, index, label, onOpen }: { project: Project; index: number; label: string; onOpen: (project: Project) => void }) {
   const { t } = useLanguage();
-  const media = firstMedia(project);
+  const media = project.cover?.url ? project.cover : firstMedia(project);
   const angle = [-4, 2, -2, 3, -3][index % 5];
   return (
     <button
@@ -337,9 +347,16 @@ export function HomePage({ projects, site }: HomePageProps) {
   const text = copy[language];
   const featured = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order);
-    const marked = ordered.filter((project) => project.featured !== false);
-    return (marked.length >= 5 ? marked : ordered).slice(0, 5);
+    return ordered.filter((project) => project.featured !== false);
   }, [projects]);
+  const workCardStyle = site.workCardStyle;
+  const workStageStyle = {
+    "--work-card-width": `${boundedNumber(workCardStyle?.width, 500, 360, 620)}px`,
+    "--work-card-height": `${boundedNumber(workCardStyle?.height, 380, 300, 520)}px`,
+    "--work-card-gap": `${boundedNumber(workCardStyle?.gap, 32, 12, 72)}px`,
+    "--work-card-title-size": `${boundedNumber(workCardStyle?.titleFontSize, 22, 14, 40)}px`,
+    "--work-card-meta-size": `${boundedNumber(workCardStyle?.metaFontSize, 12, 9, 24)}px`,
+  } as CSSProperties;
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
   const heroBackground = resolveAssetPath("/images/ai-bg-081.webp");
   const landscapeBackground = heroBackground;
@@ -572,10 +589,10 @@ export function HomePage({ projects, site }: HomePageProps) {
 
       <section id="work" className="creatie-landscape-section creatie-work-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(241,238,217,.08), rgba(40,61,38,.12)), url("${landscapeBackground}")` }}>
         <div className="creatie-section-heading-v7 dark-heading">
-          <span>{text.projects}</span>
-          <h2>{text.projectsTitle}</h2>
+          <span className={richStyleClass(site.workLabelStyle)}>{t(site.workLabel) || text.projects}</span>
+          <h2 className={richStyleClass(site.workIntroStyle)}>{t(site.workIntro) || text.projectsTitle}</h2>
         </div>
-        <div className="creatie-project-stage-v7">
+        <div className="creatie-project-stage-v7" style={workStageStyle}>
           {featured.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} label={text.view} onOpen={setActiveProject} />)}
         </div>
       </section>

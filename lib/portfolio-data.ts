@@ -59,6 +59,14 @@ export function normalizePortfolioContent(value: unknown): PortfolioContent {
         ...siteCopy.heroTitle,
         ...maybeHeroTitle,
       },
+      workCardStyle: {
+        width: 500,
+        height: 380,
+        gap: 32,
+        titleFontSize: 22,
+        metaFontSize: 12,
+        ...(isObject(maybeSite.workCardStyle) ? maybeSite.workCardStyle : {}),
+      },
       social: Array.isArray(maybeSite.social) && maybeSite.social.length ? maybeSite.social : siteCopy.social,
       education: isObject(maybeSite.education) ? { ...siteCopy.education, ...maybeSite.education } : siteCopy.education,
       experiences:

@@ -8,6 +8,14 @@ export type RichTextStyle = {
   fontWeight?: "regular" | "medium" | "bold";
 };
 
+export type WorkCardStyle = {
+  width?: number;
+  height?: number;
+  gap?: number;
+  titleFontSize?: number;
+  metaFontSize?: number;
+};
+
 export type TextAlign = "left" | "center" | "right";
 
 export type EducationItem = {
@@ -60,6 +68,9 @@ export type SiteContent = {
   manifestoLine2: LocalizedText;
   workLabel: LocalizedText;
   workIntro: LocalizedText;
+  workLabelStyle?: RichTextStyle;
+  workIntroStyle?: RichTextStyle;
+  workCardStyle?: WorkCardStyle;
   bio: LocalizedText;
   bioStyle?: RichTextStyle;
   aboutLabel: LocalizedText;
@@ -95,6 +106,7 @@ export type Project = {
   accent: string;
   order: number;
   featured?: boolean;
+  cover?: UploadedMedia;
   status?: LocalizedText;
   externalUrl?: string;
   metrics?: Array<{ value: string; label: LocalizedText }>;
