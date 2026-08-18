@@ -775,7 +775,7 @@ export function AdminPage() {
     if (!response.ok) {
       const result = (await response.json().catch(() => null)) as { detail?: string; message?: string } | null;
       setState("error");
-      setMessage(`保存失败：${result?.detail || result?.message || "请确认 GITHUB_TOKEN 已配置。"}`);
+      setMessage(`保存失败：${result?.detail || result?.message || "请确认 PORTFOLIO_GITHUB_TOKEN 已配置。"}`);
       return;
     }
 

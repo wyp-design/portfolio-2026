@@ -4,6 +4,9 @@ import { getErrorMessage } from "@/lib/error-message";
 import { commitJsonFile } from "@/lib/github-cms";
 import { getPortfolioContent, normalizePortfolioContent } from "@/lib/portfolio-data";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ message: "未登录" }, { status: 401 });

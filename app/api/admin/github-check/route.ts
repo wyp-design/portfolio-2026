@@ -3,6 +3,9 @@ import { isAdminRequest } from "@/lib/admin-auth";
 import { getErrorMessage } from "@/lib/error-message";
 import { checkGithubWriteAccess } from "@/lib/github-cms";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ message: "未登录" }, { status: 401 });

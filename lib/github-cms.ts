@@ -5,18 +5,30 @@ const DEFAULT_OWNER = "wyp-design";
 const DEFAULT_REPO = "portfolio-2026";
 const DEFAULT_BRANCH = "main";
 
+function readGithubToken() {
+  const candidates = [
+    process.env.PORTFOLIO_GITHUB_TOKEN,
+    process.env.GITHUB_TOKEN,
+    process.env.GH_TOKEN,
+  ];
+
+  return candidates
+    .map((value) => value?.trim())
+    .find((value) => value && value !== "undefined" && value !== "null");
+}
+
 function getGithubConfig() {
   return {
     owner: process.env.GITHUB_REPO_OWNER || DEFAULT_OWNER,
     repo: process.env.GITHUB_REPO_NAME || DEFAULT_REPO,
     branch: process.env.GITHUB_BRANCH || DEFAULT_BRANCH,
-    token: process.env.GITHUB_TOKEN,
+    token: readGithubToken(),
   };
 }
 
 function assertGithubToken(token?: string): asserts token is string {
   if (!token) {
-    throw new Error("缺少 GITHUB_TOKEN。请在 EdgeOne 项目环境变量里添加 GitHub Personal Access Token。");
+    throw new Error("缺少 PORTFOLIO_GITHUB_TOKEN。请在 EdgeOne 项目环境变量中使用这个名称配置 GitHub Personal Access Token，并重新部署生产环境。");
   }
 }
 

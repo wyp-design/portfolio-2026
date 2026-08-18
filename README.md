@@ -27,7 +27,7 @@ npm run dev
 
 ```env
 ADMIN_PASSWORD=your-admin-password
-GITHUB_TOKEN=your-github-token
+PORTFOLIO_GITHUB_TOKEN=your-github-token
 GITHUB_REPO_OWNER=wyp-design
 GITHUB_REPO_NAME=portfolio-2026
 GITHUB_BRANCH=main

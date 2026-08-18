@@ -3,6 +3,9 @@ import { isAdminRequest } from "@/lib/admin-auth";
 import { getErrorMessage } from "@/lib/error-message";
 import { commitBinaryFile } from "@/lib/github-cms";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const MAX_THUMBNAIL_BYTES = 2 * 1024 * 1024;
 const ACCEPTED_TYPES = new Map([
