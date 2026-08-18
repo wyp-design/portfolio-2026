@@ -379,9 +379,9 @@ export function HomePage({ projects, site }: HomePageProps) {
   }, [projects]);
   const workCardStyle = site.workCardStyle;
   const workStageStyle = {
-    "--work-card-width": `${boundedNumber(workCardStyle?.width, 500, 360, 620)}px`,
-    "--work-card-height": `${boundedNumber(workCardStyle?.height, 380, 300, 520)}px`,
-    "--work-card-gap": `${boundedNumber(workCardStyle?.gap, 32, 12, 72)}px`,
+    "--work-card-width": `${boundedNumber(workCardStyle?.width, 450, 360, 620)}px`,
+    "--work-card-height": `${boundedNumber(workCardStyle?.height, 342, 300, 520)}px`,
+    "--work-card-gap": `${boundedNumber(workCardStyle?.gap, 24, 12, 72)}px`,
     "--work-card-title-size": `${boundedNumber(workCardStyle?.titleFontSize, 22, 14, 40)}px`,
     "--work-card-meta-size": `${boundedNumber(workCardStyle?.metaFontSize, 12, 9, 24)}px`,
   } as CSSProperties;

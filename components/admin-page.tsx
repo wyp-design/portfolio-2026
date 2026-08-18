@@ -59,7 +59,7 @@ const emptySite: SiteContent = {
   workIntro: emptyLocalized,
   workLabelStyle: { fontSize: "medium", fontWeight: "medium" },
   workIntroStyle: { fontSize: "large", fontWeight: "bold" },
-  workCardStyle: { width: 500, height: 380, gap: 32, titleFontSize: 22, metaFontSize: 12 },
+  workCardStyle: { width: 450, height: 342, gap: 24, titleFontSize: 22, metaFontSize: 12 },
   bio: emptyLocalized,
   bioStyle: { fontSize: "medium", fontWeight: "regular" },
   aboutLabel: emptyLocalized,
@@ -1086,15 +1086,15 @@ export function AdminPage() {
             <div className="admin-form-grid">
               <label>
                 卡片宽度（px）
-                <input type="number" min="360" max="620" value={content.site.workCardStyle?.width || 500} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, width: Number(event.target.value) } })} />
+                <input type="number" min="360" max="620" value={content.site.workCardStyle?.width || 450} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, width: Number(event.target.value) } })} />
               </label>
               <label>
                 卡片高度（px）
-                <input type="number" min="300" max="520" value={content.site.workCardStyle?.height || 380} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, height: Number(event.target.value) } })} />
+                <input type="number" min="300" max="520" value={content.site.workCardStyle?.height || 342} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, height: Number(event.target.value) } })} />
               </label>
               <label>
                 卡片间距（px）
-                <input type="number" min="12" max="72" value={content.site.workCardStyle?.gap || 32} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, gap: Number(event.target.value) } })} />
+                <input type="number" min="12" max="72" value={content.site.workCardStyle?.gap || 24} onChange={(event) => updateSite({ workCardStyle: { ...content.site.workCardStyle, gap: Number(event.target.value) } })} />
               </label>
               <label>
                 卡片标题字号（px）

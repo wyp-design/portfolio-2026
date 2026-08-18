@@ -104,9 +104,9 @@
       "fontWeight": "bold"
     },
     "workCardStyle": {
-      "width": 500,
-      "height": 380,
-      "gap": 32,
+      "width": 450,
+      "height": 342,
+      "gap": 24,
       "titleFontSize": 22,
       "metaFontSize": 12
     },
