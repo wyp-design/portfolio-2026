@@ -37,6 +37,21 @@ const ABOUT_PHOTO_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "imag
 const PROJECT_UPLOAD_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf", "video/mp4"]);
 const DRAFT_STORAGE_KEY = "portfolio-2026-admin-draft";
 
+let edgeAdminAvailability: Promise<boolean> | null = null;
+
+async function hasEdgeAdminRuntime() {
+  if (!edgeAdminAvailability) {
+    edgeAdminAvailability = fetch("/api/edge-admin/status", { cache: "no-store" })
+      .then((response) => response.status !== 404 && response.status !== 405)
+      .catch(() => false);
+  }
+  return edgeAdminAvailability;
+}
+
+async function adminMutationUrl(path: "upload" | "content" | "github-check") {
+  return (await hasEdgeAdminRuntime()) ? `/api/edge-admin/${path}` : `/api/admin/${path}`;
+}
+
 const emptyLocalized: LocalizedText = { zh: "", en: "" };
 
 const emptySite: SiteContent = {
@@ -616,9 +631,10 @@ export function AdminPage() {
     const thumbnail = await createUploadThumbnail(file);
     if (thumbnail) formData.append("thumbnail", thumbnail);
 
+    const uploadUrl = await adminMutationUrl("upload");
     return new Promise((resolve) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/admin/upload");
+      xhr.open("POST", uploadUrl);
       xhr.timeout = 180000;
 
       xhr.upload.onprogress = (event) => {
@@ -763,7 +779,7 @@ export function AdminPage() {
 
     setState("saving");
     setMessage("正在保存到 GitHub…");
-    const response = await fetch("/api/admin/content", {
+    const response = await fetch(await adminMutationUrl("content"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -813,7 +829,7 @@ export function AdminPage() {
   async function checkGithub() {
     setState("loading");
     setMessage("正在检测 GitHub Token…");
-    const response = await fetch("/api/admin/github-check");
+    const response = await fetch(await adminMutationUrl("github-check"));
     const result = (await response.json().catch(() => null)) as { ok?: boolean; message?: string; detail?: string } | null;
 
     if (!response.ok || !result?.ok) {
