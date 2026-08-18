@@ -735,7 +735,28 @@
           "tableAlign": "center",
           "mediaLayout": "square-gallery"
         }
-      ]
+      ],
+      "cover": {
+        "_type": "image",
+        "url": "/uploads/1787042462787-0b291383-ade1-4b1d-81e3-e326836287d5-Mask-group.jpg",
+        "thumbnailUrl": "/uploads/thumbnails/1787042463917-b28265cf-0292-4124-9134-f7afaba5b08a-Mask-group-thumbnail.jpg",
+        "mimeType": "image/jpeg",
+        "originalFilename": "Mask group.jpg",
+        "title": {
+          "zh": "Mask group",
+          "en": "Mask group"
+        },
+        "alt": {
+          "zh": "Mask group.jpg",
+          "en": "Mask group.jpg"
+        },
+        "caption": {
+          "zh": "",
+          "en": ""
+        },
+        "layout": "auto",
+        "textPosition": "right"
+      }
     },
     {
       "slug": "e-commerce",
@@ -838,9 +859,18 @@
         "thumbnailUrl": "/uploads/thumbnails/1782958479589-8c1e6696-32b1-4f96-b76a-cbd0211820ac-10-thumbnail.jpg",
         "mimeType": "image/jpeg",
         "originalFilename": "10.jpg",
-        "title": { "zh": "Web 类临时封面", "en": "Temporary Web cover" },
-        "alt": { "zh": "Web 类作品占位图", "en": "Web portfolio placeholder" },
-        "caption": { "zh": "", "en": "" },
+        "title": {
+          "zh": "Web 类临时封面",
+          "en": "Temporary Web cover"
+        },
+        "alt": {
+          "zh": "Web 类作品占位图",
+          "en": "Web portfolio placeholder"
+        },
+        "caption": {
+          "zh": "",
+          "en": ""
+        },
         "layout": "auto",
         "textPosition": "right"
       },
@@ -897,9 +927,18 @@
         "thumbnailUrl": "/uploads/thumbnails/1782889253057-28ff1664-43c7-498f-bda6-5c6c4fd710e8-image-1-thumbnail.jpg",
         "mimeType": "image/png",
         "originalFilename": "image-1.png",
-        "title": { "zh": "App 类临时封面", "en": "Temporary App cover" },
-        "alt": { "zh": "App 类作品占位图", "en": "App portfolio placeholder" },
-        "caption": { "zh": "", "en": "" },
+        "title": {
+          "zh": "App 类临时封面",
+          "en": "Temporary App cover"
+        },
+        "alt": {
+          "zh": "App 类作品占位图",
+          "en": "App portfolio placeholder"
+        },
+        "caption": {
+          "zh": "",
+          "en": ""
+        },
         "layout": "auto",
         "textPosition": "right"
       },
@@ -1149,5 +1188,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-06T08:43:49.617Z"
+  "updatedAt": "2026-08-18T08:41:09.014Z"
 }
