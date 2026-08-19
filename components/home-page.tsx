@@ -386,12 +386,12 @@ export function HomePage({ projects, site }: HomePageProps) {
     "--work-card-meta-size": `${boundedNumber(workCardStyle?.metaFontSize, 12, 9, 24)}px`,
   } as CSSProperties;
   const education = [site.education, site.education2].filter(Boolean) as NonNullable<SiteContent["education2"]>[];
-  const heroBackground = resolveAssetPath("/images/ai-bg-081.webp");
   const contactBackground = resolveAssetPath("/images/contact-gradient-02.webp");
   const profileSummary = language === "zh"
     ? "9 年产品与体验设计经验，专注 UI/UX、AI 设计和跨端体验，让复杂业务变得清晰、可信且真正好用。"
     : "9 years shaping UI/UX, AI-assisted design and cross-platform products into clear, useful digital experiences.";
   const aboutRailRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   const aboutDragRef = useRef({ active: false, startX: 0, scrollLeft: 0 });
   const aboutSummary =
     language === "zh"
@@ -445,6 +445,36 @@ export function HomePage({ projects, site }: HomePageProps) {
     event.preventDefault();
     rail.scrollLeft += event.deltaY;
   };
+  const moveHeroLight = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType && event.pointerType !== "mouse") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+    const y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+    event.currentTarget.style.setProperty("--hero-x", `${x * 100}%`);
+    event.currentTarget.style.setProperty("--hero-y", `${y * 100}%`);
+    event.currentTarget.style.setProperty("--hello-rotate-x", `${(0.5 - y) * 8}deg`);
+    event.currentTarget.style.setProperty("--hello-rotate-y", `${(x - 0.5) * 11}deg`);
+    event.currentTarget.style.setProperty("--hello-shift-x", `${(x - 0.5) * 16}px`);
+    event.currentTarget.style.setProperty("--hello-shift-y", `${(y - 0.5) * 10}px`);
+    event.currentTarget.style.setProperty("--sticker-a-x", `${(0.5 - x) * 12}px`);
+    event.currentTarget.style.setProperty("--sticker-a-y", `${(0.5 - y) * 8}px`);
+    event.currentTarget.style.setProperty("--sticker-b-x", `${(x - 0.5) * 14}px`);
+    event.currentTarget.style.setProperty("--sticker-b-y", `${(0.5 - y) * 7}px`);
+  };
+  const resetHeroLight = () => {
+    const node = heroRef.current;
+    if (!node) return;
+    node.style.setProperty("--hero-x", "50%");
+    node.style.setProperty("--hero-y", "44%");
+    node.style.setProperty("--hello-rotate-x", "0deg");
+    node.style.setProperty("--hello-rotate-y", "0deg");
+    node.style.setProperty("--hello-shift-x", "0px");
+    node.style.setProperty("--hello-shift-y", "0px");
+    node.style.setProperty("--sticker-a-x", "0px");
+    node.style.setProperty("--sticker-a-y", "0px");
+    node.style.setProperty("--sticker-b-x", "0px");
+    node.style.setProperty("--sticker-b-y", "0px");
+  };
   const openProjectStack = () => {
     if (projectStackCloseTimer.current) clearTimeout(projectStackCloseTimer.current);
     setProjectStackOpen(true);
@@ -463,7 +493,14 @@ export function HomePage({ projects, site }: HomePageProps) {
       <CursorEyes />
       <Dock />
 
-      <section className="creatie-hero-v7" style={{ backgroundImage: `linear-gradient(180deg, rgba(15,34,33,.08), rgba(12,29,27,.22)), url("${heroBackground}")` }}>
+      <section ref={heroRef} className="creatie-hero-v7" onPointerMove={moveHeroLight} onPointerLeave={resetHeroLight}>
+        <div className="creatie-hero-grid-glow-v7" aria-hidden="true" />
+        <div className="creatie-hero-stickers-v7" aria-hidden="true">
+          <span className="hero-sticker-orbit">✦</span>
+          <span className="hero-sticker-spark">✳</span>
+          <span className="hero-sticker-loop">⌁</span>
+          <span className="hero-sticker-chip">UI × AI</span>
+        </div>
         <header className="creatie-topbar-v7">
           <a href="#top" className="creatie-brand-v7">{site.name || "CREATIE"}</a>
           <div className="creatie-language-v7">
@@ -497,7 +534,8 @@ export function HomePage({ projects, site }: HomePageProps) {
         </aside>
         <div className="creatie-hero-title-v7">
           <span className="creatie-eyes-static" aria-hidden="true"><i /><i /></span>
-          <h1><span>{text.heroA}</span><span>{text.heroB}</span></h1>
+          <h1 aria-label={`${text.heroA} ${text.heroB}`}><span className="creatie-hello-word-v7" aria-hidden="true">Hello</span></h1>
+          <p className="creatie-hello-caption-v7"><span>{text.heroA}</span><span>{text.heroB}</span></p>
           <div className="creatie-skill-tag tag-a"><i>✦</i>UI/UX Design<em /></div>
           <div className="creatie-skill-tag tag-b"><i>⌁</i>AI Design<em /></div>
           <div className="creatie-skill-tag tag-c"><i>◈</i>Visual Design<em /></div>
