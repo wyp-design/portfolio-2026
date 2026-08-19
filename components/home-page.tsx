@@ -534,7 +534,7 @@ export function HomePage({ projects, site }: HomePageProps) {
         </aside>
         <div className="creatie-hero-title-v7">
           <span className="creatie-eyes-static" aria-hidden="true"><i /><i /></span>
-          <h1 aria-label={`${text.heroA} ${text.heroB}`}><span className="creatie-hello-word-v7" aria-hidden="true">Hello</span></h1>
+          <h1 aria-label={`${text.heroA} ${text.heroB}`}><span className="creatie-hello-word-v7" data-text="Hello" aria-hidden="true">Hello</span></h1>
           <p className="creatie-hello-caption-v7"><span>{text.heroA}</span><span>{text.heroB}</span></p>
           <div className="creatie-skill-tag tag-a"><i>✦</i>UI/UX Design<em /></div>
           <div className="creatie-skill-tag tag-b"><i>⌁</i>AI Design<em /></div>
