@@ -17,6 +17,18 @@ import { useAssetPath } from "@/lib/use-asset-path";
 
 type HomePageProps = { projects: Project[]; site: SiteContent };
 
+const heroStickerAssets = [
+  { file: "s_01.png", className: "sticker-eyes" },
+  { file: "s_02.png", className: "sticker-pen" },
+  { file: "s_05.png", className: "sticker-heart" },
+  { file: "s_06.png", className: "sticker-smile" },
+  { file: "s_07.png", className: "sticker-pixel" },
+  { file: "s_08.png", className: "sticker-pointer" },
+  { file: "s_09.png", className: "sticker-bolt" },
+  { file: "s_10.png", className: "sticker-star" },
+  { file: "s_11.png", className: "sticker-type" },
+] as const;
+
 const copy = {
   zh: {
     available: "\u53ef\u63a5\u53d7\u65b0\u7684\u5408\u4f5c",
@@ -496,10 +508,11 @@ export function HomePage({ projects, site }: HomePageProps) {
       <section ref={heroRef} className="creatie-hero-v7" onPointerMove={moveHeroLight} onPointerLeave={resetHeroLight}>
         <div className="creatie-hero-grid-glow-v7" aria-hidden="true" />
         <div className="creatie-hero-stickers-v7" aria-hidden="true">
-          <span className="hero-sticker-orbit">✦</span>
-          <span className="hero-sticker-spark">✳</span>
-          <span className="hero-sticker-loop">⌁</span>
-          <span className="hero-sticker-chip">UI × AI</span>
+          {heroStickerAssets.map((sticker) => (
+            <span className={`hero-sticker-item-v7 ${sticker.className}`} key={sticker.file}>
+              <img src={resolveAssetPath(`/images/hero-stickers/${sticker.file}`)} alt="" draggable={false} />
+            </span>
+          ))}
         </div>
         <header className="creatie-topbar-v7">
           <a href="#top" className="creatie-brand-v7">{site.name || "CREATIE"}</a>

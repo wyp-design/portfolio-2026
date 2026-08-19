@@ -3991,11 +3991,44 @@ button {
 .creatie-hero-v7::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(2,8,43,.06), rgba(2,8,43,.38)); }
 .creatie-hero-grid-glow-v7 { position: absolute; inset: 0; z-index: 0; background: radial-gradient(circle at var(--hero-x) var(--hero-y), rgba(72,102,255,.34), transparent 24%), radial-gradient(ellipse at 50% 100%, rgba(24,45,203,.38), transparent 48%); pointer-events: none; transition: background-position .12s linear; }
 .creatie-hero-stickers-v7 { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
-.creatie-hero-stickers-v7 > span { position: absolute; display: grid; place-items: center; filter: drop-shadow(0 14px 18px rgba(0,0,0,.2)); transition: transform .65s cubic-bezier(.2,.8,.2,1); }
-.hero-sticker-orbit { left: 20%; top: 16%; width: 74px; height: 74px; border: 6px solid #f7b236; border-radius: 50%; color: #fff1bd; background: #f5a81d; font-size: 28px; transform: translate(var(--sticker-a-x), var(--sticker-a-y)) rotate(-12deg); }
-.hero-sticker-spark { right: 17%; top: 30%; width: 72px; height: 72px; color: #07134f; background: #ffd94d; font-size: 34px; clip-path: polygon(50% 0,61% 34%,96% 25%,69% 50%,96% 75%,61% 66%,50% 100%,39% 66%,4% 75%,31% 50%,4% 25%,39% 34%); transform: translate(var(--sticker-b-x), var(--sticker-b-y)) rotate(10deg); }
-.hero-sticker-loop { right: 30%; bottom: 13%; color: #73ff93; font: 900 82px/1 Arial; transform: translate(var(--sticker-b-x), var(--sticker-a-y)) rotate(-18deg); }
-.hero-sticker-chip { left: 23%; bottom: 23%; padding: 9px 14px; border: 3px solid #fff; border-radius: 9px; color: #151933; background: #ff8cbd; font-size: 14px; font-weight: 950; letter-spacing: .05em; transform: translate(var(--sticker-a-x), var(--sticker-b-y)) rotate(-9deg); }
+.hero-sticker-item-v7 {
+  --sticker-rotation: 0deg;
+  --sticker-float: 13px;
+  --sticker-duration: 5.8s;
+  --sticker-delay: 0s;
+  --sticker-x: var(--sticker-a-x);
+  --sticker-y: var(--sticker-a-y);
+  position: absolute;
+  display: block;
+  filter: drop-shadow(0 16px 18px rgba(0,0,0,.26));
+  transform: translate3d(var(--sticker-x), var(--sticker-y), 0) rotate(var(--sticker-rotation));
+  transform-origin: center;
+  transition: transform .38s cubic-bezier(.2,.82,.2,1), filter .3s ease;
+  will-change: transform;
+}
+.hero-sticker-item-v7 img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  animation: heroStickerFloatV7 var(--sticker-duration) ease-in-out var(--sticker-delay) infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+.hero-sticker-item-v7.sticker-eyes { left: 14%; top: 18%; width: clamp(86px, 7vw, 136px); --sticker-rotation: -12deg; --sticker-duration: 5.2s; }
+.hero-sticker-item-v7.sticker-pen { left: 38%; top: 7%; width: clamp(65px, 5vw, 102px); --sticker-rotation: 16deg; --sticker-x: var(--sticker-b-x); --sticker-y: var(--sticker-b-y); --sticker-duration: 6.4s; --sticker-delay: -.8s; }
+.hero-sticker-item-v7.sticker-heart { right: 13%; top: 17%; width: clamp(82px, 6vw, 118px); --sticker-rotation: 9deg; --sticker-x: var(--sticker-b-x); --sticker-y: var(--sticker-a-y); --sticker-duration: 5.7s; --sticker-delay: -2.2s; }
+.hero-sticker-item-v7.sticker-smile { left: 5%; top: 49%; width: clamp(88px, 7vw, 138px); --sticker-rotation: 10deg; --sticker-float: 18px; --sticker-duration: 6.8s; --sticker-delay: -1.4s; }
+.hero-sticker-item-v7.sticker-pixel { right: 5%; top: 47%; width: clamp(88px, 7vw, 142px); --sticker-rotation: -9deg; --sticker-x: var(--sticker-b-x); --sticker-y: var(--sticker-b-y); --sticker-float: 17px; --sticker-duration: 6.1s; --sticker-delay: -3s; }
+.hero-sticker-item-v7.sticker-pointer { left: 24%; bottom: 8%; width: clamp(76px, 6vw, 118px); --sticker-rotation: -18deg; --sticker-y: var(--sticker-b-y); --sticker-duration: 5.5s; --sticker-delay: -1.8s; }
+.hero-sticker-item-v7.sticker-bolt { right: 31%; bottom: 7%; width: clamp(68px, 5vw, 104px); --sticker-rotation: 13deg; --sticker-x: var(--sticker-b-x); --sticker-duration: 4.9s; --sticker-delay: -.4s; }
+.hero-sticker-item-v7.sticker-star { right: 16%; bottom: 5%; width: clamp(82px, 6vw, 126px); --sticker-rotation: 10deg; --sticker-x: var(--sticker-b-x); --sticker-y: var(--sticker-b-y); --sticker-duration: 6.5s; --sticker-delay: -2.7s; }
+.hero-sticker-item-v7.sticker-type { left: 52%; top: 4%; width: clamp(122px, 10vw, 194px); --sticker-rotation: -7deg; --sticker-x: var(--sticker-b-x); --sticker-float: 10px; --sticker-duration: 7.2s; --sticker-delay: -3.5s; }
+@keyframes heroStickerFloatV7 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.5deg) scale(1); }
+  48% { transform: translate3d(0, calc(var(--sticker-float) * -1), 0) rotate(2deg) scale(1.035); }
+  72% { transform: translate3d(0, calc(var(--sticker-float) * -.42), 0) rotate(.4deg) scale(1.012); }
+}
 .creatie-topbar-v7 { position: absolute; inset: 0 0 auto; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 25px 34px; font-size: 12px; letter-spacing: .04em; }
 .creatie-brand-v7 { font-size: 13px; font-weight: 850; letter-spacing: -.01em; }
 .creatie-language-v7 { position: relative; }
@@ -4047,6 +4080,7 @@ button {
   filter: drop-shadow(0 48px 38px rgba(1,4,28,.5));
   transform: translate3d(var(--hello-shift-x), var(--hello-shift-y), 0) rotateX(var(--hello-rotate-x)) rotateY(var(--hello-rotate-y));
   transform-origin: 50% 55%;
+  transform-style: preserve-3d;
   transition: transform .24s cubic-bezier(.2,.82,.2,1), filter .3s ease;
   will-change: transform;
 }
@@ -4059,22 +4093,23 @@ button {
   -webkit-text-fill-color: #091052;
   -webkit-text-stroke: 5px #091052;
   text-shadow:
-    0 2px 0 #111d87,
-    0 4px 0 #101c82,
-    0 6px 0 #0f1b7d,
-    0 8px 0 #0e1978,
-    0 10px 0 #0d1873,
-    0 12px 0 #0c176e,
-    0 14px 0 #0b1569,
-    0 16px 0 #0a1464,
-    0 18px 0 #09125f,
-    0 20px 0 #08115a,
-    0 22px 0 #071055,
-    0 24px 0 #060e50,
-    0 26px 0 #050d4b,
-    0 28px 0 #040b46,
-    0 30px 0 #030a41,
-    0 34px 7px rgba(1,4,30,.72);
+    1px 2px 0 #18299f,
+    2px 4px 0 #172797,
+    3px 6px 0 #15258f,
+    4px 8px 0 #142387,
+    5px 10px 0 #12217f,
+    6px 12px 0 #111f77,
+    7px 14px 0 #0f1d6f,
+    8px 16px 0 #0e1b67,
+    9px 18px 0 #0c195f,
+    10px 20px 0 #0b1757,
+    11px 22px 0 #09154f,
+    12px 24px 0 #081347,
+    13px 26px 0 #07113f,
+    14px 28px 0 #060f38,
+    15px 30px 0 #050d32,
+    18px 36px 8px rgba(1,4,30,.76);
+  transform: translate3d(-5px, 2px, -24px);
 }
 .creatie-hello-word-v7::after {
   position: absolute;
@@ -4094,6 +4129,7 @@ button {
 }
 .creatie-hero-v7:hover .creatie-hello-word-v7 { filter: drop-shadow(0 58px 46px rgba(1,4,28,.62)) saturate(1.18); }
 .creatie-hero-v7:hover .creatie-hello-word-v7::after { opacity: .96; transform: translateY(-4px); }
+.creatie-hero-v7:hover .hero-sticker-item-v7 { filter: drop-shadow(0 22px 25px rgba(0,0,0,.32)) saturate(1.08); }
 .creatie-hello-caption-v7 { position: absolute; left: 1.5%; bottom: 1%; width: min(650px, 43vw); font-size: clamp(38px, 5.2vw, 90px); font-weight: 900; line-height: .86; letter-spacing: -.055em; text-transform: uppercase; }
 .creatie-hello-caption-v7 span { display: block; }
 .creatie-eyes-static { --look-x: 0px; --look-y: 0px; position: absolute; top: 20%; left: 48%; z-index: 2; display: flex; gap: 4px; filter: drop-shadow(0 4px 5px rgba(0,0,0,.2)); animation: creatieBob 3s ease-in-out infinite; }
@@ -4311,9 +4347,15 @@ button {
   .creatie-hello-word-v7 { font-size: clamp(126px, 45vw, 210px); filter: drop-shadow(0 15px 0 #050b45) drop-shadow(0 30px 24px rgba(1,4,28,.5)); }
   .creatie-hello-caption-v7 { left: 18px; bottom: 2%; width: calc(100% - 36px); font-size: clamp(34px, 11vw, 52px); }
   .creatie-eyes-static { left: 47%; top: 18%; }
-  .creatie-hero-stickers-v7 .hero-sticker-orbit { left: 7%; top: 27%; width: 48px; height: 48px; border-width: 4px; font-size: 20px; }
-  .creatie-hero-stickers-v7 .hero-sticker-spark { right: 5%; top: 34%; width: 50px; height: 50px; font-size: 24px; }
-  .creatie-hero-stickers-v7 .hero-sticker-loop, .creatie-hero-stickers-v7 .hero-sticker-chip { display: none; }
+  .hero-sticker-item-v7.sticker-eyes { left: 5%; top: 25%; width: 64px; }
+  .hero-sticker-item-v7.sticker-pen { left: 39%; top: 10%; width: 48px; }
+  .hero-sticker-item-v7.sticker-heart { right: 5%; top: 27%; width: 60px; }
+  .hero-sticker-item-v7.sticker-star { right: 8%; bottom: 15%; width: 64px; }
+  .hero-sticker-item-v7.sticker-smile { left: 5%; top: 58%; width: 66px; }
+  .hero-sticker-item-v7.sticker-pixel,
+  .hero-sticker-item-v7.sticker-pointer,
+  .hero-sticker-item-v7.sticker-bolt,
+  .hero-sticker-item-v7.sticker-type { display: none; }
   .creatie-skill-tag { min-width: 126px; padding: 5px 10px 5px 5px; font-size: 10px; }
   .creatie-skill-tag i { width: 25px; height: 25px; }
   .tag-a { right: 4%; top: 18%; } .tag-b { right: 4%; top: 64%; } .tag-c { left: 4%; top: 69%; }
