@@ -29,6 +29,30 @@ const heroStickerAssets = [
   { file: "s_11.png", className: "sticker-type" },
 ] as const;
 
+const heroStickerRain = Array.from({ length: 18 }, (_, index) => {
+  const sticker = heroStickerAssets[index % heroStickerAssets.length];
+  const lane = 3 + ((index * 29) % 94);
+  const size = 58 + ((index * 19) % 82);
+  const duration = 10 + ((index * 7) % 8);
+  const delay = -((index * 3.7) % 18);
+  const drift = -90 + ((index * 43) % 180);
+  const spin = -24 + ((index * 31) % 48);
+  return {
+    ...sticker,
+    key: `${sticker.file}-${index}`,
+    style: {
+      "--rain-left": `${lane}%`,
+      "--rain-size": `${size}px`,
+      "--rain-duration": `${duration}s`,
+      "--rain-delay": `${delay}s`,
+      "--rain-drift": `${drift}px`,
+      "--rain-spin": `${spin}deg`,
+      "--sticker-x": index % 2 ? "var(--sticker-a-x)" : "var(--sticker-b-x)",
+      "--sticker-y": index % 3 ? "var(--sticker-a-y)" : "var(--sticker-b-y)",
+    } as CSSProperties,
+  };
+});
+
 const copy = {
   zh: {
     available: "\u53ef\u63a5\u53d7\u65b0\u7684\u5408\u4f5c",
@@ -508,8 +532,8 @@ export function HomePage({ projects, site }: HomePageProps) {
       <section ref={heroRef} className="creatie-hero-v7" onPointerMove={moveHeroLight} onPointerLeave={resetHeroLight}>
         <div className="creatie-hero-grid-glow-v7" aria-hidden="true" />
         <div className="creatie-hero-stickers-v7" aria-hidden="true">
-          {heroStickerAssets.map((sticker) => (
-            <span className={`hero-sticker-item-v7 ${sticker.className}`} key={sticker.file}>
+          {heroStickerRain.map((sticker) => (
+            <span className={`hero-sticker-item-v7 ${sticker.className}`} key={sticker.key} style={sticker.style}>
               <img src={resolveAssetPath(`/images/hero-stickers/${sticker.file}`)} alt="" draggable={false} />
             </span>
           ))}
@@ -547,7 +571,11 @@ export function HomePage({ projects, site }: HomePageProps) {
         </aside>
         <div className="creatie-hero-title-v7">
           <span className="creatie-eyes-static" aria-hidden="true"><i /><i /></span>
-          <h1 aria-label={`${text.heroA} ${text.heroB}`}><span className="creatie-hello-word-v7" data-text="Hello" aria-hidden="true">Hello</span></h1>
+          <h1 aria-label="Hello">
+            <span className="creatie-hello-word-v7" aria-hidden="true">
+              <img className="creatie-hello-render-v7" src={resolveAssetPath("/images/hero-hello-3d-v2.png")} alt="" draggable={false} />
+            </span>
+          </h1>
           <p className="creatie-hello-caption-v7"><span>{text.heroA}</span><span>{text.heroB}</span></p>
           <div className="creatie-skill-tag tag-a"><i>✦</i>UI/UX Design<em /></div>
           <div className="creatie-skill-tag tag-b"><i>⌁</i>AI Design<em /></div>
