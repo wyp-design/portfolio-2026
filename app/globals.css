@@ -4080,7 +4080,33 @@ button {
 .creatie-about-columns-v7 article p { color: #666; line-height: 1.55; white-space: pre-line; }
 
 .creatie-landscape-section { color: #121511; background-position: center; background-size: cover; }
-.creatie-work-v7 { display: flex; min-height: 100svh; padding: clamp(72px, 7vh, 132px) 0 clamp(54px, 5.5vh, 96px); flex-direction: column; justify-content: center; }
+.creatie-work-v7 {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100svh;
+  padding: clamp(72px, 7vh, 132px) 0 clamp(54px, 5.5vh, 96px);
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #070808;
+  background-image:
+    linear-gradient(rgba(255,255,255,.085) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.085) 1px, transparent 1px),
+    radial-gradient(circle at 50% 18%, rgba(120,148,255,.13), transparent 38%);
+  background-position: center;
+  background-size: 72px 72px, 72px 72px, 100% 100%;
+}
+.creatie-work-v7::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.025), transparent 28%, rgba(0,0,0,.18)),
+    radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.42) 100%);
+  content: "";
+  pointer-events: none;
+}
 .creatie-work-v7 > .creatie-section-heading-v7 { margin-bottom: clamp(38px, 4vh, 58px); }
 .creatie-project-stage-v7 { display: flex; flex-wrap: wrap; gap: var(--work-card-gap, 24px); align-items: flex-start; justify-content: center; width: min(100%, calc(var(--work-card-width, 450px) * 3 + var(--work-card-gap, 24px) * 2 + 44px)); padding: 0 22px; margin: 0 auto; }
 .creatie-project-card { position: relative; display: grid; flex: 0 1 var(--work-card-width, 450px); grid-template-rows: 16px minmax(0, 1fr) 54px; width: min(100%, var(--work-card-width, 450px)); height: var(--work-card-height, 342px); padding: 0; overflow: hidden; border: 8px solid #f9f7ef; border-radius: 12px; color: #161915; background: #f9f7ef; box-sizing: border-box; text-align: left; cursor: pointer; box-shadow: 0 16px 30px rgba(0,0,0,.23); transform: rotate(var(--card-angle, 0deg)); transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease; }
