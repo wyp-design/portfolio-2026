@@ -201,6 +201,142 @@ function CursorEyes() {
   );
 }
 
+function HelloRipple({ src }: { src: string }) {
+  const shellRef = useRef<HTMLSpanElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    const canvas = canvasRef.current;
+    if (!shell || !canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const context = canvas.getContext("2d", { alpha: true });
+    if (!context) return;
+
+    const image = new window.Image();
+    image.decoding = "async";
+    let frame = 0;
+    let width = 0;
+    let height = 0;
+    let intensity = 0;
+    let targetIntensity = 0;
+    let rippleY = 0.5;
+    let targetRippleY = 0.5;
+    let phase = 0;
+    let lastPointerX = 0;
+    let ready = false;
+    let staticDrawn = false;
+
+    const resize = () => {
+      const bounds = shell.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height);
+      const pixelRatio = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      staticDrawn = false;
+    };
+
+    const move = (event: PointerEvent) => {
+      const bounds = shell.getBoundingClientRect();
+      const localX = event.clientX - bounds.left;
+      const localY = event.clientY - bounds.top;
+      const inside = localX >= 0 && localX <= bounds.width && localY >= 0 && localY <= bounds.height;
+      if (!inside) {
+        targetIntensity = 0;
+        return;
+      }
+      const velocity = Math.min(1, Math.hypot(event.movementX, event.movementY) / 24);
+      targetIntensity = 0.58 + velocity * 0.42;
+      staticDrawn = false;
+      targetRippleY = Math.max(0.08, Math.min(0.92, localY / Math.max(1, bounds.height)));
+      lastPointerX = localX / Math.max(1, bounds.width);
+      shell.style.setProperty("--ripple-x", `${lastPointerX * 100}%`);
+      shell.style.setProperty("--ripple-y", `${targetRippleY * 100}%`);
+      shell.dataset.rippling = "true";
+    };
+
+    const leave = () => {
+      targetIntensity = 0;
+    };
+
+    const draw = () => {
+      frame = window.requestAnimationFrame(draw);
+      if (!ready || width < 2 || height < 2) return;
+      intensity += (targetIntensity - intensity) * (targetIntensity > intensity ? 0.2 : 0.065);
+      rippleY += (targetRippleY - rippleY) * 0.14;
+      phase += 0.1 + intensity * 0.17;
+      if (intensity < 0.008 && targetIntensity === 0) {
+        intensity = 0;
+        shell.dataset.rippling = "false";
+      }
+
+      if (intensity === 0) {
+        if (staticDrawn) return;
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+        staticDrawn = true;
+        return;
+      }
+      staticDrawn = false;
+      context.clearRect(0, 0, width, height);
+
+      const stripHeight = Math.max(3, Math.round(height / 150));
+      const sourceScale = image.naturalHeight / height;
+      const origin = rippleY * height;
+      const wavelength = Math.max(16, height * 0.034);
+      const spread = Math.max(85, height * 0.23);
+      const direction = lastPointerX < 0.5 ? -1 : 1;
+      for (let y = 0; y < height; y += stripHeight) {
+        const distance = y - origin;
+        const envelope = Math.exp(-Math.abs(distance) / spread);
+        const wave = Math.sin(distance / wavelength - phase) * 15 * intensity * envelope;
+        const secondary = Math.sin(distance / (wavelength * 0.58) + phase * 0.72) * 3.5 * intensity * envelope;
+        const sourceY = y * sourceScale;
+        const sourceHeight = Math.min(image.naturalHeight - sourceY, (stripHeight + 1) * sourceScale);
+        context.drawImage(
+          image,
+          0,
+          sourceY,
+          image.naturalWidth,
+          sourceHeight,
+          wave * direction,
+          y + secondary,
+          width,
+          stripHeight + 1,
+        );
+      }
+    };
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(shell);
+    const handleLoad = () => {
+      ready = true;
+      resize();
+      shell.dataset.ready = "true";
+    };
+    image.addEventListener("load", handleLoad);
+    image.src = src;
+    window.addEventListener("pointermove", move, { passive: true });
+    document.documentElement.addEventListener("mouseleave", leave);
+    frame = window.requestAnimationFrame(draw);
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      image.removeEventListener("load", handleLoad);
+      window.removeEventListener("pointermove", move);
+      document.documentElement.removeEventListener("mouseleave", leave);
+    };
+  }, [src]);
+
+  return (
+    <span ref={shellRef} className="creatie-hello-ripple-v7" data-ready="false" data-rippling="false">
+      <img className="creatie-hello-render-v7" src={src} alt="" draggable={false} />
+      <canvas ref={canvasRef} className="creatie-hello-ripple-canvas-v7" aria-hidden="true" />
+    </span>
+  );
+}
+
 function Dock() {
   return (
     <nav className="creatie-dock" aria-label="Page navigation">
@@ -573,7 +709,7 @@ export function HomePage({ projects, site }: HomePageProps) {
           <span className="creatie-eyes-static" aria-hidden="true"><i /><i /></span>
           <h1 aria-label="Hello">
             <span className="creatie-hello-word-v7" aria-hidden="true">
-              <img className="creatie-hello-render-v7" src={resolveAssetPath("/images/hero-hello-3d-v2.png")} alt="" draggable={false} />
+              <HelloRipple src={resolveAssetPath("/images/hero-hello-3d-v2.png")} />
             </span>
           </h1>
           <p className="creatie-hello-caption-v7"><span>{text.heroA}</span><span>{text.heroB}</span></p>

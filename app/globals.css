@@ -4063,17 +4063,50 @@ button {
   transition: transform .24s cubic-bezier(.2,.82,.2,1), filter .3s ease;
   will-change: transform;
 }
+.creatie-hello-ripple-v7 {
+  --ripple-x: 50%;
+  --ripple-y: 50%;
+  position: relative;
+  display: block;
+  width: 100%;
+  transform: translateZ(24px);
+  transition: filter .3s ease, transform .3s cubic-bezier(.2,.82,.2,1);
+  will-change: transform;
+}
+.creatie-hello-ripple-v7::after {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(circle at var(--ripple-x) var(--ripple-y), rgba(255,255,255,.3), rgba(117,153,255,.12) 8%, transparent 23%);
+  content: "";
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity .32s ease;
+}
 .creatie-hello-render-v7 {
   display: block;
   width: 100%;
   height: auto;
   user-select: none;
-  transform: translateZ(24px);
-  transition: filter .3s ease, transform .3s cubic-bezier(.2,.82,.2,1);
-  will-change: transform;
+  transition: opacity .18s ease;
 }
+.creatie-hello-ripple-canvas-v7 {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: filter .25s ease, opacity .18s ease;
+}
+.creatie-hello-ripple-v7[data-ready="true"] .creatie-hello-render-v7 { opacity: 0; }
+.creatie-hello-ripple-v7[data-ready="true"] .creatie-hello-ripple-canvas-v7 { opacity: 1; }
+.creatie-hello-ripple-v7[data-rippling="true"]::after { opacity: .9; }
+.creatie-hello-ripple-v7[data-rippling="true"] .creatie-hello-ripple-canvas-v7 { filter: saturate(1.13) brightness(1.05); }
 .creatie-hero-v7:hover .creatie-hello-word-v7 { filter: drop-shadow(0 48px 40px rgba(1,4,28,.62)) saturate(1.1); }
-.creatie-hero-v7:hover .creatie-hello-render-v7 { transform: translateZ(36px) scale(1.012); }
+.creatie-hero-v7:hover .creatie-hello-ripple-v7 { transform: translateZ(36px) scale(1.012); }
 .creatie-hero-v7:hover .hero-sticker-item-v7 { filter: drop-shadow(0 22px 25px rgba(0,0,0,.32)) saturate(1.08); }
 .creatie-hello-caption-v7 { position: absolute; left: 3%; bottom: 3%; z-index: 5; width: min(560px, 36vw); margin: 0; color: #fff; font-size: clamp(36px, 4vw, 72px); font-weight: 900; line-height: .9; letter-spacing: -.05em; text-shadow: 0 3px 18px rgba(3,10,49,.44); text-transform: uppercase; }
 .creatie-hello-caption-v7 span { display: block; }
