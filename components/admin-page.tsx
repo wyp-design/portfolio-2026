@@ -13,6 +13,7 @@ type ProjectMedia = NonNullable<ProjectSection["media"]>[number];
 type Tone = NonNullable<ProjectSection["tone"]>;
 type Align = "left" | "center" | "right";
 type ProjectEditorTab = "basic" | "assets" | "sections" | "advanced";
+type SectionEditorTab = "content" | "media";
 type UploadTarget = "about" | "project";
 type UploadState = {
   active: boolean;
@@ -270,6 +271,7 @@ export function AdminPage() {
   const [uploadSectionIndex, setUploadSectionIndex] = useState(0);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [projectEditorTab, setProjectEditorTab] = useState<ProjectEditorTab>("basic");
+  const [sectionEditorTab, setSectionEditorTab] = useState<SectionEditorTab>("content");
   const [projectJson, setProjectJson] = useState("");
   const [state, setState] = useState<SaveState>("loading");
   const [message, setMessage] = useState("正在检查登录状态…");
@@ -477,6 +479,7 @@ export function AdminPage() {
     setUploadSectionIndex(0);
     setActiveSectionIndex(0);
     setProjectEditorTab("basic");
+    setSectionEditorTab("content");
     setProjectJson(JSON.stringify(nextProject, null, 2));
   }
 
@@ -488,6 +491,7 @@ export function AdminPage() {
     setUploadSectionIndex(0);
     setActiveSectionIndex(0);
     setProjectEditorTab("basic");
+    setSectionEditorTab("content");
     setProjectJson(nextProjects[0] ? JSON.stringify(nextProjects[0], null, 2) : "");
   }
 
@@ -503,6 +507,7 @@ export function AdminPage() {
     setSelectedIndex(nextIndex);
     setUploadSectionIndex(0);
     setActiveSectionIndex(0);
+    setSectionEditorTab("content");
     setProjectJson(JSON.stringify(orderedProjects[nextIndex], null, 2));
   }
 
@@ -542,6 +547,7 @@ export function AdminPage() {
     setUploadSectionIndex(selectedProject.sections.length);
     setActiveSectionIndex(selectedProject.sections.length);
     setProjectEditorTab("sections");
+    setSectionEditorTab("content");
   }
 
   function removeSection(sectionIndex: number) {
@@ -552,6 +558,7 @@ export function AdminPage() {
     const nextIndex = Math.max(0, Math.min(sectionIndex, sections.length - 1));
     setUploadSectionIndex(nextIndex);
     setActiveSectionIndex(nextIndex);
+    setSectionEditorTab("content");
   }
 
   function moveSection(sectionIndex: number, direction: -1 | 1) {
@@ -1311,6 +1318,7 @@ export function AdminPage() {
                     setUploadSectionIndex(0);
                     setActiveSectionIndex(0);
                     setProjectEditorTab("basic");
+                    setSectionEditorTab("content");
                     setProjectJson(JSON.stringify(project, null, 2));
                   }}
                 >
@@ -1485,12 +1493,33 @@ export function AdminPage() {
                     onClick={() => {
                       setActiveSectionIndex(sectionIndex);
                       setUploadSectionIndex(sectionIndex);
+                      setSectionEditorTab("content");
                     }}
                   >
                     <span>{String(sectionIndex + 1).padStart(2, "0")}</span>
                     {section.tabLabel?.zh || section.tabLabel?.en || `项目 ${sectionIndex + 1}`}
                   </button>
                 ))}
+              </div>
+              <div className="admin-section-view-tabs" role="tablist" aria-label="项目编辑内容">
+                <button
+                  type="button"
+                  role="tab"
+                  className={sectionEditorTab === "content" ? "is-active" : ""}
+                  aria-selected={sectionEditorTab === "content"}
+                  onClick={() => setSectionEditorTab("content")}
+                >
+                  项目内容
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  className={sectionEditorTab === "media" ? "is-active" : ""}
+                  aria-selected={sectionEditorTab === "media"}
+                  onClick={() => setSectionEditorTab("media")}
+                >
+                  素材图片（{selectedProject.sections[activeSectionIndex]?.media?.length || 0}）
+                </button>
               </div>
               {selectedProject.sections.map((section, sectionIndex) => (
                 <div className="admin-section-card" hidden={sectionIndex !== activeSectionIndex} key={`${section.title.en}-${sectionIndex}`}>
@@ -1502,6 +1531,7 @@ export function AdminPage() {
                       <button type="button" className="danger" onClick={() => removeSection(sectionIndex)}>删除项目</button>
                     </div>
                   </div>
+                  <div className="admin-section-content-pane" hidden={sectionEditorTab !== "content"}>
                   <label>
                     背景色
                     <select
@@ -1547,6 +1577,8 @@ export function AdminPage() {
                       <option value="image-right">图片始终在右</option>
                     </select>
                   </label>
+                  </div>
+                  <div className="admin-section-media-pane" hidden={sectionEditorTab !== "media"}>
                   {section.media?.length ? (
                     <div className="admin-media-list">
                       {section.media.map((media, mediaIndex) => (
@@ -1600,12 +1632,18 @@ export function AdminPage() {
                         </div>
                       ))}
                     </div>
-                  ) : null}
+                  ) : (
+                    <div className="admin-media-empty">
+                      <strong>这个项目还没有素材</strong>
+                      <p>请在下方上传图片、PDF 或 MP4，上传完成后缩略图会显示在这里。</p>
+                    </div>
+                  )}
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="admin-upload">
+            <div className="admin-upload" hidden={sectionEditorTab !== "media"}>
               <label>
                 上传到哪个项目
                 <select

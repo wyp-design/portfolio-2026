@@ -3391,6 +3391,27 @@ button {
   scrollbar-width: thin;
 }
 
+.admin-section-view-tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, .14);
+  background: rgba(0, 0, 0, .045);
+}
+
+.admin-section-view-tabs button {
+  border: 0;
+  color: rgba(0, 0, 0, .62);
+  background: transparent;
+}
+
+.admin-section-view-tabs button.is-active {
+  color: #111;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+}
+
 .admin-editor-tabs {
   position: sticky;
   top: 72px;
@@ -3447,6 +3468,9 @@ button {
 .admin-editor-pane[hidden],
 .admin-form-grid[hidden],
 .admin-section-card[hidden],
+.admin-section-content-pane[hidden],
+.admin-section-media-pane[hidden],
+.admin-upload[hidden],
 .admin-json[hidden] {
   display: none !important;
 }
@@ -3507,6 +3531,27 @@ button {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+}
+
+.admin-media-empty {
+  display: grid;
+  min-height: 220px;
+  place-content: center;
+  border: 1px dashed rgba(0, 0, 0, .25);
+  color: rgba(0, 0, 0, .58);
+  text-align: center;
+}
+
+.admin-media-empty strong {
+  color: #111;
+  font-size: 18px;
+}
+
+.admin-media-empty p {
+  max-width: 520px;
+  margin: 8px auto 0;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .admin-checkbox {
