@@ -1270,16 +1270,16 @@
             "en": "Context"
           },
           "title": {
-            "zh": "项目标题",
-            "en": "Project title"
+            "zh": "亚马逊主副图A+设计",
+            "en": "Amazon main and secondary image A+ design"
           },
           "body": {
-            "zh": "这里写项目详情。",
-            "en": "Write project details here."
+            "zh": "Cyseekin项目，主要负责亚马逊和独立站的所有界面设计",
+            "en": "Cyseekin project, mainly responsible for all interface design of Amazon and independent websites"
           },
           "titleStyle": {
-            "fontSize": "large",
-            "fontWeight": "bold"
+            "fontSize": "medium",
+            "fontWeight": "regular"
           },
           "titleAlign": "left",
           "bodyStyle": {
@@ -1640,16 +1640,16 @@
             "en": "Context"
           },
           "title": {
-            "zh": "项目标题",
-            "en": "Project title"
+            "zh": "亚马逊主副图设计",
+            "en": "Amazon main and secondary image design"
           },
           "body": {
-            "zh": "这里写项目详情。",
-            "en": "Write project details here."
+            "zh": "Cyseekin项目，主要负责亚马逊和独立站的所有界面设计",
+            "en": "Cyseekin project, mainly responsible for all interface design of Amazon and independent websites"
           },
           "titleStyle": {
-            "fontSize": "large",
-            "fontWeight": "bold"
+            "fontSize": "medium",
+            "fontWeight": "regular"
           },
           "titleAlign": "left",
           "bodyStyle": {
@@ -1792,24 +1792,24 @@
         },
         {
           "tabLabel": {
-            "zh": "项目四",
-            "en": "A9-Ebike亚马逊设计"
+            "zh": "A9-Ebike亚马逊设计",
+            "en": "A9-Ebike Amazon Design"
           },
           "eyebrow": {
             "zh": "背景",
             "en": "Context"
           },
           "title": {
-            "zh": "项目标题",
-            "en": "Project title"
+            "zh": "亚马逊主副图设计",
+            "en": "Amazon main and secondary image design"
           },
           "body": {
-            "zh": "这里写项目详情。",
-            "en": "Write project details here."
+            "zh": "Cyseekin项目，主要负责亚马逊和独立站的所有界面设计",
+            "en": "Cyseekin project, mainly responsible for all interface design of Amazon and independent websites"
           },
           "titleStyle": {
-            "fontSize": "large",
-            "fontWeight": "bold"
+            "fontSize": "medium",
+            "fontWeight": "regular"
           },
           "titleAlign": "left",
           "bodyStyle": {
@@ -2545,5 +2545,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T07:40:01.142Z"
+  "updatedAt": "2026-08-20T07:47:00.192Z"
 }
