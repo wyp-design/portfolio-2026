@@ -1258,6 +1258,14 @@
           "tabLabel": {
             "zh": "kandao项目",
             "en": "kandao project"
+          },
+          "titleStyle": {
+            "fontSize": "medium",
+            "fontWeight": "bold"
+          },
+          "bodyStyle": {
+            "fontSize": "small",
+            "fontWeight": "regular"
           }
         },
         {
@@ -1279,15 +1287,15 @@
           },
           "titleStyle": {
             "fontSize": "medium",
-            "fontWeight": "regular"
+            "fontWeight": "bold"
           },
-          "titleAlign": "left",
+          "titleAlign": "center",
           "bodyStyle": {
-            "fontSize": "medium",
+            "fontSize": "small",
             "fontWeight": "regular"
           },
-          "bodyAlign": "left",
-          "tableAlign": "left",
+          "bodyAlign": "center",
+          "tableAlign": "center",
           "mediaLayout": "square-gallery",
           "splitPattern": "abab",
           "tone": "light",
@@ -1649,15 +1657,15 @@
           },
           "titleStyle": {
             "fontSize": "medium",
-            "fontWeight": "regular"
+            "fontWeight": "bold"
           },
-          "titleAlign": "left",
+          "titleAlign": "center",
           "bodyStyle": {
-            "fontSize": "medium",
+            "fontSize": "small",
             "fontWeight": "regular"
           },
-          "bodyAlign": "left",
-          "tableAlign": "left",
+          "bodyAlign": "center",
+          "tableAlign": "center",
           "mediaLayout": "square-gallery",
           "splitPattern": "abab",
           "tone": "light",
@@ -1809,15 +1817,15 @@
           },
           "titleStyle": {
             "fontSize": "medium",
-            "fontWeight": "regular"
+            "fontWeight": "bold"
           },
-          "titleAlign": "left",
+          "titleAlign": "center",
           "bodyStyle": {
-            "fontSize": "medium",
+            "fontSize": "small",
             "fontWeight": "regular"
           },
-          "bodyAlign": "left",
-          "tableAlign": "left",
+          "bodyAlign": "center",
+          "tableAlign": "center",
           "mediaLayout": "square-gallery",
           "splitPattern": "abab",
           "tone": "light",
@@ -2545,5 +2553,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T08:16:17.226Z"
+  "updatedAt": "2026-08-20T08:22:24.612Z"
 }
