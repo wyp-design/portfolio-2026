@@ -1259,6 +1259,187 @@
             "zh": "kandao项目",
             "en": "kandao project"
           }
+        },
+        {
+          "tabLabel": {
+            "zh": "FX20-Ebike亚马逊设计",
+            "en": "FX20-Ebike Amazon Design"
+          },
+          "eyebrow": {
+            "zh": "背景",
+            "en": "Context"
+          },
+          "title": {
+            "zh": "项目标题",
+            "en": "Project title"
+          },
+          "body": {
+            "zh": "这里写项目详情。",
+            "en": "Write project details here."
+          },
+          "titleStyle": {
+            "fontSize": "large",
+            "fontWeight": "bold"
+          },
+          "titleAlign": "left",
+          "bodyStyle": {
+            "fontSize": "medium",
+            "fontWeight": "regular"
+          },
+          "bodyAlign": "left",
+          "tableAlign": "left",
+          "mediaLayout": "square-gallery",
+          "splitPattern": "abab",
+          "tone": "light",
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1787210532633-997a208c-c94b-4d54-b857-1d684cfed667-Group-1010106397.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210534028-0a6c4358-8a92-4070-acf7-f8048b699ef1-Group-1010106397-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106397.jpg",
+              "title": {
+                "zh": "Group 1010106397",
+                "en": "Group 1010106397"
+              },
+              "alt": {
+                "zh": "Group 1010106397.jpg",
+                "en": "Group 1010106397.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787210535723-38309516-9b3e-4739-95e9-33d746160135-Group-1010106401.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210537174-4788a868-1378-4ec9-9502-d6257807299e-Group-1010106401-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106401.jpg",
+              "title": {
+                "zh": "Group 1010106401",
+                "en": "Group 1010106401"
+              },
+              "alt": {
+                "zh": "Group 1010106401.jpg",
+                "en": "Group 1010106401.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787210538906-17504e1a-6180-4ac5-ac98-ec2ef6fd3a03-Group-1010106409.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210539933-eb10de63-17b3-4740-b4ef-dd91e78921d8-Group-1010106409-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106409.jpg",
+              "title": {
+                "zh": "Group 1010106409",
+                "en": "Group 1010106409"
+              },
+              "alt": {
+                "zh": "Group 1010106409.jpg",
+                "en": "Group 1010106409.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787210542620-c4984e54-668f-47cb-bdd8-73ad60e03a97-Group-1010106423.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210543714-3b1cdb49-cb7d-4f01-b185-4ded140013d8-Group-1010106423-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106423.jpg",
+              "title": {
+                "zh": "Group 1010106423",
+                "en": "Group 1010106423"
+              },
+              "alt": {
+                "zh": "Group 1010106423.jpg",
+                "en": "Group 1010106423.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787210546953-2f2793a4-a8a8-4fac-8801-4f55dbcf16b6-Group-1010106424.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210548223-61e93d6e-a56c-44ce-b285-099e8d67887a-Group-1010106424-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106424.jpg",
+              "title": {
+                "zh": "Group 1010106424",
+                "en": "Group 1010106424"
+              },
+              "alt": {
+                "zh": "Group 1010106424.jpg",
+                "en": "Group 1010106424.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787210551645-815b82ba-9ea8-4e1f-9f0b-ec464950c555-Group-1010106425.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210552748-39010834-fbb9-4180-8b51-f9038c817903-Group-1010106425-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106425.jpg",
+              "title": {
+                "zh": "Group 1010106425",
+                "en": "Group 1010106425"
+              },
+              "alt": {
+                "zh": "Group 1010106425.jpg",
+                "en": "Group 1010106425.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787210556147-65213aef-5915-4985-8665-f1a41b0b24e6-Group-1010106427.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787210557752-34af934f-b79d-4bbf-addf-663bc31e0b5f-Group-1010106427-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "Group 1010106427.jpg",
+              "title": {
+                "zh": "Group 1010106427",
+                "en": "Group 1010106427"
+              },
+              "alt": {
+                "zh": "Group 1010106427.jpg",
+                "en": "Group 1010106427.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ]
         }
       ],
       "cover": {
@@ -1750,5 +1931,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T07:01:22.376Z"
+  "updatedAt": "2026-08-20T07:22:44.998Z"
 }
