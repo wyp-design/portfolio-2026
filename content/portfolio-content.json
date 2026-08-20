@@ -758,12 +758,12 @@
             "en": "project"
           },
           "title": {
-            "zh": "kandao亚马逊/独立扎项目",
-            "en": "kandao amazon/independent project"
+            "zh": "亚马逊/独立站项目",
+            "en": "Amazon/independent station project"
           },
           "body": {
-            "zh": "我们重新设计了目标、记录和反馈语言，让用户关注趋势而不是失败。",
-            "en": "We reframed goals, tracking, and feedback around progress rather than failure."
+            "zh": "看到科技项目，主要负责亚马逊和欧洲/日本站的界面Banner设计",
+            "en": "See technology projects, mainly responsible for the interface banner design of Amazon and European/Japanese sites"
           },
           "tone": "light",
           "media": [
@@ -1254,7 +1254,11 @@
           "titleAlign": "center",
           "bodyAlign": "center",
           "mediaLayout": "square-gallery",
-          "tableAlign": "center"
+          "tableAlign": "center",
+          "tabLabel": {
+            "zh": "kandao项目",
+            "en": "kandao project"
+          }
         }
       ],
       "cover": {
@@ -1657,5 +1661,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T05:55:53.387Z"
+  "updatedAt": "2026-08-20T06:05:22.627Z"
 }
