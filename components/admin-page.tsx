@@ -12,6 +12,7 @@ type ProjectSection = Project["sections"][number];
 type ProjectMedia = NonNullable<ProjectSection["media"]>[number];
 type Tone = NonNullable<ProjectSection["tone"]>;
 type Align = "left" | "center" | "right";
+type ProjectEditorTab = "basic" | "assets" | "sections" | "advanced";
 type UploadTarget = "about" | "project";
 type UploadState = {
   active: boolean;
@@ -267,6 +268,8 @@ export function AdminPage() {
   const [content, setContent] = useState<PortfolioContent>({ site: emptySite, projects: [] });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [uploadSectionIndex, setUploadSectionIndex] = useState(0);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [projectEditorTab, setProjectEditorTab] = useState<ProjectEditorTab>("basic");
   const [projectJson, setProjectJson] = useState("");
   const [state, setState] = useState<SaveState>("loading");
   const [message, setMessage] = useState("正在检查登录状态…");
@@ -472,6 +475,8 @@ export function AdminPage() {
     setContent((current) => ({ ...current, projects: [...current.projects, nextProject] }));
     setSelectedIndex(content.projects.length);
     setUploadSectionIndex(0);
+    setActiveSectionIndex(0);
+    setProjectEditorTab("basic");
     setProjectJson(JSON.stringify(nextProject, null, 2));
   }
 
@@ -481,6 +486,8 @@ export function AdminPage() {
     setContent((current) => ({ ...current, projects: nextProjects }));
     setSelectedIndex(0);
     setUploadSectionIndex(0);
+    setActiveSectionIndex(0);
+    setProjectEditorTab("basic");
     setProjectJson(nextProjects[0] ? JSON.stringify(nextProjects[0], null, 2) : "");
   }
 
@@ -495,6 +502,7 @@ export function AdminPage() {
     setContent((current) => ({ ...current, projects: orderedProjects }));
     setSelectedIndex(nextIndex);
     setUploadSectionIndex(0);
+    setActiveSectionIndex(0);
     setProjectJson(JSON.stringify(orderedProjects[nextIndex], null, 2));
   }
 
@@ -532,6 +540,8 @@ export function AdminPage() {
     if (!selectedProject) return;
     updateSelectedProject({ ...selectedProject, sections: [...selectedProject.sections, createSection(selectedProject.sections.length)] });
     setUploadSectionIndex(selectedProject.sections.length);
+    setActiveSectionIndex(selectedProject.sections.length);
+    setProjectEditorTab("sections");
   }
 
   function removeSection(sectionIndex: number) {
@@ -539,7 +549,9 @@ export function AdminPage() {
     if (!confirm("确定要删除分类下的这个项目吗？")) return;
     const sections = selectedProject.sections.filter((_, index) => index !== sectionIndex);
     updateSelectedProject({ ...selectedProject, sections });
-    setUploadSectionIndex(0);
+    const nextIndex = Math.max(0, Math.min(sectionIndex, sections.length - 1));
+    setUploadSectionIndex(nextIndex);
+    setActiveSectionIndex(nextIndex);
   }
 
   function moveSection(sectionIndex: number, direction: -1 | 1) {
@@ -550,6 +562,7 @@ export function AdminPage() {
     [sections[sectionIndex], sections[nextIndex]] = [sections[nextIndex], sections[sectionIndex]];
     updateSelectedProject({ ...selectedProject, sections });
     setUploadSectionIndex(nextIndex);
+    setActiveSectionIndex(nextIndex);
   }
 
   function removeMedia(sectionIndex: number, mediaIndex: number) {
@@ -1296,6 +1309,8 @@ export function AdminPage() {
                   onClick={() => {
                     setSelectedIndex(index);
                     setUploadSectionIndex(0);
+                    setActiveSectionIndex(0);
+                    setProjectEditorTab("basic");
                     setProjectJson(JSON.stringify(project, null, 2));
                   }}
                 >
@@ -1327,7 +1342,26 @@ export function AdminPage() {
               </div>
             </div>
 
-            <div className="admin-form-grid">
+            <nav className="admin-editor-tabs" aria-label="分类编辑区域">
+              {([
+                ["basic", "基础信息"],
+                ["assets", "封面与指标"],
+                ["sections", `项目管理 (${selectedProject.sections.length})`],
+                ["advanced", "高级设置"],
+              ] as const).map(([tab, label]) => (
+                <button
+                  type="button"
+                  key={tab}
+                  className={projectEditorTab === tab ? "is-active" : ""}
+                  aria-selected={projectEditorTab === tab}
+                  onClick={() => setProjectEditorTab(tab)}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+
+            <div className="admin-form-grid" hidden={projectEditorTab !== "basic"}>
               <label>
                 分类标识 Slug
                 <input
@@ -1382,7 +1416,8 @@ export function AdminPage() {
               )}
             </div>
 
-            <div className="admin-subsection">
+            <div className="admin-editor-pane" hidden={projectEditorTab !== "assets"}>
+            <div className="admin-subsection admin-subsection-first">
               <div className="admin-panel-heading">
                 <div>
                   <h3>首页卡片封面</h3>
@@ -1431,14 +1466,34 @@ export function AdminPage() {
                 </div>
               ))}
             </div>
+            </div>
 
-            <div className="admin-subsection">
+            <div className="admin-editor-pane" hidden={projectEditorTab !== "sections"}>
+            <div className="admin-subsection admin-subsection-first">
               <div className="admin-panel-heading">
                 <h3>分类下项目</h3>
                 <button type="button" onClick={addSection}>新增项目</button>
               </div>
+              <div className="admin-section-tabs" role="tablist" aria-label="分类下项目">
+                {selectedProject.sections.map((section, sectionIndex) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    key={`section-tab-${sectionIndex}`}
+                    className={sectionIndex === activeSectionIndex ? "is-active" : ""}
+                    aria-selected={sectionIndex === activeSectionIndex}
+                    onClick={() => {
+                      setActiveSectionIndex(sectionIndex);
+                      setUploadSectionIndex(sectionIndex);
+                    }}
+                  >
+                    <span>{String(sectionIndex + 1).padStart(2, "0")}</span>
+                    {section.tabLabel?.zh || section.tabLabel?.en || `项目 ${sectionIndex + 1}`}
+                  </button>
+                ))}
+              </div>
               {selectedProject.sections.map((section, sectionIndex) => (
-                <div className="admin-section-card" key={`${section.title.en}-${sectionIndex}`}>
+                <div className="admin-section-card" hidden={sectionIndex !== activeSectionIndex} key={`${section.title.en}-${sectionIndex}`}>
                   <div className="admin-panel-heading">
                     <h4>项目 {sectionIndex + 1}</h4>
                     <div>
@@ -1553,7 +1608,14 @@ export function AdminPage() {
             <div className="admin-upload">
               <label>
                 上传到哪个项目
-                <select value={uploadSectionIndex} onChange={(event) => setUploadSectionIndex(Number(event.target.value))}>
+                <select
+                  value={uploadSectionIndex}
+                  onChange={(event) => {
+                    const nextIndex = Number(event.target.value);
+                    setUploadSectionIndex(nextIndex);
+                    setActiveSectionIndex(nextIndex);
+                  }}
+                >
                   {selectedProject.sections.map((section, index) => (
                     <option key={`${section.title.en}-${index}`} value={index}>
                       {section.tabLabel?.zh || section.tabLabel?.en || `项目 ${index + 1}`}：{section.title.zh || section.title.en}
@@ -1576,8 +1638,9 @@ export function AdminPage() {
                 />
               </label>
             </div>
+            </div>
 
-            <details className="admin-json">
+            <details className="admin-json" hidden={projectEditorTab !== "advanced"} open>
               <summary>高级：项目完整内容 JSON</summary>
               <textarea value={projectJson} onChange={(event) => setProjectJson(event.target.value)} />
               <button className="secondary" onClick={applyProjectJson}>应用 JSON 到当前项目</button>
