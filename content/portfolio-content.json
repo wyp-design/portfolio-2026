@@ -758,8 +758,8 @@
             "en": "project"
           },
           "title": {
-            "zh": "Napcat独立站项目设计",
-            "en": "Napcat independent station project design"
+            "zh": "kandao亚马逊/独立扎项目",
+            "en": "kandao amazon/independent project"
           },
           "body": {
             "zh": "我们重新设计了目标、记录和反馈语言，让用户关注趋势而不是失败。",
@@ -769,17 +769,479 @@
           "media": [
             {
               "_type": "image",
-              "url": "/uploads/1782889991859-892e772a-f8a3-4514-861b-ff9c864da618-1920.jpg",
-              "thumbnailUrl": "/uploads/thumbnails/1782889994502-46a7a701-107f-4c31-96b9-a25b95fb01a7-1920-thumbnail.jpg",
+              "url": "/uploads/1787204972086-3ac0ddc4-3598-41e7-96b5-a4bb05a5d4bc-image-18.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787204973160-8fa7d87a-bf93-48ab-add5-d3421fc77c7b-image-18-thumbnail.jpg",
               "mimeType": "image/jpeg",
-              "originalFilename": "首页1920.jpg",
+              "originalFilename": "image 18.jpg",
               "title": {
-                "zh": "首页1920",
-                "en": "首页1920"
+                "zh": "image 18",
+                "en": "image 18"
               },
               "alt": {
-                "zh": "首页1920.jpg",
-                "en": "首页1920.jpg"
+                "zh": "image 18.jpg",
+                "en": "image 18.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787204974889-f9ecf3e2-e322-46da-b2cf-cf77d9a76f04-image-19.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787204975960-7e0cd392-b13a-474c-971f-2137f94929cd-image-19-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 19.jpg",
+              "title": {
+                "zh": "image 19",
+                "en": "image 19"
+              },
+              "alt": {
+                "zh": "image 19.jpg",
+                "en": "image 19.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205039799-17e0effc-0673-4b01-9f63-eaf2b5e2e620-image-16.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205040814-45add8a4-9c46-4dda-84d7-6a106fd87eaa-image-16-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 16.jpg",
+              "title": {
+                "zh": "image 16",
+                "en": "image 16"
+              },
+              "alt": {
+                "zh": "image 16.jpg",
+                "en": "image 16.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205042405-4d3ae9af-caf2-4433-aee0-9a038017ef6f-image-17.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205043291-ad9ab788-02f7-47a2-ae26-eadd937d3138-image-17-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 17.jpg",
+              "title": {
+                "zh": "image 17",
+                "en": "image 17"
+              },
+              "alt": {
+                "zh": "image 17.jpg",
+                "en": "image 17.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205045001-d781559c-459e-43ef-be94-6ed5631c84d1-upload.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205046166-f80e6583-3b0b-4c10-87a6-0d901be88765-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "单个产品详情页.jpg",
+              "title": {
+                "zh": "单个产品详情页",
+                "en": "单个产品详情页"
+              },
+              "alt": {
+                "zh": "单个产品详情页.jpg",
+                "en": "单个产品详情页.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205048263-8a8d69f3-76be-46eb-b9b1-e1991e0d552a-upload.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205049427-36a535d0-cc20-4df0-8974-cffe536ff239-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "店铺主页.jpg",
+              "title": {
+                "zh": "店铺主页",
+                "en": "店铺主页"
+              },
+              "alt": {
+                "zh": "店铺主页.jpg",
+                "en": "店铺主页.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205284887-8eed5686-ec65-4f37-b79f-238e8ab30890-2-25.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205285821-be2a33f1-691a-404a-8bac-a8ddde434859-2-25-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "2 25.jpg",
+              "title": {
+                "zh": "2 25",
+                "en": "2 25"
+              },
+              "alt": {
+                "zh": "2 25.jpg",
+                "en": "2 25.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205287437-0c1c85fd-2795-4bc4-a487-480fa47bb831-image-23.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205288283-ff455026-3289-46c8-b290-cf162b3c9ffa-image-23-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 23.jpg",
+              "title": {
+                "zh": "image 23",
+                "en": "image 23"
+              },
+              "alt": {
+                "zh": "image 23.jpg",
+                "en": "image 23.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205289973-b1accd88-e92b-40ad-944b-76d346cf23ee-image-24.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205291039-dbef5b98-496e-43d9-a661-e3faaf4f7315-image-24-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 24.jpg",
+              "title": {
+                "zh": "image 24",
+                "en": "image 24"
+              },
+              "alt": {
+                "zh": "image 24.jpg",
+                "en": "image 24.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205293554-c873fd9f-dddd-40b9-a3e7-6650e746b73c-image-26.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205294819-aebb470c-1bbd-4df3-9980-852fe118a278-image-26-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 26.jpg",
+              "title": {
+                "zh": "image 26",
+                "en": "image 26"
+              },
+              "alt": {
+                "zh": "image 26.jpg",
+                "en": "image 26.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205296677-bf77495e-a3f0-49c7-86cb-7774d9d46480-image-27.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205297591-3b53da40-663a-49ac-b95e-ef5581d30c13-image-27-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 27.jpg",
+              "title": {
+                "zh": "image 27",
+                "en": "image 27"
+              },
+              "alt": {
+                "zh": "image 27.jpg",
+                "en": "image 27.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205299236-e5f4692b-c407-41a4-bf1f-a7bd6e8e8a7a-image-28.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205300076-2b459894-7195-4ac6-ae6a-ad11fab5602d-image-28-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 28.jpg",
+              "title": {
+                "zh": "image 28",
+                "en": "image 28"
+              },
+              "alt": {
+                "zh": "image 28.jpg",
+                "en": "image 28.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205301764-27138c58-d9b5-4a44-98a5-0f2e028f4473-image-30.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205302704-1bc506f3-5ccc-4e4b-81f4-a441af35e57c-image-30-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 30.jpg",
+              "title": {
+                "zh": "image 30",
+                "en": "image 30"
+              },
+              "alt": {
+                "zh": "image 30.jpg",
+                "en": "image 30.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205304140-10f8bff8-76ad-4f4d-ad61-036ca62d655b-image-31.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205305106-95dddd90-94b5-4992-9dd6-9636cda3def3-image-31-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 31.jpg",
+              "title": {
+                "zh": "image 31",
+                "en": "image 31"
+              },
+              "alt": {
+                "zh": "image 31.jpg",
+                "en": "image 31.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205306676-840d77b7-7e11-44c4-a316-7a31f9db6e38-image-32.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205307548-e04e8530-e3a8-4763-b555-63c7746d8c40-image-32-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 32.jpg",
+              "title": {
+                "zh": "image 32",
+                "en": "image 32"
+              },
+              "alt": {
+                "zh": "image 32.jpg",
+                "en": "image 32.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205309252-082f7cdb-5ee3-458b-b55d-70669df35409-image-33.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205310372-86429b4b-e308-423c-b364-7d4e771f8fb5-image-33-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "image 33.jpg",
+              "title": {
+                "zh": "image 33",
+                "en": "image 33"
+              },
+              "alt": {
+                "zh": "image 33.jpg",
+                "en": "image 33.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205312480-f9ba7c62-bbfc-4c88-b2e1-53db5baae71e-1.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205313461-35846a70-9e73-468c-b4c0-9913220ec5b9-1-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "单个产品详情页-1.jpg",
+              "title": {
+                "zh": "单个产品详情页-1",
+                "en": "单个产品详情页-1"
+              },
+              "alt": {
+                "zh": "单个产品详情页-1.jpg",
+                "en": "单个产品详情页-1.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205315196-baebb07e-90f5-4663-8dc4-a94b34c1d58e-2.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205316288-731027c7-e564-4116-8408-cf399cf422f4-2-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "单个产品详情页-2.jpg",
+              "title": {
+                "zh": "单个产品详情页-2",
+                "en": "单个产品详情页-2"
+              },
+              "alt": {
+                "zh": "单个产品详情页-2.jpg",
+                "en": "单个产品详情页-2.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205318530-64635b29-5478-4bb0-8cdc-da23bf9c922f-1.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205319989-3b506a9e-8cd5-49b0-8925-ed21b439eebc-1-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "店铺主页-1.jpg",
+              "title": {
+                "zh": "店铺主页-1",
+                "en": "店铺主页-1"
+              },
+              "alt": {
+                "zh": "店铺主页-1.jpg",
+                "en": "店铺主页-1.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205322538-211fd303-4c08-4f8a-9cdd-38703ec7bcb2-2.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205323452-75cf0575-a176-465e-838f-fbd73cce8693-2-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "店铺主页-2.jpg",
+              "title": {
+                "zh": "店铺主页-2",
+                "en": "店铺主页-2"
+              },
+              "alt": {
+                "zh": "店铺主页-2.jpg",
+                "en": "店铺主页-2.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205325446-cd7d2ad2-e3c4-42f6-826b-c1f17495d9d8-A-1-1.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205326355-9f7fd6e1-697b-412f-9f63-9d5d01dcf13a-A-1-1-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "方案A (1) 1.jpg",
+              "title": {
+                "zh": "方案A (1) 1",
+                "en": "方案A (1) 1"
+              },
+              "alt": {
+                "zh": "方案A (1) 1.jpg",
+                "en": "方案A (1) 1.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205327883-d1b7a646-1038-4efc-96d0-787ac73286c4-18-4.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205328870-b9a5ef9f-2be0-4eb2-95ed-332c4ace02a8-18-4-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "画板 18 拷贝 4.jpg",
+              "title": {
+                "zh": "画板 18 拷贝 4",
+                "en": "画板 18 拷贝 4"
+              },
+              "alt": {
+                "zh": "画板 18 拷贝 4.jpg",
+                "en": "画板 18 拷贝 4.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787205330224-11ea6efc-4485-4c4a-8d92-9c7057ea5b9a-banner_web_1903x880-1.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787205331315-54a371a0-9438-438b-99c9-903720045b62-banner_web_1903x880-1-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "轮播banner_web_1903x880 1.jpg",
+              "title": {
+                "zh": "轮播banner_web_1903x880 1",
+                "en": "轮播banner_web_1903x880 1"
+              },
+              "alt": {
+                "zh": "轮播banner_web_1903x880 1.jpg",
+                "en": "轮播banner_web_1903x880 1.jpg"
               },
               "caption": {
                 "zh": "",
@@ -1195,5 +1657,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T03:35:13.151Z"
+  "updatedAt": "2026-08-20T05:55:53.387Z"
 }
