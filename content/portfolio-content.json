@@ -1789,6 +1789,271 @@
               "textPosition": "right"
             }
           ]
+        },
+        {
+          "tabLabel": {
+            "zh": "项目四",
+            "en": "A9-Ebike亚马逊设计"
+          },
+          "eyebrow": {
+            "zh": "背景",
+            "en": "Context"
+          },
+          "title": {
+            "zh": "项目标题",
+            "en": "Project title"
+          },
+          "body": {
+            "zh": "这里写项目详情。",
+            "en": "Write project details here."
+          },
+          "titleStyle": {
+            "fontSize": "large",
+            "fontWeight": "bold"
+          },
+          "titleAlign": "left",
+          "bodyStyle": {
+            "fontSize": "medium",
+            "fontWeight": "regular"
+          },
+          "bodyAlign": "left",
+          "tableAlign": "left",
+          "mediaLayout": "square-gallery",
+          "splitPattern": "abab",
+          "tone": "light",
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1787211570111-92f517fc-4346-4da3-9f8f-a52b7628d9d7-1.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211571066-d3ec1d38-0a3b-4aa2-80d6-628571d060e4-1-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图1.jpg",
+              "title": {
+                "zh": "副图1",
+                "en": "副图1"
+              },
+              "alt": {
+                "zh": "副图1.jpg",
+                "en": "副图1.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211572706-b5b98fdf-f79e-4215-bd10-81e1ab859d4c-2.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211573651-318cf0d8-f844-41cd-b252-e50f3d1f791b-2-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图2.jpg",
+              "title": {
+                "zh": "副图2",
+                "en": "副图2"
+              },
+              "alt": {
+                "zh": "副图2.jpg",
+                "en": "副图2.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211575095-bedb60e6-90dc-4782-853f-45fac30821a8-3.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211576048-d334eae8-a70e-4bef-8297-b559e608b3c3-3-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图3.jpg",
+              "title": {
+                "zh": "副图3",
+                "en": "副图3"
+              },
+              "alt": {
+                "zh": "副图3.jpg",
+                "en": "副图3.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211578121-ff58c065-fda4-4e34-b17c-d19cd6c01fb3-4.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211579205-52e76e43-7339-4062-b873-552fbacd1893-4-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图4.jpg",
+              "title": {
+                "zh": "副图4",
+                "en": "副图4"
+              },
+              "alt": {
+                "zh": "副图4.jpg",
+                "en": "副图4.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211580681-45adaada-d4ef-4de7-9d2c-a9cb8b7cc725-5.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211581674-6dbe9ef7-1ab3-45e9-a2b4-e621f4387bc8-5-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图5.jpg",
+              "title": {
+                "zh": "副图5",
+                "en": "副图5"
+              },
+              "alt": {
+                "zh": "副图5.jpg",
+                "en": "副图5.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211583358-b1523038-1661-482c-b58c-3afbcef82417-6.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211584266-1bd1bf08-a79b-482b-97cb-5808a13b8153-6-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图6.jpg",
+              "title": {
+                "zh": "副图6",
+                "en": "副图6"
+              },
+              "alt": {
+                "zh": "副图6.jpg",
+                "en": "副图6.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211585720-b39e4d5c-078a-49d6-8af0-02b06cafde91-7.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211586694-f95a278f-fd4b-45f7-a84d-ba9d33ee2e56-7-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图7.jpg",
+              "title": {
+                "zh": "副图7",
+                "en": "副图7"
+              },
+              "alt": {
+                "zh": "副图7.jpg",
+                "en": "副图7.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211588076-51e37f02-5eb5-4ac5-a496-d4d049ee4203-8.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211588987-3dda3b03-3abe-43c2-a46c-97db2eb463b7-8-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图8.jpg",
+              "title": {
+                "zh": "副图8",
+                "en": "副图8"
+              },
+              "alt": {
+                "zh": "副图8.jpg",
+                "en": "副图8.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211590683-538c4337-04e9-4aca-8857-6150d21cd7ed-9.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211591568-eaf48803-a3ec-4a76-b0bc-7b388dd298b6-9-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图9.jpg",
+              "title": {
+                "zh": "副图9",
+                "en": "副图9"
+              },
+              "alt": {
+                "zh": "副图9.jpg",
+                "en": "副图9.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211593576-bedfa771-b3c7-484e-8ca3-324674afd64f-10.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211594835-bed8f956-c561-4902-b839-179e65a2d925-10-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图10.jpg",
+              "title": {
+                "zh": "副图10",
+                "en": "副图10"
+              },
+              "alt": {
+                "zh": "副图10.jpg",
+                "en": "副图10.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211596472-279b74ea-16ab-40d3-98d4-4f04584527e0-11.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211597599-1301504b-127f-4fce-895b-c0a5c8a59fbf-11-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "副图11.jpg",
+              "title": {
+                "zh": "副图11",
+                "en": "副图11"
+              },
+              "alt": {
+                "zh": "副图11.jpg",
+                "en": "副图11.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ]
         }
       ],
       "cover": {
@@ -2280,5 +2545,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T07:36:30.486Z"
+  "updatedAt": "2026-08-20T07:40:01.142Z"
 }
