@@ -4075,11 +4075,13 @@ button {
 }
 .creatie-hello-ripple-v7::after {
   position: absolute;
-  inset: 0;
+  inset: -14%;
   z-index: 3;
-  background: radial-gradient(circle at var(--ripple-x) var(--ripple-y), rgba(255,255,255,.3), rgba(117,153,255,.12) 8%, transparent 23%);
+  background: radial-gradient(circle at var(--ripple-x) var(--ripple-y), rgba(255,255,255,.24) 0, rgba(117,153,255,.09) 9%, transparent 34%);
   content: "";
   opacity: 0;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0 48%, rgba(0,0,0,.72) 64%, transparent 86%);
+  mask-image: radial-gradient(ellipse at center, #000 0 48%, rgba(0,0,0,.72) 64%, transparent 86%);
   mix-blend-mode: screen;
   pointer-events: none;
   transition: opacity .32s ease;
@@ -10413,7 +10415,7 @@ body.creatie-cursor-active-v6 * {
 .creatie-about-rail-v8 {
   display: flex;
   gap: 22px;
-  max-width: 1280px;
+  max-width: 1580px;
   margin: 0 auto;
   padding: 8px 8px 30px;
   overflow-x: auto;
@@ -10443,9 +10445,17 @@ body.creatie-cursor-active-v6 * {
 
 .creatie-about-card-v8 {
   position: relative;
-  flex: 0 0 clamp(340px, 36vw, 500px);
-  min-height: 390px;
-  padding: 30px;
+  flex: 0 0 min(750px, calc(100vw - 80px));
+  width: min(750px, calc(100vw - 80px));
+  height: 500px;
+  min-height: 500px;
+  padding: 34px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(17, 17, 17, .42) transparent;
   border: 1px solid rgba(0, 0, 0, .12);
   border-radius: 18px;
   background: rgba(255, 255, 255, .9);
@@ -10454,18 +10464,27 @@ body.creatie-cursor-active-v6 * {
   transition: transform .25s ease, box-shadow .25s ease;
 }
 
+.creatie-about-card-v8::-webkit-scrollbar {
+  width: 6px;
+}
+
+.creatie-about-card-v8::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(17, 17, 17, .38);
+}
+
 .creatie-about-card-v8:hover {
   transform: translateY(-5px) rotate(-.4deg);
   box-shadow: 12px 14px 0 rgba(0, 0, 0, .11);
 }
 
 .creatie-about-card-v8.is-skills {
-  flex-basis: min(560px, 82vw);
+  flex-basis: min(750px, calc(100vw - 80px));
 }
 
 .creatie-about-card-v8.is-bio-skills {
-  flex-basis: min(760px, 88vw);
-  min-height: 470px;
+  flex-basis: min(750px, calc(100vw - 80px));
+  min-height: 500px;
   background: linear-gradient(135deg, #fff 0%, #edf5ff 100%);
 }
 
@@ -10482,11 +10501,11 @@ body.creatie-cursor-active-v6 * {
 }
 
 .creatie-about-card-v8.is-education {
-  flex-basis: min(500px, 82vw);
+  flex-basis: min(750px, calc(100vw - 80px));
 }
 
 .creatie-about-card-v8.is-experience {
-  flex-basis: 460px;
+  flex-basis: min(750px, calc(100vw - 80px));
 }
 
 .creatie-about-card-pin-v8 {
@@ -10514,6 +10533,9 @@ body.creatie-cursor-active-v6 * {
   font-size: 28px;
   line-height: 1.05;
   letter-spacing: -.03em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .creatie-about-card-v8 p {
@@ -10521,6 +10543,17 @@ body.creatie-cursor-active-v6 * {
   font-size: 14px;
   line-height: 1.75;
   white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.creatie-about-card-v8 h4,
+.creatie-about-card-v8 strong,
+.creatie-about-card-v8 span,
+.creatie-about-card-v8 time,
+.creatie-about-card-v8 small {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .creatie-about-card-meta-v8 {
@@ -10610,6 +10643,8 @@ body.creatie-cursor-active-v6 * {
   .creatie-about-card-v8.is-education,
   .creatie-about-card-v8.is-experience {
     flex-basis: 86vw;
+    width: 86vw;
+    height: min(500px, 68vh);
     min-height: 410px;
     padding: 24px;
   }
@@ -10620,7 +10655,7 @@ body.creatie-cursor-active-v6 * {
 
   .creatie-about-card-v8.is-bio-skills {
     flex-basis: 86vw;
-    min-height: 520px;
+    min-height: 410px;
     padding: 24px;
   }
 }

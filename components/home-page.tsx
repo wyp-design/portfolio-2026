@@ -289,9 +289,10 @@ function HelloRipple({ src }: { src: string }) {
       const direction = lastPointerX < 0.5 ? -1 : 1;
       for (let y = 0; y < height; y += stripHeight) {
         const distance = y - origin;
-        const envelope = Math.exp(-Math.abs(distance) / spread);
-        const wave = Math.sin(distance / wavelength - phase) * 15 * intensity * envelope;
-        const secondary = Math.sin(distance / (wavelength * 0.58) + phase * 0.72) * 3.5 * intensity * envelope;
+        const edgeFade = Math.max(0, Math.min(1, y / (height * 0.1), (height - y) / (height * 0.1)));
+        const envelope = Math.exp(-Math.abs(distance) / spread) * edgeFade;
+        const wave = Math.sin(distance / wavelength - phase) * 12 * intensity * envelope;
+        const secondary = Math.sin(distance / (wavelength * 0.58) + phase * 0.72) * 3 * intensity * envelope;
         const sourceY = y * sourceScale;
         const sourceHeight = Math.min(image.naturalHeight - sourceY, (stripHeight + 1) * sourceScale);
         context.drawImage(
@@ -609,6 +610,14 @@ export function HomePage({ projects, site }: HomePageProps) {
   const handleAboutWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
     const rail = event.currentTarget;
     if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const card = (event.target as HTMLElement).closest<HTMLElement>(".creatie-about-card-v8");
+    if (card) {
+      const cardCanScroll =
+        event.deltaY > 0
+          ? card.scrollTop + card.clientHeight < card.scrollHeight - 1
+          : card.scrollTop > 0;
+      if (cardCanScroll) return;
+    }
     const canScroll =
       event.deltaY > 0
         ? rail.scrollLeft + rail.clientWidth < rail.scrollWidth - 1
