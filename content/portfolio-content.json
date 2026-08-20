@@ -378,29 +378,7 @@
         "en": "Sample case"
       },
       "externalUrl": "AI 工具、生成式视觉、智能产品体验与自动化设计流程相关项目。",
-      "metrics": [
-        {
-          "value": "42%",
-          "label": {
-            "zh": "任务时间降低",
-            "en": "faster task completion"
-          }
-        },
-        {
-          "value": "3.1×",
-          "label": {
-            "zh": "工作流复用",
-            "en": "workflow reuse"
-          }
-        },
-        {
-          "value": "18",
-          "label": {
-            "zh": "用户访谈",
-            "en": "user interviews"
-          }
-        }
-      ],
+      "metrics": [],
       "sections": [
         {
           "eyebrow": {
@@ -587,7 +565,11 @@
           "bodyAlign": "center",
           "tableAlign": "center",
           "mediaLayout": "square-gallery",
-          "titleAlign": "center"
+          "titleAlign": "center",
+          "tabLabel": {
+            "zh": "AIGC 实战海报",
+            "en": "AIGC practical poster"
+          }
         },
         {
           "eyebrow": {
@@ -606,17 +588,17 @@
           "media": [
             {
               "_type": "image",
-              "url": "/uploads/1783325238346-6a62058b-aafe-47e0-9e93-f5cbb64edb4e-Mask-group.png",
-              "thumbnailUrl": "/uploads/thumbnails/1783325249359-6f16cf8b-30d3-4c0d-97b6-87542c8d70c9-Mask-group-thumbnail.jpg",
+              "url": "/uploads/1787196813905-a16a541d-7d0f-4ad6-b8d5-5a3f67915496-2aa28938-ecba-4b79-bfa1-c4057fbaa2a3.png",
+              "thumbnailUrl": "/uploads/thumbnails/1787196815151-53ce320e-8dbe-40d0-93e9-abd1e850609e-2aa28938-ecba-4b79-bfa1-c4057fbaa2a3-thumbnail.jpg",
               "mimeType": "image/png",
-              "originalFilename": "Mask group.png",
+              "originalFilename": "2aa28938-ecba-4b79-bfa1-c4057fbaa2a3.png",
               "title": {
                 "zh": "Mask group",
                 "en": "Mask group"
               },
               "alt": {
-                "zh": "Mask group.png",
-                "en": "Mask group.png"
+                "zh": "2aa28938-ecba-4b79-bfa1-c4057fbaa2a3.png",
+                "en": "2aa28938-ecba-4b79-bfa1-c4057fbaa2a3.png"
               },
               "caption": {
                 "zh": "",
@@ -627,17 +609,17 @@
             },
             {
               "_type": "image",
-              "url": "/uploads/1783325252832-791507c9-77fc-4e51-90e9-239c398eef12-Mask-group-1.png",
-              "thumbnailUrl": "/uploads/thumbnails/1783325256024-68e6d5b2-34d4-4724-ad2a-681c3fd5c245-Mask-group-1-thumbnail.jpg",
+              "url": "/uploads/1787196838989-8a193dfa-5a0a-43a2-abb7-58ecf5e7662c-e6dac21c-1b46-4913-be6a-e26300e96ded.png",
+              "thumbnailUrl": "/uploads/thumbnails/1787196839983-d9cd9ec2-edc6-422b-a764-33fc6e0deb6d-e6dac21c-1b46-4913-be6a-e26300e96ded-thumbnail.jpg",
               "mimeType": "image/png",
-              "originalFilename": "Mask group-1.png",
+              "originalFilename": "e6dac21c-1b46-4913-be6a-e26300e96ded.png",
               "title": {
                 "zh": "Mask group-1",
                 "en": "Mask group-1"
               },
               "alt": {
-                "zh": "Mask group-1.png",
-                "en": "Mask group-1.png"
+                "zh": "e6dac21c-1b46-4913-be6a-e26300e96ded.png",
+                "en": "e6dac21c-1b46-4913-be6a-e26300e96ded.png"
               },
               "caption": {
                 "zh": "",
@@ -648,17 +630,17 @@
             },
             {
               "_type": "image",
-              "url": "/uploads/1783325258548-a2a217ce-ad28-4b7f-a2b8-1e40729753c3-Mask-group-2.png",
-              "thumbnailUrl": "/uploads/thumbnails/1783325261405-1e8becc6-a263-4f10-ace8-3fd91bf9b2fd-Mask-group-2-thumbnail.jpg",
+              "url": "/uploads/1787196867515-8ce0605e-a857-4089-8a62-1282f608ff69-e499c384-0644-442b-ab00-3a3c02ce3fc9.png",
+              "thumbnailUrl": "/uploads/thumbnails/1787196868477-c96e40ec-ebf2-490e-9741-53a8958c623e-e499c384-0644-442b-ab00-3a3c02ce3fc9-thumbnail.jpg",
               "mimeType": "image/png",
-              "originalFilename": "Mask group-2.png",
+              "originalFilename": "e499c384-0644-442b-ab00-3a3c02ce3fc9.png",
               "title": {
                 "zh": "Mask group-2",
                 "en": "Mask group-2"
               },
               "alt": {
-                "zh": "Mask group-2.png",
-                "en": "Mask group-2.png"
+                "zh": "e499c384-0644-442b-ab00-3a3c02ce3fc9.png",
+                "en": "e499c384-0644-442b-ab00-3a3c02ce3fc9.png"
               },
               "caption": {
                 "zh": "",
@@ -669,17 +651,17 @@
             },
             {
               "_type": "image",
-              "url": "/uploads/1783325263739-8d72b301-23fb-40bc-af5e-dc419dce2371-Mask-group-3.png",
-              "thumbnailUrl": "/uploads/thumbnails/1783325266732-d05fc4d5-0f61-418b-a5e6-5322796b0671-Mask-group-3-thumbnail.jpg",
+              "url": "/uploads/1787196889108-59074ee1-3b08-429f-a779-5e6664b7f904-f7ec3c51-7d39-456e-8137-f764bf36d37b.png",
+              "thumbnailUrl": "/uploads/thumbnails/1787196890091-09c7147e-6f6f-4d22-88d8-c5646a797da2-f7ec3c51-7d39-456e-8137-f764bf36d37b-thumbnail.jpg",
               "mimeType": "image/png",
-              "originalFilename": "Mask group-3.png",
+              "originalFilename": "f7ec3c51-7d39-456e-8137-f764bf36d37b.png",
               "title": {
                 "zh": "Mask group-3",
                 "en": "Mask group-3"
               },
               "alt": {
-                "zh": "Mask group-3.png",
-                "en": "Mask group-3.png"
+                "zh": "f7ec3c51-7d39-456e-8137-f764bf36d37b.png",
+                "en": "f7ec3c51-7d39-456e-8137-f764bf36d37b.png"
               },
               "caption": {
                 "zh": "",
@@ -690,38 +672,17 @@
             },
             {
               "_type": "image",
-              "url": "/uploads/1783325269708-0c63af3b-4641-49d1-9247-e7fb3ca24b67-Mask-group-4.png",
-              "thumbnailUrl": "/uploads/thumbnails/1783325272242-bf07bb6c-8e0d-4597-a8fc-50c50a59ffa8-Mask-group-4-thumbnail.jpg",
+              "url": "/uploads/1787196905021-3b1b18d3-6d17-4c24-ad14-07ff420d6e86-f03581ef-1f24-4018-be14-b2aac97ec47d.png",
+              "thumbnailUrl": "/uploads/thumbnails/1787196906261-e6329d49-81d7-4c11-b091-f3294d7aae16-f03581ef-1f24-4018-be14-b2aac97ec47d-thumbnail.jpg",
               "mimeType": "image/png",
-              "originalFilename": "Mask group-4.png",
+              "originalFilename": "f03581ef-1f24-4018-be14-b2aac97ec47d.png",
               "title": {
                 "zh": "Mask group-4",
                 "en": "Mask group-4"
               },
               "alt": {
-                "zh": "Mask group-4.png",
-                "en": "Mask group-4.png"
-              },
-              "caption": {
-                "zh": "",
-                "en": ""
-              },
-              "layout": "auto",
-              "textPosition": "right"
-            },
-            {
-              "_type": "image",
-              "url": "/uploads/1783325274657-68f54316-ea57-4d83-a7eb-9acb79e6a82b-Mask-group-5.png",
-              "thumbnailUrl": "/uploads/thumbnails/1783325276986-b9e7a21a-7c21-4de9-be32-ede3f7302952-Mask-group-5-thumbnail.jpg",
-              "mimeType": "image/png",
-              "originalFilename": "Mask group-5.png",
-              "title": {
-                "zh": "Mask group-5",
-                "en": "Mask group-5"
-              },
-              "alt": {
-                "zh": "Mask group-5.png",
-                "en": "Mask group-5.png"
+                "zh": "f03581ef-1f24-4018-be14-b2aac97ec47d.png",
+                "en": "f03581ef-1f24-4018-be14-b2aac97ec47d.png"
               },
               "caption": {
                 "zh": "",
@@ -733,7 +694,11 @@
           ],
           "bodyAlign": "center",
           "tableAlign": "center",
-          "mediaLayout": "square-gallery"
+          "mediaLayout": "square-gallery",
+          "tabLabel": {
+            "zh": "AIGC 3D图标",
+            "en": "AIGC 3D icon"
+          }
         }
       ],
       "cover": {
@@ -1230,5 +1195,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-18T08:48:41.228Z"
+  "updatedAt": "2026-08-20T03:35:13.151Z"
 }
