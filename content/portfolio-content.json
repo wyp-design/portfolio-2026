@@ -1347,7 +1347,96 @@
             "en": "Tokens, components, contribution rules, and quality dashboards made consistency a team capability."
           },
           "tone": "dark",
-          "media": []
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1787209229718-f5cfe79c-8e0b-4511-8b52-e59a3f1dfc89-web.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787209230720-495b3b17-4094-4356-bcdb-68e1fde357ce-web-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "导航-web.jpg",
+              "title": {
+                "zh": "导航-web",
+                "en": "导航-web"
+              },
+              "alt": {
+                "zh": "导航-web.jpg",
+                "en": "导航-web.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787209242739-d895c857-aa12-4ea9-89d9-9d4bf7e82f78-upload.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787209243748-8d80e0ba-c3df-4dac-8ecf-2dc938adc4d5-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "会议机.jpg",
+              "title": {
+                "zh": "会议机",
+                "en": "会议机"
+              },
+              "alt": {
+                "zh": "会议机.jpg",
+                "en": "会议机.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787209250859-9faeeadb-7d5c-47e2-a673-196cc760bc09-upload.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787209252016-ce886e1d-c8f1-496e-bf9c-087e7ffef35d-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "消费级.jpg",
+              "title": {
+                "zh": "消费级",
+                "en": "消费级"
+              },
+              "alt": {
+                "zh": "消费级.jpg",
+                "en": "消费级.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787209260601-ea64c860-94c3-4349-9aa0-d7f769af6bca-upload.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787209261588-abe050cc-01d9-4037-bae1-c936a1dd4e9c-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "专业级.jpg",
+              "title": {
+                "zh": "专业级",
+                "en": "专业级"
+              },
+              "alt": {
+                "zh": "专业级.jpg",
+                "en": "专业级.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ],
+          "tabLabel": {
+            "zh": "kandao官网设计",
+            "en": ""
+          }
         }
       ]
     },
@@ -1661,5 +1750,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T06:05:22.627Z"
+  "updatedAt": "2026-08-20T07:01:22.376Z"
 }
