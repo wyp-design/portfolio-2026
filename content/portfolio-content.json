@@ -1629,6 +1629,166 @@
               "textPosition": "right"
             }
           ]
+        },
+        {
+          "tabLabel": {
+            "zh": "M20-Ebike亚马逊设计",
+            "en": "M20-Ebike Amazon Design"
+          },
+          "eyebrow": {
+            "zh": "背景",
+            "en": "Context"
+          },
+          "title": {
+            "zh": "项目标题",
+            "en": "Project title"
+          },
+          "body": {
+            "zh": "这里写项目详情。",
+            "en": "Write project details here."
+          },
+          "titleStyle": {
+            "fontSize": "large",
+            "fontWeight": "bold"
+          },
+          "titleAlign": "left",
+          "bodyStyle": {
+            "fontSize": "medium",
+            "fontWeight": "regular"
+          },
+          "bodyAlign": "left",
+          "tableAlign": "left",
+          "mediaLayout": "square-gallery",
+          "splitPattern": "abab",
+          "tone": "light",
+          "media": [
+            {
+              "_type": "image",
+              "url": "/uploads/1787211371773-77a4ebdb-5669-433a-8c8d-afb1a0bc6b42-_2025-09-28_090538_116.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211372900-10c04be0-e19e-43ef-a8bb-caa33f0a0bd6-_2025-09-28_090538_116-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "微信图片_2025-09-28_090538_116.jpg",
+              "title": {
+                "zh": "微信图片_2025-09-28_090538_116",
+                "en": "微信图片_2025-09-28_090538_116"
+              },
+              "alt": {
+                "zh": "微信图片_2025-09-28_090538_116.jpg",
+                "en": "微信图片_2025-09-28_090538_116.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211374885-d5cc7651-84d8-4ea3-bc43-13b189e050d0-_2025-09-28_090552_705.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211376018-34b6530e-b21e-4b95-835d-35b3c8088c39-_2025-09-28_090552_705-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "微信图片_2025-09-28_090552_705.jpg",
+              "title": {
+                "zh": "微信图片_2025-09-28_090552_705",
+                "en": "微信图片_2025-09-28_090552_705"
+              },
+              "alt": {
+                "zh": "微信图片_2025-09-28_090552_705.jpg",
+                "en": "微信图片_2025-09-28_090552_705.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211377532-4746ecb2-9513-4d69-9ddd-76a691279ec7-_2025-09-28_090555_874.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211378533-efdbfa87-27a5-4b17-8197-6c3c0ebb368c-_2025-09-28_090555_874-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "微信图片_2025-09-28_090555_874.jpg",
+              "title": {
+                "zh": "微信图片_2025-09-28_090555_874",
+                "en": "微信图片_2025-09-28_090555_874"
+              },
+              "alt": {
+                "zh": "微信图片_2025-09-28_090555_874.jpg",
+                "en": "微信图片_2025-09-28_090555_874.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211380184-a1124e90-e814-4312-a472-599515f5ba1a-_2025-09-28_090600_060.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211381156-b2387bf3-a4a3-45f7-ae9b-6f4cbe994e4a-_2025-09-28_090600_060-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "微信图片_2025-09-28_090600_060.jpg",
+              "title": {
+                "zh": "微信图片_2025-09-28_090600_060",
+                "en": "微信图片_2025-09-28_090600_060"
+              },
+              "alt": {
+                "zh": "微信图片_2025-09-28_090600_060.jpg",
+                "en": "微信图片_2025-09-28_090600_060.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211383325-6207789d-c4a0-4f4c-a422-7d068ec39b9f-_2025-09-28_090602_226.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211384421-c693529b-3671-44f3-91e7-3a5a6c090bd6-_2025-09-28_090602_226-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "微信图片_2025-09-28_090602_226.jpg",
+              "title": {
+                "zh": "微信图片_2025-09-28_090602_226",
+                "en": "微信图片_2025-09-28_090602_226"
+              },
+              "alt": {
+                "zh": "微信图片_2025-09-28_090602_226.jpg",
+                "en": "微信图片_2025-09-28_090602_226.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            },
+            {
+              "_type": "image",
+              "url": "/uploads/1787211385937-3654ce73-0d1c-4d7d-8951-b7ab01e41520-_2025-09-28_090603_952.jpg",
+              "thumbnailUrl": "/uploads/thumbnails/1787211387006-f616b06f-699d-44fb-9239-8d41033975f1-_2025-09-28_090603_952-thumbnail.jpg",
+              "mimeType": "image/jpeg",
+              "originalFilename": "微信图片_2025-09-28_090603_952.jpg",
+              "title": {
+                "zh": "微信图片_2025-09-28_090603_952",
+                "en": "微信图片_2025-09-28_090603_952"
+              },
+              "alt": {
+                "zh": "微信图片_2025-09-28_090603_952.jpg",
+                "en": "微信图片_2025-09-28_090603_952.jpg"
+              },
+              "caption": {
+                "zh": "",
+                "en": ""
+              },
+              "layout": "auto",
+              "textPosition": "right"
+            }
+          ]
         }
       ],
       "cover": {
@@ -2120,5 +2280,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T07:31:19.595Z"
+  "updatedAt": "2026-08-20T07:36:30.486Z"
 }
